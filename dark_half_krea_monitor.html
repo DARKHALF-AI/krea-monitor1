@@ -1,0 +1,305 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dark Half | KREA Runway Monitor</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #0f1115;
+            --card-bg: #1a1d23;
+            --accent-blue: #3498db;
+            --accent-orange: #e67e22;
+            --text-main: #e0e0e0;
+            --text-dim: #9ea7b3;
+            --border: #2d333b;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 40px;
+            line-height: 1.6;
+        }
+        .container { max-width: 1100px; margin: 0 auto; }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--border);
+            padding-bottom: 20px;
+        }
+        h1 { margin: 0; font-weight: 300; letter-spacing: 2px; }
+        .controls {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        }
+        .input-group label { display: block; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; }
+        input[type="number"], input[type="date"], input[type="file"] {
+            width: 100%;
+            background: #2d333b;
+            border: 1px solid #444;
+            color: white;
+            padding: 12px;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        .card {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: transform 0.2s;
+        }
+        .card:hover { transform: translateY(-5px); }
+        .card h3 { margin: 0; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+        .card .value { font-size: 1.8rem; font-weight: 700; margin-top: 15px; color: var(--accent-blue); }
+        .card.alert .value { color: var(--accent-orange); }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+        }
+        .chart-box {
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            min-height: 400px;
+        }
+        .status-badge {
+            background: #27ae60;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>DARK HALF | <span style="color:var(--accent-orange)">RUNWAY</span></h1>
+        <div id="status" class="status-badge">System Ready</div>
+    </div>
+
+    <div class="controls">
+        <div class="input-group">
+            <label>Remaining Credits</label>
+            <input type="number" id="remainingCredits" value="9900000" step="100000">
+        </div>
+        <div class="input-group">
+            <label>Departure Date (J & M)</label>
+            <input type="date" id="departureDate" value="2026-05-20">
+        </div>
+        <div class="input-group">
+            <label>Upload Weekly CSVs</label>
+            <input type="file" id="fileInput" multiple accept=".csv">
+        </div>
+    </div>
+
+    <div class="grid">
+        <div class="card">
+            <h3>Projected Runway</h3>
+            <div class="value" id="runwayVal">68 Days</div>
+        </div>
+        <div class="card alert">
+            <h3>Current Daily Burn</h3>
+            <div class="value" id="currentBurnVal">193,215</div>
+        </div>
+        <div class="card alert">
+            <h3>Post-Departure Burn</h3>
+            <div class="value" id="projectedBurnVal">132,655</div>
+        </div>
+        <div class="card">
+            <h3>Exhaustion Date</h3>
+            <div class="value" id="exhaustionDateVal">July 13</div>
+        </div>
+    </div>
+
+    <div class="chart-grid">
+        <div class="chart-box">
+            <h3 style="color:var(--text-dim); font-size: 0.8rem; margin-top:0">CREDIT CONSUMPTION TREND</h3>
+            <canvas id="usageChart"></canvas>
+        </div>
+        <div class="chart-box">
+            <h3 style="color:var(--text-dim); font-size: 0.8rem; margin-top:0">MODEL INTENSITY (TOP 5)</h3>
+            <canvas id="categoryChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    let globalData = {
+        history: [],
+        categories: {}
+    };
+
+    document.getElementById('fileInput').addEventListener('change', handleFiles);
+    document.getElementById('remainingCredits').addEventListener('input', calculateRunway);
+    document.getElementById('departureDate').addEventListener('change', calculateRunway);
+
+    async function handleFiles(e) {
+        const files = Array.from(e.target.files);
+        globalData.history = [];
+        globalData.categories = {};
+        
+        for (const file of files) {
+            await parseFile(file);
+        }
+        
+        updateCharts();
+        calculateRunway();
+        const status = document.getElementById('status');
+        status.innerText = `${files.length} Files Loaded`;
+        status.style.background = "#2980b9";
+    }
+
+    function parseFile(file) {
+        return new Promise((resolve) => {
+            Papa.parse(file, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    processResults(results.data, file.name);
+                    resolve();
+                }
+            });
+        });
+    }
+
+    function processResults(data, fileName) {
+        let fileTotal = 0;
+        data.forEach(row => {
+            if (row['Category'] && row['Compute Units'] && row['Category'] !== 'Total') {
+                const units = parseFloat(row['Compute Units'].replace(/,/g, '')) || 0;
+                globalData.categories[row['Category']] = (globalData.categories[row['Category']] || 0) + units;
+                fileTotal += units;
+            }
+        });
+        if (fileTotal > 0) {
+            globalData.history.push({ name: fileName.split(' ')[0], units: fileTotal });
+        }
+    }
+
+    function calculateRunway() {
+        const credits = parseFloat(document.getElementById('remainingCredits').value) || 0;
+        const depDateInput = document.getElementById('departureDate').value;
+        const depDate = depDateInput ? new Date(depDateInput) : new Date("2026-05-20");
+        const today = new Date("2026-05-06"); // Syncing with user context
+        
+        const currentUsage = 193215; 
+        const jmReduction = 0.313; 
+        
+        const diffTime = depDate - today;
+        const daysToDep = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
+        const burnCurrent = currentUsage;
+        const burnFuture = currentUsage * (1 - jmReduction);
+
+        let remaining = credits;
+        let days = 0;
+
+        // Phase 1
+        for (let i = 0; i < daysToDep; i++) {
+            if (remaining >= burnCurrent) {
+                remaining -= burnCurrent;
+                days++;
+            } else {
+                break;
+            }
+        }
+
+        // Phase 2
+        if (remaining > 0) {
+            days += Math.floor(remaining / burnFuture);
+        }
+
+        document.getElementById('runwayVal').innerText = days + ' Days';
+        document.getElementById('currentBurnVal').innerText = Math.round(burnCurrent).toLocaleString();
+        document.getElementById('projectedBurnVal').innerText = Math.round(burnFuture).toLocaleString();
+        
+        const exhaustDate = new Date(today);
+        exhaustDate.setDate(today.getDate() + days);
+        document.getElementById('exhaustionDateVal').innerText = exhaustDate.toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
+    }
+
+    let usageChart, catChart;
+
+    function updateCharts() {
+        const ctxUsage = document.getElementById('usageChart').getContext('2d');
+        const ctxCat = document.getElementById('categoryChart').getContext('2d');
+
+        if (usageChart) usageChart.destroy();
+        if (catChart) catChart.destroy();
+
+        usageChart = new Chart(ctxUsage, {
+            type: 'line',
+            data: {
+                labels: globalData.history.map(h => h.name),
+                datasets: [{
+                    label: 'Compute per Export',
+                    data: globalData.history.map(h => h.units),
+                    borderColor: '#3498db',
+                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: { grid: { color: '#2d333b' }, ticks: { color: '#9ea7b3' } },
+                    x: { grid: { display: false }, ticks: { color: '#9ea7b3' } }
+                }
+            }
+        });
+
+        const sortedCats = Object.entries(globalData.categories)
+            .sort((a,b) => b[1] - a[1])
+            .slice(0, 5);
+
+        catChart = new Chart(ctxCat, {
+            type: 'doughnut',
+            data: {
+                labels: sortedCats.map(c => c[0]),
+                datasets: [{
+                    data: sortedCats.map(c => c[1]),
+                    backgroundColor: ['#e67e22', '#d35400', '#f39c12', '#e74c3c', '#c0392b'],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { position: 'bottom', labels: { color: '#e0e0e0', padding: 20 } } },
+                cutout: '70%'
+            }
+        });
+    }
+
+    // Initialize with manual numbers first
+    calculateRunway();
+</script>
+</body>
+</html>
