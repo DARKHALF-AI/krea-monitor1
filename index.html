@@ -176,7 +176,7 @@
                 <tr>
                     <th>Account</th>
                     <th style="text-align:right">Daily Burn <span style="text-transform:none; font-weight:400; color:var(--text-dim)">(last 7 days)</span></th>
-                    <th style="text-align:right">vs. April</th>
+                    <th style="text-align:right">vs. prev. 7 days</th>
                     <th style="text-align:right">% of Total</th>
                     <th>Departure Date</th>
                 </tr>
@@ -202,17 +202,17 @@
 </div>
 
 <script>
-    // Burn defaults are per-person daily-avg estimates from Apr 30–May 6 jobs share × actual weekly CU total.
-    // aprBurn shown for trend reference. Replace burn values once exact per-user CU is available.
+    // burn  = Apr 30–May 6 daily avg (estimated: each user's prev-week CU/job rate × current jobs, scaled to match actual weekly total)
+    // prev  = Apr 22–29 daily avg (real CU data, divided by 8 days)
     const ROSTER = [
-        { name: 'JAMES',   email: 'jkinnear@creamproductions.com',       burn: 74283, aprBurn: 59899, depart: '2026-05-15' },
-        { name: 'IAN',     email: 'lordgodfrey@gmail.com',               burn: 55813, aprBurn: 41610, depart: '2027-12-31' },
-        { name: 'SACHA',   email: 'sacha.d.m.mitchell@gmail.com',        burn: 39077, aprBurn: 34054, depart: '2027-12-31' },
-        { name: 'WILL',    email: 'will@bluesheepfilms.com',             burn: 31409, aprBurn: 28107, depart: '2027-12-31' },
-        { name: 'ANDREW',  email: 'amacdonald@creamproductions.com',     burn: 23051, aprBurn: 25483, depart: '2027-12-31' },
-        { name: 'STEPHAN', email: 'skozak@creamproductions.com',         burn: 10303, aprBurn: 19396, depart: '2026-04-01' },
-        { name: 'MARTY',   email: 'connect@martyflanagan.ca',            burn:  9965, aprBurn: 25752, depart: '2026-05-15' },
-        { name: 'PAUL',    email: 'hobofreddington+kr@gmail.com',        burn:  8276, aprBurn: 11019, depart: '2027-12-31' }
+        { name: 'JAMES',   email: 'jkinnear@creamproductions.com',       burn: 122961, prev: 118488, depart: '2026-05-15' },
+        { name: 'WILL',    email: 'will@bluesheepfilms.com',             burn:  33272, prev:  40112, depart: '2027-12-31' },
+        { name: 'IAN',     email: 'lordgodfrey@gmail.com',               burn:  27000, prev:  57484, depart: '2027-12-31' },
+        { name: 'SACHA',   email: 'sacha.d.m.mitchell@gmail.com',        burn:  26193, prev:   9196, depart: '2027-12-31' },
+        { name: 'ANDREW',  email: 'amacdonald@creamproductions.com',     burn:  16318, prev:  19082, depart: '2027-12-31' },
+        { name: 'MARTY',   email: 'connect@martyflanagan.ca',            burn:  16130, prev:  25567, depart: '2026-05-15' },
+        { name: 'PAUL',    email: 'hobofreddington+kr@gmail.com',        burn:   7667, prev:  17087, depart: '2027-12-31' },
+        { name: 'STEPHAN', email: 'skozak@creamproductions.com',         burn:   3864, prev:  24558, depart: '2026-04-01' }
     ];
 
     let globalData = { history: [], categories: {} };
@@ -224,13 +224,13 @@
         ROSTER.forEach((u, i) => {
             const tr = document.createElement('tr');
             tr.id = `row-${i}`;
-            const delta = u.aprBurn ? ((u.burn - u.aprBurn) / u.aprBurn * 100) : 0;
+            const delta = u.prev ? ((u.burn - u.prev) / u.prev * 100) : 0;
             const sign = delta >= 0 ? '+' : '';
             const trendColor = delta >= 5 ? 'var(--accent-orange)' : delta <= -5 ? 'var(--accent-blue)' : 'var(--text-dim)';
             tr.innerHTML = `
                 <td><div style="font-weight:600; letter-spacing:0.5px">${u.name}</div><div style="font-size:11px; color:var(--text-dim)">${u.email}</div></td>
                 <td class="burn-cell" style="text-align:right"><input type="number" id="burn-${i}" value="${u.burn}" step="100" min="0"></td>
-                <td style="text-align:right; font-size:12px"><span style="color:${trendColor}">${sign}${delta.toFixed(0)}%</span><div style="font-size:10px; color:var(--text-dim)">Apr: ${u.aprBurn ? u.aprBurn.toLocaleString() : '—'}</div></td>
+                <td style="text-align:right; font-size:12px"><span style="color:${trendColor}">${sign}${delta.toFixed(0)}%</span><div style="font-size:10px; color:var(--text-dim)">Apr 22–29: ${u.prev ? u.prev.toLocaleString() : '—'}</div></td>
                 <td class="pct-cell" id="pct-${i}">--</td>
                 <td class="date-cell"><input type="date" id="date-${i}" value="${u.depart}"></td>
             `;
