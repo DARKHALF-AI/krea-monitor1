@@ -36,11 +36,11 @@
             padding-bottom: 18px;
         }
         h1 { margin: 0; font-weight: 300; letter-spacing: 2px; font-size: 24px; }
-        .brand { display: flex; align-items: center; gap: 16px; }
-        .brand img { height: 44px; width: auto; display: block; }
-        .brand .titles { display: flex; flex-direction: column; gap: 2px; }
-        .brand .title-main { font-weight: 700; letter-spacing: 3px; font-size: 18px; color: var(--text-main); }
-        .brand .title-sub { font-size: 13px; letter-spacing: 1px; color: var(--accent-orange); text-transform: uppercase; }
+        .logo-bar { width: 100%; text-align: center; padding: 8px 0 24px 0; }
+        .logo-bar img { width: 100%; max-width: 560px; height: auto; display: inline-block; }
+        .logo-bar .fallback { font-size: 36px; font-weight: 700; letter-spacing: 8px; color: var(--text-main); padding: 30px 0; }
+        .subheader-row { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+        .subheader-row .subtitle { font-size: 14px; letter-spacing: 2px; color: var(--accent-orange); text-transform: uppercase; font-weight: 500; }
         .controls {
             background: var(--card-bg);
             padding: 20px;
@@ -134,15 +134,15 @@
 <body>
 
 <div class="container">
+    <div class="logo-bar">
+        <img src="DHILOGO.png" alt="DARK HALF"
+             onerror="this.outerHTML='<div class=&quot;fallback&quot;>DARK HALF</div>'">
+    </div>
     <div class="header">
-        <div class="brand">
-            <img src="darkhalf-logo.png" alt="Dark Half" onerror="this.style.display='none'">
-            <div class="titles">
-                <div class="title-main">DARKHALF</div>
-                <div class="title-sub">Runway left on KREA</div>
-            </div>
+        <div class="subheader-row" style="flex:1">
+            <div class="subtitle">Runway left on KREA</div>
+            <div id="status" class="status-badge">8 Accounts Loaded</div>
         </div>
-        <div id="status" class="status-badge">8 Accounts Loaded</div>
     </div>
 
     <div class="controls">
