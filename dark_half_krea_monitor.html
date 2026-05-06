@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,6 +12,7 @@
             --card-bg: #1a1d23;
             --accent-blue: #3498db;
             --accent-orange: #e67e22;
+            --accent-green: #27ae60;
             --text-main: #e0e0e0;
             --text-dim: #9ea7b3;
             --border: #2d333b;
@@ -25,7 +25,7 @@
             padding: 40px;
             line-height: 1.6;
         }
-        .container { max-width: 1100px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
         .header {
             display: flex;
             justify-content: space-between;
@@ -41,26 +41,28 @@
             border-radius: 12px;
             margin-bottom: 30px;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 20px;
             border: 1px solid var(--border);
             box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
         .input-group label { display: block; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; }
-        input[type="number"], input[type="date"], input[type="file"] {
+        input[type="number"], input[type="date"], input[type="file"], input[type="text"] {
             width: 100%;
             background: #2d333b;
             border: 1px solid #444;
             color: white;
-            padding: 12px;
+            padding: 10px;
             border-radius: 6px;
             box-sizing: border-box;
+            font-family: inherit;
+            font-size: 13px;
         }
         .grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(3, 1fr);
             gap: 20px;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
         .card {
             background: var(--card-bg);
@@ -69,10 +71,58 @@
             border: 1px solid var(--border);
             transition: transform 0.2s;
         }
-        .card:hover { transform: translateY(-5px); }
+        .card:hover { transform: translateY(-3px); }
         .card h3 { margin: 0; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
-        .card .value { font-size: 1.8rem; font-weight: 700; margin-top: 15px; color: var(--accent-blue); }
+        .card .value { font-size: 1.7rem; font-weight: 700; margin-top: 12px; color: var(--accent-blue); }
         .card.alert .value { color: var(--accent-orange); }
+        .card.good .value { color: var(--accent-green); }
+        .card .sub { font-size: 0.7rem; color: var(--text-dim); margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .roster-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+        .roster-card h2 {
+            margin: 0 0 16px 0;
+            font-size: 0.85rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 500;
+        }
+        .roster-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .roster-table th {
+            text-align: left;
+            font-size: 0.7rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+            font-weight: 500;
+        }
+        .roster-table td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border);
+            vertical-align: middle;
+            font-size: 13px;
+        }
+        .roster-table tr:last-child td { border-bottom: none; }
+        .roster-table .email { color: var(--text-main); }
+        .roster-table input[type="number"], .roster-table input[type="date"] {
+            padding: 6px 8px;
+            font-size: 12px;
+        }
+        .roster-table .burn-cell input { width: 110px; }
+        .roster-table .date-cell input { width: 150px; }
+        .roster-table .pct-cell { color: var(--text-dim); width: 60px; text-align: right; }
+
         .chart-grid {
             display: grid;
             grid-template-columns: 2fr 1fr;
@@ -92,6 +142,23 @@
             border-radius: 20px;
             font-size: 0.8rem;
         }
+        .roster-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            justify-content: flex-end;
+        }
+        .roster-actions button {
+            background: #2d333b;
+            color: var(--text-main);
+            border: 1px solid #444;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .roster-actions button:hover { background: #3a414b; }
     </style>
 </head>
 <body>
@@ -108,8 +175,8 @@
             <input type="number" id="remainingCredits" value="9900000" step="100000">
         </div>
         <div class="input-group">
-            <label>Departure Date (J & M)</label>
-            <input type="date" id="departureDate" value="2026-05-20">
+            <label>Today (anchor)</label>
+            <input type="date" id="anchorDate" value="2026-05-06">
         </div>
         <div class="input-group">
             <label>Upload Weekly CSVs</label>
@@ -120,69 +187,127 @@
     <div class="grid">
         <div class="card">
             <h3>Projected Runway</h3>
-            <div class="value" id="runwayVal">68 Days</div>
+            <div class="value" id="runwayVal">-- Days</div>
+            <div class="sub" id="runwayWeeks"></div>
         </div>
         <div class="card alert">
             <h3>Current Daily Burn</h3>
-            <div class="value" id="currentBurnVal">193,215</div>
+            <div class="value" id="currentBurnVal">--</div>
+            <div class="sub">Sum of active users</div>
         </div>
         <div class="card alert">
-            <h3>Post-Departure Burn</h3>
-            <div class="value" id="projectedBurnVal">132,655</div>
-        </div>
-        <div class="card">
             <h3>Exhaustion Date</h3>
-            <div class="value" id="exhaustionDateVal">July 13</div>
+            <div class="value" id="exhaustionDateVal">--</div>
+            <div class="sub" id="exhaustionRelative"></div>
+        </div>
+    </div>
+
+    <div class="roster-card">
+        <h2>Account Roster &mdash; Departure Schedule</h2>
+        <table class="roster-table">
+            <thead>
+                <tr>
+                    <th>Account</th>
+                    <th style="text-align:right">Daily Burn (CU)</th>
+                    <th style="text-align:right">% of Total</th>
+                    <th>Departure Date</th>
+                </tr>
+            </thead>
+            <tbody id="rosterBody"></tbody>
+        </table>
+        <div class="roster-actions">
+            <button onclick="resetDeparturesTo('2027-12-31')">Reset all to Dec 31, 2027</button>
+            <button onclick="resetDeparturesTo('2026-05-20')">All depart May 20, 2026</button>
         </div>
     </div>
 
     <div class="chart-grid">
         <div class="chart-box">
-            <h3 style="color:var(--text-dim); font-size: 0.8rem; margin-top:0">CREDIT CONSUMPTION TREND</h3>
-            <canvas id="usageChart"></canvas>
+            <h3 style="color:var(--text-dim); font-size: 0.8rem; margin-top:0">PROJECTED DAILY BURN OVER TIME</h3>
+            <canvas id="burnTimelineChart"></canvas>
         </div>
         <div class="chart-box">
-            <h3 style="color:var(--text-dim); font-size: 0.8rem; margin-top:0">MODEL INTENSITY (TOP 5)</h3>
+            <h3 style="color:var(--text-dim); font-size: 0.8rem; margin-top:0">BURN BY ACCOUNT</h3>
             <canvas id="categoryChart"></canvas>
         </div>
     </div>
 </div>
 
 <script>
-    let globalData = {
-        history: [],
-        categories: {}
-    };
+    // Per-user daily burn defaults computed from APR 2026 data (30 days, full month)
+    // qali fell to ~0 in APR; using MAR avg as a more representative baseline
+    const ROSTER = [
+        { email: 'jkinnear@creamproductions.com',       burn: 59899, depart: '2026-05-15' },
+        { email: 'lordgodfrey@gmail.com',               burn: 41610, depart: '2027-12-31' },
+        { email: 'sacha.d.m.mitchell@gmail.com',        burn: 34054, depart: '2027-12-31' },
+        { email: 'will@bluesheepfilms.com',             burn: 28107, depart: '2027-12-31' },
+        { email: 'connect@martyflanagan.ca',            burn: 25752, depart: '2026-05-15' },
+        { email: 'amacdonald@creamproductions.com',     burn: 25483, depart: '2027-12-31' },
+        { email: 'skozak@creamproductions.com',         burn: 19396, depart: '2026-04-01' }
+    ];
+
+    let globalData = { history: [], categories: {} };
+    let burnTimelineChart, catChart;
+
+    function buildRoster() {
+        const tbody = document.getElementById('rosterBody');
+        tbody.innerHTML = '';
+        ROSTER.forEach((u, i) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td class="email">${u.email}</td>
+                <td class="burn-cell" style="text-align:right">
+                    <input type="number" id="burn-${i}" value="${u.burn}" step="100" min="0" style="text-align:right">
+                </td>
+                <td class="pct-cell" id="pct-${i}">--</td>
+                <td class="date-cell">
+                    <input type="date" id="date-${i}" value="${u.depart}">
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+        ROSTER.forEach((u, i) => {
+            document.getElementById(`burn-${i}`).addEventListener('input', recompute);
+            document.getElementById(`date-${i}`).addEventListener('change', recompute);
+        });
+    }
+
+    function readRoster() {
+        return ROSTER.map((u, i) => ({
+            email: u.email,
+            burn: parseFloat(document.getElementById(`burn-${i}`).value) || 0,
+            depart: new Date(document.getElementById(`date-${i}`).value)
+        }));
+    }
+
+    function resetDeparturesTo(dateStr) {
+        ROSTER.forEach((_, i) => {
+            document.getElementById(`date-${i}`).value = dateStr;
+        });
+        recompute();
+    }
 
     document.getElementById('fileInput').addEventListener('change', handleFiles);
-    document.getElementById('remainingCredits').addEventListener('input', calculateRunway);
-    document.getElementById('departureDate').addEventListener('change', calculateRunway);
+    document.getElementById('remainingCredits').addEventListener('input', recompute);
+    document.getElementById('anchorDate').addEventListener('change', recompute);
 
     async function handleFiles(e) {
         const files = Array.from(e.target.files);
         globalData.history = [];
         globalData.categories = {};
-        
-        for (const file of files) {
-            await parseFile(file);
-        }
-        
+        for (const file of files) await parseFile(file);
         updateCharts();
-        calculateRunway();
+        recompute();
         const status = document.getElementById('status');
         status.innerText = `${files.length} Files Loaded`;
-        status.style.background = "#2980b9";
+        status.style.background = '#2980b9';
     }
 
     function parseFile(file) {
         return new Promise((resolve) => {
             Papa.parse(file, {
-                header: true,
-                skipEmptyLines: true,
-                complete: function(results) {
-                    processResults(results.data, file.name);
-                    resolve();
-                }
+                header: true, skipEmptyLines: true,
+                complete: function(results) { processResults(results.data, file.name); resolve(); }
             });
         });
     }
@@ -191,115 +316,135 @@
         let fileTotal = 0;
         data.forEach(row => {
             if (row['Category'] && row['Compute Units'] && row['Category'] !== 'Total') {
-                const units = parseFloat(row['Compute Units'].replace(/,/g, '')) || 0;
+                const units = parseFloat(String(row['Compute Units']).replace(/,/g, '')) || 0;
                 globalData.categories[row['Category']] = (globalData.categories[row['Category']] || 0) + units;
                 fileTotal += units;
             }
         });
-        if (fileTotal > 0) {
-            globalData.history.push({ name: fileName.split(' ')[0], units: fileTotal });
-        }
+        if (fileTotal > 0) globalData.history.push({ name: fileName.split(' ')[0], units: fileTotal });
     }
 
-    function calculateRunway() {
-        const credits = parseFloat(document.getElementById('remainingCredits').value) || 0;
-        const depDateInput = document.getElementById('departureDate').value;
-        const depDate = depDateInput ? new Date(depDateInput) : new Date("2026-05-20");
-        const today = new Date("2026-05-06"); // Syncing with user context
-        
-        const currentUsage = 193215; 
-        const jmReduction = 0.313; 
-        
-        const diffTime = depDate - today;
-        const daysToDep = Math.max(0, Math.ceil(diffTime / (1000 * 60 * 60 * 24)));
-        const burnCurrent = currentUsage;
-        const burnFuture = currentUsage * (1 - jmReduction);
+    function dayBurn(roster, date) {
+        return roster.filter(u => u.depart >= date).reduce((s, u) => s + u.burn, 0);
+    }
 
+    function recompute() {
+        const credits = parseFloat(document.getElementById('remainingCredits').value) || 0;
+        const anchorStr = document.getElementById('anchorDate').value;
+        const today = anchorStr ? new Date(anchorStr) : new Date('2026-05-06');
+        const roster = readRoster();
+
+        // Update % of total in roster
+        const totalToday = roster.reduce((s, u) => s + u.burn, 0);
+        roster.forEach((u, i) => {
+            const pct = totalToday > 0 ? (u.burn / totalToday * 100) : 0;
+            document.getElementById(`pct-${i}`).innerText = pct.toFixed(1) + '%';
+        });
+
+        // Walk day-by-day
         let remaining = credits;
         let days = 0;
-
-        // Phase 1
-        for (let i = 0; i < daysToDep; i++) {
-            if (remaining >= burnCurrent) {
-                remaining -= burnCurrent;
-                days++;
-            } else {
-                break;
-            }
+        const cursor = new Date(today);
+        const MAX_DAYS = 365 * 5;
+        while (days < MAX_DAYS) {
+            const burn = dayBurn(roster, cursor);
+            if (burn <= 0) { days = MAX_DAYS; break; }
+            if (remaining < burn) break;
+            remaining -= burn;
+            days++;
+            cursor.setDate(cursor.getDate() + 1);
         }
 
-        // Phase 2
-        if (remaining > 0) {
-            days += Math.floor(remaining / burnFuture);
-        }
+        // KPIs
+        document.getElementById('runwayVal').innerText = days >= MAX_DAYS ? '5+ Years' : days + ' Days';
+        const weeks = (days / 7).toFixed(1);
+        document.getElementById('runwayWeeks').innerText = days >= MAX_DAYS ? '' : `${weeks} weeks`;
 
-        document.getElementById('runwayVal').innerText = days + ' Days';
-        document.getElementById('currentBurnVal').innerText = Math.round(burnCurrent).toLocaleString();
-        document.getElementById('projectedBurnVal').innerText = Math.round(burnFuture).toLocaleString();
-        
+        document.getElementById('currentBurnVal').innerText = Math.round(totalToday).toLocaleString();
+
+        // Exhaustion date
         const exhaustDate = new Date(today);
         exhaustDate.setDate(today.getDate() + days);
-        document.getElementById('exhaustionDateVal').innerText = exhaustDate.toLocaleDateString(undefined, {month: 'short', day: 'numeric'});
+        if (days >= MAX_DAYS) {
+            document.getElementById('exhaustionDateVal').innerText = 'Beyond 2031';
+            document.getElementById('exhaustionRelative').innerText = '';
+        } else {
+            document.getElementById('exhaustionDateVal').innerText = exhaustDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
+            document.getElementById('exhaustionRelative').innerText = `In ${days} days`;
+        }
+
+        updateBurnTimeline(today, roster, days);
+        updateCategoryChart(roster);
     }
 
-    let usageChart, catChart;
+    function updateBurnTimeline(today, roster, daysOut) {
+        const ctx = document.getElementById('burnTimelineChart').getContext('2d');
+        if (burnTimelineChart) burnTimelineChart.destroy();
 
-    function updateCharts() {
-        const ctxUsage = document.getElementById('usageChart').getContext('2d');
-        const ctxCat = document.getElementById('categoryChart').getContext('2d');
+        // Build series: today -> exhaustion (or 18 months, whichever sooner), step at each departure
+        const horizon = Math.min(Math.max(daysOut + 30, 90), 540);
+        const labels = [];
+        const data = [];
+        const cursor = new Date(today);
+        for (let i = 0; i <= horizon; i += 7) {
+            labels.push(new Date(cursor).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }));
+            data.push(dayBurn(roster, cursor));
+            cursor.setDate(cursor.getDate() + 7);
+        }
 
-        if (usageChart) usageChart.destroy();
-        if (catChart) catChart.destroy();
-
-        usageChart = new Chart(ctxUsage, {
+        burnTimelineChart = new Chart(ctx, {
             type: 'line',
             data: {
-                labels: globalData.history.map(h => h.name),
+                labels,
                 datasets: [{
-                    label: 'Compute per Export',
-                    data: globalData.history.map(h => h.units),
-                    borderColor: '#3498db',
-                    backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                    label: 'Daily burn (CU)',
+                    data,
+                    borderColor: '#e67e22',
+                    backgroundColor: 'rgba(230, 126, 34, 0.12)',
                     fill: true,
-                    tension: 0.4
+                    tension: 0.05,
+                    stepped: true,
+                    pointRadius: 0
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: {
-                    y: { grid: { color: '#2d333b' }, ticks: { color: '#9ea7b3' } },
-                    x: { grid: { display: false }, ticks: { color: '#9ea7b3' } }
+                    y: { grid: { color: '#2d333b' }, ticks: { color: '#9ea7b3', callback: v => (v/1000).toFixed(0)+'k' } },
+                    x: { grid: { display: false }, ticks: { color: '#9ea7b3', maxTicksLimit: 10 } }
                 }
             }
         });
+    }
 
-        const sortedCats = Object.entries(globalData.categories)
-            .sort((a,b) => b[1] - a[1])
-            .slice(0, 5);
-
-        catChart = new Chart(ctxCat, {
+    function updateCategoryChart(roster) {
+        const ctx = document.getElementById('categoryChart').getContext('2d');
+        if (catChart) catChart.destroy();
+        const sorted = roster.slice().sort((a,b) => b.burn - a.burn).filter(u => u.burn > 0);
+        const palette = ['#e67e22','#d35400','#f39c12','#3498db','#2980b9','#27ae60','#16a085','#9b59b6','#c0392b'];
+        catChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: sortedCats.map(c => c[0]),
-                datasets: [{
-                    data: sortedCats.map(c => c[1]),
-                    backgroundColor: ['#e67e22', '#d35400', '#f39c12', '#e74c3c', '#c0392b'],
-                    borderWidth: 0
-                }]
+                labels: sorted.map(u => u.email.split('@')[0]),
+                datasets: [{ data: sorted.map(u => u.burn), backgroundColor: palette.slice(0, sorted.length), borderWidth: 0 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { position: 'bottom', labels: { color: '#e0e0e0', padding: 20 } } },
-                cutout: '70%'
+                responsive: true, maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'bottom', labels: { color: '#e0e0e0', padding: 10, font: { size: 11 }, boxWidth: 10 } }
+                },
+                cutout: '60%'
             }
         });
     }
 
-    // Initialize with manual numbers first
-    calculateRunway();
+    function updateCharts() {
+        // Reserved for any CSV-driven chart updates if added later
+    }
+
+    buildRoster();
+    recompute();
 </script>
 </body>
 </html>
