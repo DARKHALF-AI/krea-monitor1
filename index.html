@@ -537,24 +537,24 @@
                     </div>
                 </div>
 
-                <!-- Slider 1: Fictional Category with new Sub-Episode Counter Layout -->
+                <!-- Slider 1: Fictional Category Extended to 200 Max Minutes -->
                 <div class="slider-row">
                     <label style="color: var(--green-accent);">
                         Fictional:  ⬆️% delivered used (DWS) <span class="help-trigger" id="open-fictional-btn">?</span>
                     </label>
-                    <input type="range" id="slider-dws" min="0" max="150" step="1" value="0">
+                    <input type="range" id="slider-dws" min="0" max="200" step="1" value="0">
                     <div class="counter-stack">
                         <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
                         <div class="episode-subtext" id="episodes-dws">0.0 Eps</div>
                     </div>
                 </div>
 
-                <!-- Slider 2: Realism Category with new Sub-Episode Counter Layout -->
+                <!-- Slider 2: Realism Category Extended to 200 Max Minutes -->
                 <div class="slider-row">
                     <label style="color: var(--red-accent);">
                         Realism: ⬇️% delivered used (CCF) <span class="help-trigger" id="open-realism-btn">?</span>
                     </label>
-                    <input type="range" id="slider-ccf" min="0" max="50" step="1" value="0">
+                    <input type="range" id="slider-ccf" min="0" max="200" step="1" value="0">
                     <div class="counter-stack">
                         <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
                         <div class="episode-subtext" id="episodes-ccf">0.0 Eps</div>
@@ -738,11 +738,9 @@
                 const minsCcf = parseInt(sliderCcf.value, 10);
                 const minsFilm = parseInt(sliderFilm.value, 10);
                 
-                // Dynamic Episode Conversion Formulas
                 const epsDwsCalc = minsDws / 15;
                 const epsCcfCalc = minsCcf / 5;
                 
-                // Output precision variables to DOM elements
                 episodesDws.textContent = epsDwsCalc.toFixed(1) + ' Eps';
                 episodesCcf.textContent = epsCcfCalc.toFixed(1) + ' Eps';
 
