@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Half — AI Production Ledger & Forecaster</title>
+    <title>DARKHALF KREA GAS GAUGE</title>
     <style>
         :root {
             --bg-color: #000000;
@@ -52,12 +52,22 @@
 
         header {
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 16px;
+            padding-bottom: 20px;
             margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .brand-logo {
+            height: 42px;
+            width: auto;
+            object-fit: contain;
+            display: block;
         }
 
         .brand-title {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: 900;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -135,7 +145,6 @@
             line-height: 1.4;
         }
 
-        /* Interactive Help Bubble CSS */
         .help-trigger {
             display: inline-block;
             width: 14px;
@@ -160,7 +169,6 @@
             box-shadow: 0 0 8px var(--cyan-accent);
         }
 
-        /* Custom Pop-up Modal Container */
         .popup-modal {
             display: none;
             position: fixed;
@@ -241,7 +249,8 @@
             border: 1px solid rgba(255, 204, 0, 0.15);
             border-radius: 6px;
             padding: 16px;
-            margin-bottom: 20px;
+            margin-top: 20px;
+            margin-bottom: 12px;
         }
 
         .slider-row {
@@ -310,6 +319,11 @@
         }
 
         @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
             .forecast-outputs {
                 grid-template-columns: 1fr;
             }
@@ -324,7 +338,8 @@
 
     <div class="container">
         <header>
-            <h1 class="brand-title">Dark Half</h1>
+            <img src="DHILOGO.png" alt="Dark Half Labs Logo" class="brand-logo" onerror="this.style.display='none';">
+            <h1 class="brand-title">DARKHALF KREA GAS GAUGE</h1>
         </header>
 
         <!-- Global Account Ledger Widget -->
@@ -362,19 +377,7 @@
 
             <!-- FOUR CLASSIFIER TIERS -->
             <div class="forecaster-panel">
-                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Account Burn Simulator</div>
-                
-                <!-- Master Discount Slider Box -->
-                <div class="master-slider-box">
-                    <div class="slider-row">
-                        <label style="color: var(--gold-accent);">Master New Spend Discount</label>
-                        <input type="range" id="slider-discount" min="0" max="30" step="1" value="0">
-                        <div class="hours-bubble bubble-discount" id="display-discount">0% Off</div>
-                    </div>
-                    <p style="font-size: 11px; color: rgba(255, 204, 0, 0.6); margin-top: 6px; padding-left: 4px;">
-                        *Conditional Tracking: Existing credits deplete at our historical **discounted rate** until the remaining $15,890.00 CDN balance is gone. Spillovers become true overages priced at **full standard market rates** (+20%), subject to this master discount slider.
-                    </p>
-                </div>
+                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 12px;">Account Burn Simulator</div>
 
                 <!-- Slider 0: Global Blended -->
                 <div class="slider-row">
@@ -403,6 +406,18 @@
                     <input type="range" id="slider-film" min="0" max="20" step="1" value="0">
                     <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
                 </div>
+                
+                <!-- Master Discount Slider Box (MOVED TO BOTTOM OF SLIDERS) -->
+                <div class="master-slider-box">
+                    <div class="slider-row">
+                        <label style="color: var(--gold-accent);">Master New Spend Discount</label>
+                        <input type="range" id="slider-discount" min="0" max="30" step="1" value="0">
+                        <div class="hours-bubble bubble-discount" id="display-discount">0% Off</div>
+                    </div>
+                    <p style="font-size: 11px; color: rgba(255, 204, 0, 0.6); margin-top: 6px; padding-left: 4px;">
+                        *Conditional Tracking: Existing credits deplete at our historical **discounted rate** until the remaining $15,890.00 CDN balance is gone. Spillovers become true overages priced at **full standard market rates** (+20%), subject to this master discount slider.
+                    </p>
+                </div>
 
                 <div class="forecast-outputs">
                     <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03); padding: 20px;">
@@ -422,7 +437,7 @@
         </footer>
     </div>
 
-    <!-- POP-UP MODAL MARKUP WITH RE-CALIBRATED EXPLANATION -->
+    <!-- POP-UP MODAL MARKUP -->
     <div class="popup-modal" id="explanation-modal">
         <div class="popup-content">
             <div class="popup-header">Package Rate Distortion Audit</div>
@@ -460,14 +475,13 @@
             const openModalBtn = document.getElementById('open-modal-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
 
-            // 1. Core Contract Base Rates (Discounted tier)
             const BLEND_DISC = 387.76; 
             const DWS_DISC = 269.47;
             const CCF_DISC = 658.45;
             const FILM_DISC = 2633.80; 
 
             const REMAINING_BALANCE = 15890.00;
-            const UN_DISCOUNTED_MARKUP = 1.20; // Standard market price is exactly 20% higher
+            const UN_DISCOUNTED_MARKUP = 1.20;
 
             openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
             closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
@@ -480,39 +494,29 @@
                 const minsCcf = parseInt(sliderCcf.value, 10);
                 const minsFilm = parseInt(sliderFilm.value, 10);
                 
-                // Calculate what this exact mix of minutes costs at the "DISCOUNTED" baseline rate
                 const costAtDiscountedRate = (minsBlend * BLEND_DISC) + (minsDws * DWS_DISC) + (minsCcf * CCF_DISC) + (minsFilm * FILM_DISC);
                 
                 let finalIncrementalCost = 0;
                 let finalBalance = 0;
 
-                // Scenario A: Selected minutes fit completely within the existing $15,890 contract pool
                 if (costAtDiscountedRate <= REMAINING_BALANCE) {
                     finalIncrementalCost = costAtDiscountedRate;
                     finalBalance = REMAINING_BALANCE - costAtDiscountedRate;
-                } 
-                // Scenario B: Selected minutes burn out the contract pool and spill over into market overages
-                else {
+                } else {
                     const overageValueInDiscountedTerms = costAtDiscountedRate - REMAINING_BALANCE;
-                    
-                    // Convert ONLY the overage spillover portion to full un-discounted market rates (+20%)
                     const rawOverageAtFullMarketRate = overageValueInDiscountedTerms * UN_DISCOUNTED_MARKUP;
-                    
-                    // Apply user's custom master discount slider to ONLY this overage section
                     const finalDiscountedOverage = rawOverageAtFullMarketRate * (1 - discountPct / 100);
                     
                     finalIncrementalCost = REMAINING_BALANCE + finalDiscountedOverage;
-                    finalBalance = REMAINING_BALANCE - finalIncrementalCost; // Results in exact negative deficit
+                    finalBalance = REMAINING_BALANCE - finalIncrementalCost;
                 }
 
-                // Update text display bubbles
                 displayDiscount.textContent = discountPct + '% Off';
                 displayBlend.textContent = minsBlend + ' Mins';
                 displayDws.textContent = minsDws + ' Mins';
                 displayCcf.textContent = minsCcf + ' Mins';
                 displayFilm.textContent = minsFilm + ' Mins';
                 
-                // Update dynamic cost tracker display
                 calcCost.innerHTML = '$' + finalIncrementalCost.toLocaleString('en-US', {
                     minimumFractionDigits: 2, 
                     maximumFractionDigits: 2
