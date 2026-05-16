@@ -453,16 +453,16 @@
                     <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
                 </div>
 
-                <!-- Slider 2: CCF Style -->
+                <!-- Slider 2: CCF Style (UPDATED TO $900 BASELINE) -->
                 <div class="slider-row">
-                    <label style="color: var(--red-accent);">Forensic / Realism (Base: $658.45 / Full: $790.14)</label>
+                    <label style="color: var(--red-accent);">Forensic / Realism (Base: $900.00 / Full: $1,080.00)</label>
                     <input type="range" id="slider-ccf" min="0" max="50" step="1" value="0">
                     <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
                 </div>
 
-                <!-- Slider 3: AIVFX Feature Film work -->
+                <!-- Slider 3: AIVFX Feature Film work (4X SCALED) -->
                 <div class="slider-row">
-                    <label style="color: var(--purple-accent);">AIVFX Feature Film (Base: $2,633.80 / Full: $3,160.56)</label>
+                    <label style="color: var(--purple-accent);">AIVFX Feature Film (Base: $3,600.00 / Full: $4,320.00)</label>
                     <input type="range" id="slider-film" min="0" max="20" step="1" value="0">
                     <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
                 </div>
@@ -514,7 +514,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Inputs
             const inputCredits = document.getElementById('input-credits');
             const sliderDiscount = document.getElementById('slider-discount');
             const sliderBlend = document.getElementById('slider-blend');
@@ -522,7 +521,6 @@
             const sliderCcf = document.getElementById('slider-ccf');
             const sliderFilm = document.getElementById('slider-film');
             
-            // Outputs/Displays
             const displayDiscount = document.getElementById('display-discount');
             const displayBlend = document.getElementById('display-blend');
             const displayDws = document.getElementById('display-dws');
@@ -543,18 +541,17 @@
             const openModalBtn = document.getElementById('open-modal-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
 
-            // Constants
+            // RE-CALIBRATED RATES MATRICES (Recalculated for Forensic @ $900/min)
             const BLEND_DISC = 387.76; 
             const DWS_DISC = 269.47;
-            const CCF_DISC = 658.45;
-            const FILM_DISC = 2633.80; 
+            const CCF_DISC = 900.00;   // Adjusted Forensic baseline rate
+            const FILM_DISC = 3600.00; // Adjusted 4X Feature Film rate ($900 * 4)
 
-            const TOTAL_PURCHASED_POOL = 72890.00; // CDN Static Pool
-            const CREDIT_USD_COST = 0.0018;       // Per credit cost
-            const FX_RATE_USD_CAD = 1.37504;       // Locked to current May 2026 data sync
+            const TOTAL_PURCHASED_POOL = 72890.00; 
+            const CREDIT_USD_COST = 0.0018;       
+            const FX_RATE_USD_CAD = 1.37504;       
             const UN_DISCOUNTED_MARKUP = 1.20;
 
-            // Global mutable tracking state for dynamic remaining balance
             let currentRemainingBalance = 15890.00;
 
             openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
@@ -563,27 +560,19 @@
 
             function calculateWalletState() {
                 const credits = parseFloat(inputCredits.value) || 0;
-                
-                // 1. Convert credits to USD
                 const usdVal = credits * CREDIT_USD_COST;
                 displayCreditUsd.textContent = '$' + usdVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
                 
-                // 2. Convert USD to CDN
                 const cdnVal = usdVal * FX_RATE_USD_CAD;
-                currentRemainingBalance = cdnVal; // Assign directly to available runway pool
+                currentRemainingBalance = cdnVal; 
                 
-                // 3. Subtract from total purchased to get spent volume
                 const spentVal = TOTAL_PURCHASED_POOL - cdnVal;
-
-                // 4. Calculate Minutes Left dynamically based on global blend rate ($387.76)
                 const minsLeft = Math.round(cdnVal / BLEND_DISC);
 
-                // Update ledger card grid values in real-time
                 valLeft.innerHTML = '$' + cdnVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
                 valSpent.innerHTML = '$' + spentVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
                 valMinsLeft.innerHTML = minsLeft + ' <span>Mins</span>';
 
-                // Recalculate burn sliders based on newly adjusted baseline context
                 updateDepletionForecast();
             }
 
@@ -653,7 +642,6 @@
             sliderCcf.addEventListener('input', updateDepletionForecast);
             sliderFilm.addEventListener('input', updateDepletionForecast);
             
-            // First calculation pass
             calculateWalletState();
         });
     </script>
