@@ -99,6 +99,14 @@
             text-align: center;
         }
 
+        .stat-label {
+            font-size: 10px;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+            font-weight: bold;
+        }
+
         .ledger-value {
             font-size: 16px;
             font-weight: bold;
@@ -210,7 +218,7 @@
             <h1 class="brand-title">Dark Half</h1>
         </header>
 
-        <!-- Global Account Ledger Widget + Multi-Classifier Interactive Slider -->
+        <!-- Global Account Ledger Widget -->
         <div class="ledger-box">
             <div class="ledger-title">KREA Enterprise Compute Ledger (Global Blended Account Data)</div>
             <div class="ledger-grid">
@@ -223,24 +231,24 @@
                     <span class="ledger-value">$57,000.00 <span>CDN</span></span>
                 </div>
                 <div class="ledger-cell">
-                    <span class="stat-label">Remaining Balance</span>
+                    <span class="stat-label">Left</span>
                     <span class="ledger-value highlight" style="color: var(--cyan-accent); font-size: 18px;">$15,890.00 <span>CDN</span></span>
                 </div>
                 <div class="ledger-cell">
-                    <span class="stat-label">Minutes Produced</span>
+                    <span class="stat-label">Minutes Sold</span>
                     <span class="ledger-value">147 <span>Mins</span></span>
                 </div>
                 <div class="ledger-cell">
-                    <span class="stat-label">Est. Minutes Left</span>
+                    <span class="stat-label">Minutes Left</span>
                     <span class="ledger-value">41 <span>Mins</span></span>
                 </div>
                 <div class="ledger-cell" style="border: none;">
-                    <span class="stat-label">Blended Cost / Min</span>
+                    <span class="stat-label">Cost per minute</span>
                     <span class="ledger-value green">$387.76</span>
                 </div>
             </div>
             <div class="ledger-note">
-                *Note: This ledger highlights a cross-portfolio macro blend. It smooths out the extreme micro-economic variation between low-yield, high-ratio pipelines requiring rigid location geometry matching (e.g., The Pond, Cold Case Files) and frictionless, high-yield creative generation models (e.g., Deepwater Secrets).
+                *Note: This ledger highlights a cross-portfolio macro blend tracking the variance between project budgets sold to the network vs. actual pipeline minutes produced. It smooths out the operational delta between low-yield, high-ratio projects (e.g., The Pond, Cold Case Files) and frictionless, high-yield creative generation models (e.g., Deepwater Secrets).
             </div>
 
             <!-- THREE CLASSIFIER TIERS IN MINUTES INCREMENTS -->
@@ -289,7 +297,6 @@
         </footer>
     </div>
 
-    <!-- JAVASCRIPT FOR THREE-TIER BALANCE DEPLETION (4X MODE) -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sliderDws = document.getElementById('slider-dws');
@@ -308,7 +315,7 @@
 
             const DWS_COST_PER_MIN = 269.47;
             const CCF_COST_PER_MIN = 658.45;
-            const FILM_COST_PER_MIN = 2633.80; // 4X Forensic Multiplier ($658.45 * 4)
+            const FILM_COST_PER_MIN = 2633.80; 
             const REMAINING_BALANCE = 15890.00;
 
             function updateDepletionForecast() {
@@ -319,26 +326,21 @@
                 const incrementalCost = (minsDws * DWS_COST_PER_MIN) + (minsCcf * CCF_COST_PER_MIN) + (minsFilm * FILM_COST_PER_MIN);
                 const finalBalance = REMAINING_BALANCE - incrementalCost;
 
-                // Update text display bubbles
                 displayDws.textContent = minsDws + ' Mins';
                 displayCcf.textContent = minsCcf + ' Mins';
                 displayFilm.textContent = minsFilm + ' Mins';
                 
-                // Update cost display
                 calcCost.innerHTML = '$' + incrementalCost.toLocaleString('en-US', {
                     minimumFractionDigits: 2, 
                     maximumFractionDigits: 2
                 }) + ' <span>CDN</span>';
                 
-                // Handle remaining balance vs budget deficit
                 if (finalBalance >= 0) {
                     balanceLabel.textContent = "Projected Remaining Balance";
                     balanceLabel.style.color = "var(--text-muted)";
                     calcRemaining.style.color = "var(--green-accent)";
                     balanceCell.style.setProperty('background', 'rgba(57, 255, 20, 0.02)', 'important');
                     balanceCell.style.setProperty('border-color', 'rgba(57, 255, 20, 0.1)', 'important');
-                    balanceCell.style.setProperty('color', 'var(--green-accent)', 'important');
-                    
                     calcRemaining.innerHTML = '$' + finalBalance.toLocaleString('en-US', {
                         minimumFractionDigits: 2, 
                         maximumFractionDigits: 2
@@ -350,8 +352,6 @@
                     calcRemaining.style.color = "var(--red-accent)";
                     balanceCell.style.setProperty('background', 'rgba(255, 49, 49, 0.05)', 'important');
                     balanceCell.style.setProperty('border-color', 'rgba(255, 49, 49, 0.2)', 'important');
-                    balanceCell.style.setProperty('color', 'var(--red-accent)', 'important');
-                    
                     calcRemaining.innerHTML = '-$' + deficit.toLocaleString('en-US', {
                         minimumFractionDigits: 2, 
                         maximumFractionDigits: 2
@@ -363,7 +363,7 @@
             sliderCcf.addEventListener('input', updateDepletionForecast);
             sliderFilm.addEventListener('input', updateDepletionForecast);
             
-            updateDepletionForecast(); // Initialize pass
+            updateDepletionForecast();
         });
     </script>
 </body>
