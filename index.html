@@ -55,6 +55,13 @@
             padding-bottom: 20px;
             margin-bottom: 24px;
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-left {
+            display: flex;
             align-items: center;
             gap: 16px;
         }
@@ -73,6 +80,50 @@
             text-transform: uppercase;
             color: var(--cyan-accent);
         }
+
+        /* Aviation Fuel/Gas Gauge Component Styling */
+        .gauge-container {
+            width: 90px;
+            height: 90px;
+            position: relative;
+            background: radial-gradient(circle, #15151c 0%, #050508 100%);
+            border: 3px solid #1c1c24;
+            border-radius: 50%;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 4px 10px rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .gauge-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .gauge-needle {
+            transform-origin: 45px 45px;
+            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            stroke: var(--red-accent);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+        }
+
+        .gauge-center-cap {
+            fill: #2a2a35;
+            stroke: #09090d;
+            stroke-width: 1.5;
+        }
+
+        .gauge-text {
+            font-size: 8px;
+            font-weight: bold;
+            fill: var(--text-muted);
+            font-family: monospace;
+            letter-spacing: 0.5px;
+        }
+
+        .gauge-text.label-e { fill: var(--red-accent); }
+        .gauge-text.label-f { fill: var(--cyan-accent); }
 
         /* Ledger & Forecaster Widget Styles */
         .ledger-box {
@@ -272,6 +323,10 @@
             transition: opacity 0.2s ease;
         }
 
+        .popup-close-btn:hover {
+            opacity: 0.9;
+        }
+
         /* Minute Slider Forecaster Layout */
         .forecaster-panel {
             margin-top: 24px;
@@ -357,7 +412,13 @@
             header {
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 10px;
+                gap: 16px;
+            }
+            .header-left {
+                width: 100%;
+            }
+            .gauge-container {
+                align-self: flex-end;
             }
             .forecast-outputs {
                 grid-template-columns: 1fr;
@@ -381,8 +442,28 @@
 
     <div class="container">
         <header>
-            <img src="DHILOGO.png" alt="Dark Half Labs Logo" class="brand-logo" onerror="this.style.display='none';">
-            <h1 class="brand-title">DARKHALF KREA GAS GAUGE</h1>
+            <div class="header-left">
+                <img src="DHILOGO.png" alt="Dark Half Labs Logo" class="brand-logo" onerror="this.style.display='none';">
+                <h1 class="brand-title">DARKHALF KREA GAS GAUGE</h1>
+            </div>
+            
+            <!-- AVIATION COCKPIT GAS GAUGE WIDGET -->
+            <div class="gauge-container">
+                <svg class="gauge-svg" viewBox="0 0 90 90">
+                    <!-- Outer ticks background arc -->
+                    <path d="M 20 65 A 32 32 0 1 1 70 65" fill="none" stroke="#222" stroke-width="3" stroke-dasharray="2,3" />
+                    <!-- Sub-indicators -->
+                    <text x="14" y="68" class="gauge-text label-e">E</text>
+                    <text x="40" y="16" class="gauge-text">1/2</text>
+                    <text x="69" y="68" class="gauge-text label-f">F</text>
+                    <text x="32" y="78" class="gauge-text" style="font-size: 6px; fill: #444;">COMPUTE</text>
+                    
+                    <!-- Dynamic rotating pointer needle line -->
+                    <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="fuel-needle" />
+                    <!-- Center pivot pinning element -->
+                    <circle cx="45" cy="45" r="5" class="gauge-center-cap" />
+                </svg>
+            </div>
         </header>
 
         <!-- Global Account Ledger Widget -->
@@ -435,7 +516,7 @@
             <div class="forecaster-panel">
                 <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 12px;">Account Burn Simulator</div>
 
-                <!-- Slider 0: Global Blended (ROUTED TO STATIC RE-BENCHMARKED AVERAGE) -->
+                <!-- Slider 0: Global Blended -->
                 <div class="slider-row">
                     <label style="color: var(--cyan-accent);" id="label-blend">Global Blended (Base: $598.21 / Full: $717.85)</label>
                     <input type="range" id="slider-blend" min="0" max="100" step="1" value="0">
@@ -510,6 +591,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Inputs
             const inputCredits = document.getElementById('input-credits');
             const sliderDiscount = document.getElementById('slider-discount');
             const sliderBlend = document.getElementById('slider-blend');
@@ -517,12 +599,14 @@
             const sliderCcf = document.getElementById('slider-ccf');
             const sliderFilm = document.getElementById('slider-film');
             
+            // Outputs/Displays
             const displayDiscount = document.getElementById('display-discount');
             const displayBlend = document.getElementById('display-blend');
             const displayDws = document.getElementById('display-dws');
             const displayCcf = document.getElementById('display-ccf');
             const displayFilm = document.getElementById('display-film');
             const displayCreditUsd = document.getElementById('credit-usd-display');
+            const fuelNeedle = document.getElementById('fuel-needle');
             
             const valSpent = document.getElementById('val-spent');
             const valLeft = document.getElementById('val-left');
@@ -539,7 +623,7 @@
             const openModalBtn = document.getElementById('open-modal-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
 
-            // Hardcoded Structural Workload Workhorses
+            // Hardcoded Workload Tiers
             const DWS_DISC = 296.42;   
             const CCF_DISC = 900.00;   
             const FILM_DISC = 3600.00; 
@@ -550,9 +634,7 @@
             const UN_DISCOUNTED_MARKUP = 1.20;
 
             let currentRemainingBalance = 15890.00;
-
-            // RE-BENCHMARKED GLOBAL BLENDED BASELINE: Explicit Midpoint between Forensic and Creative
-            const averageBlendRate = (DWS_DISC + CCF_DISC) / 2; // (296.42 + 900.00) / 2 = 598.21
+            const averageBlendRate = (DWS_DISC + CCF_DISC) / 2; // Fixed at $598.21 midpoint
 
             openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
             closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
@@ -567,18 +649,22 @@
                 currentRemainingBalance = cdnVal; 
                 
                 const spentVal = TOTAL_PURCHASED_POOL - cdnVal;
-                
-                // Minutes Left shifts based on the new, highly accurate projected blended index
                 const minsLeft = Math.round(cdnVal / averageBlendRate);
 
-                // Update ledger items dynamically
+                // Update ledger text targets
                 valLeft.innerHTML = '$' + cdnVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
                 valSpent.innerHTML = '$' + spentVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
                 valMinsLeft.innerHTML = minsLeft + ' <span>Mins</span>';
                 valCostPerMin.innerHTML = '$' + averageBlendRate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 
-                // Standardize layout titles
-                labelBlend.textContent = `Global Blended (Base: $${averageBlendRate.toFixed(2)} / Full: $${(averageBlendRate * UN_DISCOUNTED_MARKUP).toFixed(2)})`;
+                // AVIATION GAS NEEDLE MECHANICAL ROTATION
+                // Calibrating arc: 0% (Empty) = -120 degrees, 100% (Full) = +120 degrees
+                let fillPercentage = cdnVal / TOTAL_PURCHASED_POOL;
+                if (fillPercentage > 1) fillPercentage = 1;
+                if (fillPercentage < 0) fillPercentage = 0;
+                
+                const needleRotationDegrees = -120 + (fillPercentage * 240);
+                fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
 
                 updateDepletionForecast();
             }
@@ -590,7 +676,6 @@
                 const minsCcf = parseInt(sliderCcf.value, 10);
                 const minsFilm = parseInt(sliderFilm.value, 10);
                 
-                // Inject the steady averageBlendRate metric into slider calculation index 0
                 const costAtDiscountedRate = (minsBlend * averageBlendRate) + (minsDws * DWS_DISC) + (minsCcf * CCF_DISC) + (minsFilm * FILM_DISC);
                 
                 let finalIncrementalCost = 0;
