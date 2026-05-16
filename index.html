@@ -383,12 +383,29 @@
         #slider-ccf { accent-color: var(--red-accent); }
         #slider-film { accent-color: var(--purple-accent); }
 
+        .counter-stack {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            width: 100%;
+        }
+
         .hours-bubble {
             padding: 4px 10px;
             border-radius: 4px;
             font-size: 12px;
             font-weight: bold;
             text-align: center;
+            width: 100%;
+        }
+
+        .episode-subtext {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+            font-family: monospace;
         }
 
         .bubble-discount { background: rgba(255, 204, 0, 0.1); color: var(--gold-accent); border: 1px solid rgba(255, 204, 0, 0.2); }
@@ -423,6 +440,7 @@
             .credits-input-field { width: 100%; text-align: center; }
             .slider-row { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
             .slider-row label { font-size: 11px; justify-content: center; }
+            .counter-stack { width: 100%; }
             .hours-bubble { width: 100%; text-align: center; }
             .forecast-outputs { grid-template-columns: 1fr; gap: 8px; }
         }
@@ -514,31 +532,41 @@
                 <div class="slider-row">
                     <label style="color: var(--cyan-accent);" id="label-blend">Global Blended (Base: $598.21 / Full: $717.85)</label>
                     <input type="range" id="slider-blend" min="0" max="100" step="1" value="0">
-                    <div class="hours-bubble bubble-blend" id="display-blend">0 Mins</div>
+                    <div class="counter-stack">
+                        <div class="hours-bubble bubble-blend" id="display-blend">0 Mins</div>
+                    </div>
                 </div>
 
-                <!-- Slider 1: Fictional Category with independent Pop-up trigger -->
+                <!-- Slider 1: Fictional Category with new Sub-Episode Counter Layout -->
                 <div class="slider-row">
                     <label style="color: var(--green-accent);">
-                        Fictional: ⬆️% delivered used (DWS) <span class="help-trigger" id="open-fictional-btn">?</span>
+                        Fictional:  ⬆️% delivered used (DWS) <span class="help-trigger" id="open-fictional-btn">?</span>
                     </label>
                     <input type="range" id="slider-dws" min="0" max="150" step="1" value="0">
-                    <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
+                    <div class="counter-stack">
+                        <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
+                        <div class="episode-subtext" id="episodes-dws">0.0 Eps</div>
+                    </div>
                 </div>
 
-                <!-- Slider 2: Realism Category with independent Pop-up trigger -->
+                <!-- Slider 2: Realism Category with new Sub-Episode Counter Layout -->
                 <div class="slider-row">
                     <label style="color: var(--red-accent);">
                         Realism: ⬇️% delivered used (CCF) <span class="help-trigger" id="open-realism-btn">?</span>
                     </label>
                     <input type="range" id="slider-ccf" min="0" max="50" step="1" value="0">
-                    <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
+                    <div class="counter-stack">
+                        <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
+                        <div class="episode-subtext" id="episodes-ccf">0.0 Eps</div>
+                    </div>
                 </div>
 
                 <div class="slider-row">
                     <label style="color: var(--purple-accent);">AIVFX Feature Film (Base: $3,600.00 / Full: $4,320.00)</label>
                     <input type="range" id="slider-film" min="0" max="20" step="1" value="0">
-                    <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
+                    <div class="counter-stack">
+                        <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
+                    </div>
                 </div>
                 
                 <div class="master-slider-box">
@@ -588,13 +616,13 @@
     <!-- MODAL 2: FICTIONAL TRACK AUDIT (DWS) -->
     <div class="popup-modal" id="fictional-modal">
         <div class="popup-content">
-            <div class="popup-header header-fictional">Fictional Track Utilization Dynamics</div>
+            <div class="popup-header header-fictional">Fictional Delivery Structure</div>
             <div class="popup-text">
-                <strong>Show Footprint: 35% AI Content Broadcast Runtime | 2 Revision Cycles</strong>
+                <strong>Show Profile: 35% AI Content Content Density | 2 Revision Cycles</strong>
                 <br><br>
-                This format is structurally built on generative storytelling; 35% of the total show consists of AI assets. Because the production style allows for massive creative headroom, the client actively accepts and absorbs a high volume of the commissioned imagery directly into the final cut as finished material. 
+                This format heavily integrates generative assets; **35% of the final on-screen broadcast runtime consists of AI content**. Because the creative scope relies significantly on these assets, the client requires a large volume of generative footage and actively takes and locks what is commissioned directly into the final edit as finished content. 
                 <br><br>
-                With negligible wasted render overhead on rejected shots, combined with a swift 2-stage approval loop, the pipeline operates at peak efficiency—keeping baseline costs at a lean <strong>$296.42 CDN per minute</strong>.
+                Since the client utilizes the vast majority of commissioned sequences with very few discarded setups, waste remains extremely low. This high content utilization combined with a brief 2-stage revision pass keeps the baseline cost highly efficient at <strong>$296.42 CDN per minute</strong>.
             </div>
             <button class="popup-close-btn btn-close" data-target="fictional-modal">Close</button>
         </div>
@@ -603,13 +631,13 @@
     <!-- MODAL 3: REALISM TRACK AUDIT (CCF) -->
     <div class="popup-modal" id="realism-modal">
         <div class="popup-content">
-            <div class="popup-header header-realism">Realism Track Waste Profiling</div>
+            <div class="popup-header header-realism">Realism Pipeline Waste Dynamics</div>
             <div class="popup-text">
-                <strong>Show Footprint: 10% AI Content Broadcast Runtime | 4 Revision Cycles</strong>
+                <strong>Show Profile: 10% AI Content Content Density | 4 Revision Cycles</strong>
                 <br><br>
-                A classic high-waste bottleneck. Both shows technically generate the same amount of content capacity, but this client is hyper-punishing due to strict forensic reconstruction standards. Even though AI only accounts for a tiny 10% of the final runtime, the client will routinely commission three entirely different, fully rendered shots—only to decide after the fact to discard all of them and use none. 
+                A severe high-waste bottleneck. While both shows commission the exact same duration of finished content capacity from the team, this client handles delivery via an incredibly high rejection rate. Even though AI visuals only make up a small **10% of the final show's broadcast runtime**, the client routinely commissions three entirely different variations of a shot—only to decide at the assembly stage to use absolutely none of them.
                 <br><br>
-                This means immense compute is completely burned behind the scenes on invisible assets that never make it to air. This yield inefficiency is severely compounded by <strong>4 separate revision cycles</strong>, driving the active baseline up to <strong>$900.00 CDN per minute</strong>.
+                This results in immense behind-the-scenes compute power burned on discarded shots that never make it to air. This systemic layout inefficiency is severely compounded by <strong>4 separate revision loops</strong>, tripling the cost to deliver a single finished minute to <strong>$900.00 CDN per minute</strong>.
             </div>
             <button class="popup-close-btn btn-close" data-target="realism-modal">Close</button>
         </div>
@@ -637,12 +665,14 @@
             const valMinsLeft = document.getElementById('val-mins-left');
             const valCostPerMin = document.getElementById('val-cost-per-min');
             
+            const episodesDws = document.getElementById('episodes-dws');
+            const episodesCcf = document.getElementById('episodes-ccf');
+            
             const calcCost = document.getElementById('calc-cost');
             const calcRemaining = document.getElementById('calc-remaining');
             const balanceCell = document.getElementById('balance-cell');
             const balanceLabel = document.getElementById('balance-label');
 
-            // Multi-Modal Click Rigging
             const modalContract = document.getElementById('explanation-modal');
             const modalFictional = document.getElementById('fictional-modal');
             const modalRealism = document.getElementById('realism-modal');
@@ -708,6 +738,14 @@
                 const minsCcf = parseInt(sliderCcf.value, 10);
                 const minsFilm = parseInt(sliderFilm.value, 10);
                 
+                // Dynamic Episode Conversion Formulas
+                const epsDwsCalc = minsDws / 15;
+                const epsCcfCalc = minsCcf / 5;
+                
+                // Output precision variables to DOM elements
+                episodesDws.textContent = epsDwsCalc.toFixed(1) + ' Eps';
+                episodesCcf.textContent = epsCcfCalc.toFixed(1) + ' Eps';
+
                 const costAtDiscountedRate = (minsBlend * averageBlendRate) + (minsDws * DWS_DISC) + (minsCcf * CCF_DISC) + (minsFilm * FILM_DISC);
                 
                 let finalIncrementalCost = 0;
