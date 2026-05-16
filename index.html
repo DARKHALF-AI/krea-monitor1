@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dark Half — AI Production Vertical Audit (Q1 2026)</title>
+    <title>Dark Half — AI Production Ledger & Forecaster</title>
     <style>
         :root {
             --bg-color: #000000;
@@ -17,6 +17,7 @@
             --green-accent: #39ff14;
             --orange-accent: #ffa500;
             --red-accent: #ff3131;
+            --purple-accent: #d400ff;
         }
 
         * {
@@ -47,54 +48,16 @@
 
         header {
             border-bottom: 1px solid var(--border-color);
-            padding-bottom: 24px;
-            margin-bottom: 32px;
-        }
-
-        .brand-container {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
+            padding-bottom: 16px;
+            margin-bottom: 24px;
         }
 
         .brand-title {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: 900;
             letter-spacing: 2px;
             text-transform: uppercase;
             color: var(--cyan-accent);
-        }
-
-        .document-title {
-            font-size: 14px;
-            font-weight: 300;
-            color: var(--text-secondary);
-            margin-top: 4px;
-        }
-
-        .meta-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-top: 24px;
-            background-color: rgba(255, 255, 255, 0.02);
-            padding: 16px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-        }
-
-        .meta-item {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-
-        .meta-item strong {
-            color: var(--text-primary);
-            display: block;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 2px;
         }
 
         h2 {
@@ -112,58 +75,13 @@
             font-size: 14px;
         }
 
-        .summary-layout {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 24px;
-            margin-bottom: 32px;
-        }
-
-        .summary-box {
-            background-color: rgba(255, 255, 255, 0.01);
-            padding: 24px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .wild-west-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1px;
-            background-color: var(--border-color);
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid var(--border-color);
-        }
-
-        .ww-cell {
-            background-color: var(--surface-accent);
-            padding: 20px;
-        }
-
-        .stat-large {
-            font-size: 20px;
-            font-weight: bold;
-            color: var(--cyan-accent);
-            display: block;
-            margin-top: 8px;
-        }
-
-        .stat-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            font-weight: bold;
-        }
-
         /* Ledger & Forecaster Widget Styles */
         .ledger-box {
             background: linear-gradient(135deg, #061118 0%, #020507 100%);
             border: 1px solid rgba(0, 212, 255, 0.3);
             border-radius: 8px;
             padding: 24px;
-            margin: 32px 0;
+            margin-bottom: 32px;
         }
 
         .ledger-title {
@@ -229,7 +147,7 @@
 
         .slider-row {
             display: grid;
-            grid-template-columns: 200px 1fr 110px;
+            grid-template-columns: 240px 1fr 110px;
             align-items: center;
             gap: 16px;
             background: rgba(0, 0, 0, 0.2);
@@ -257,6 +175,7 @@
 
         #slider-dws { accent-color: var(--green-accent); }
         #slider-ccf { accent-color: var(--red-accent); }
+        #slider-film { accent-color: var(--purple-accent); }
 
         .hours-bubble {
             padding: 4px 10px;
@@ -268,6 +187,7 @@
 
         .bubble-dws { background: rgba(57, 255, 20, 0.1); color: var(--green-accent); border: 1px solid rgba(57, 255, 20, 0.2); }
         .bubble-ccf { background: rgba(255, 49, 49, 0.1); color: var(--red-accent); border: 1px solid rgba(255, 49, 49, 0.2); }
+        .bubble-film { background: rgba(212, 0, 255, 0.1); color: var(--purple-accent); border: 1px solid rgba(212, 0, 255, 0.2); }
 
         .forecast-outputs {
             display: grid;
@@ -467,16 +387,12 @@
         }
 
         @media (max-width: 900px) {
-            .summary-layout, .analytics-layout, .divergence-grid, .reco-container, .forecast-outputs {
+            .analytics-layout, .divergence-grid, .reco-container, .forecast-outputs {
                 grid-template-columns: 1fr;
             }
             .slider-row {
                 grid-template-columns: 1fr;
                 gap: 8px;
-            }
-            .meta-grid {
-                grid-template-columns: 1fr;
-                gap: 12px;
             }
         }
     </style>
@@ -485,47 +401,8 @@
 
     <div class="container">
         <header>
-            <div class="brand-container">
-                <div>
-                    <h1 class="brand-title">Dark Half</h1>
-                    <div class="document-title">Internal Performance Audit — AI Production Vertical</div>
-                </div>
-            </div>
-            
-            <div class="meta-grid">
-                <div class="meta-item">
-                    <strong>To</strong>
-                    Dave Brady, Francine, Matt MacLellan
-                </div>
-                <div class="meta-item">
-                    <strong>From</strong>
-                    Andrew McDonald
-                </div>
-                <div class="meta-item">
-                    <strong>Date</strong>
-                    May 15, 2026
-                </div>
-            </div>
+            <h1 class="brand-title">Dark Half</h1>
         </header>
-
-        <div class="summary-layout">
-            <div class="summary-box">
-                <h2>Executive Summary</h2>
-                <p>The Feb–Mar 2026 operational window establishes our <strong>"New Baseline"</strong> following an erratic early scaling window. This period represents the <strong>first two months of data from our unified KREA Enterprise account</strong>, which introduces robust tracking metrics across concurrent pipelines. Analysis reveals a stark margin rift: projects featuring structural <strong>fantasy/fictional</strong> parameters (DWS/Ub3) significantly outperform those burdened by literal <strong>photo-real location substitution</strong> constraints (CCF) due to a direct collapse of external client friction and multi-tiered revision loops.</p>
-            </div>
-            <div class="wild-west-grid">
-                <div class="ww-cell">
-                    <span class="stat-label">2025 Wild West</span>
-                    <span class="stat-large">-30% Cost</span>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Legacy infrastructure unit rates were 30% cheaper; basic workflows drew 50% fewer units per generation.</p>
-                </div>
-                <div class="ww-cell" style="border: none;">
-                    <span class="stat-label">2026 Baseline</span>
-                    <span class="stat-large">3x Shot Cost</span>
-                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">The shift to premium production standards (Kling 3.0) has effectively tripled individual high-end render costs.</p>
-                </div>
-            </div>
-        </div>
 
         <!-- Global Account Ledger Widget + Multi-Classifier Interactive Slider -->
         <div class="ledger-box">
@@ -560,11 +437,11 @@
                 *Note: This ledger highlights a cross-portfolio macro blend. It smooths out the extreme micro-economic variation between low-yield, high-ratio pipelines requiring rigid location geometry matching (e.g., The Pond, Cold Case Files) and frictionless, high-yield creative generation models (e.g., Deepwater Secrets).
             </div>
 
-            <!-- DUAL CLASSIFIER IN MINUTES INCREMENTS -->
+            <!-- THREE CLASSIFIER TIERS IN MINUTES INCREMENTS -->
             <div class="forecaster-panel">
                 <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Account Burn Simulator (Minute-by-Minute Depletion)</div>
                 <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-                    Simulate how estimating new footage allocations will drain the remaining <strong>$15,890.00 CDN</strong> account balance. Adjust the production lengths below to watch the balance decay using real profile rates ($269.47/min for Creative vs. $658.45/min for Forensic).
+                    Simulate how estimating new footage allocations will drain the remaining <strong>$15,890.00 CDN</strong> account balance. Adjust the production lengths below to watch the balance decay using custom profile tracking rates ($269.47/min for Creative, $658.45/min for Forensic, and $1,975.35/min for Feature Film work).
                 </p>
                 
                 <!-- Slider 1: DWS Style -->
@@ -581,13 +458,20 @@
                     <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
                 </div>
 
+                <!-- Slider 3: AIVFX Feature Film work -->
+                <div class="slider-row">
+                    <label style="color: var(--purple-accent);">AIVFX Feature Film work</label>
+                    <input type="range" id="slider-film" min="0" max="25" step="1" value="0">
+                    <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
+                </div>
+
                 <div class="forecast-outputs">
                     <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03); padding: 20px;">
                         <span class="stat-label">Incremental Cost Increase</span>
                         <span class="ledger-value highlight" id="calc-cost" style="color: var(--orange-accent); font-size: 22px;">$0.00 <span>CDN</span></span>
                     </div>
                     <div class="ledger-cell" id="balance-cell" style="background: rgba(0, 212, 255, 0.02); border: 1px solid rgba(0, 212, 255, 0.1); padding: 20px;">
-                        <span class="stat-label" id="balance-label">Projected Adjusted Balance</span>
+                        <span class="stat-label" id="balance-label">Projected Remaining Balance</span>
                         <span class="ledger-value" id="calc-remaining" style="color: var(--green-accent); font-size: 22px;">$15,890.00 <span>CDN</span></span>
                     </div>
                 </div>
@@ -724,14 +608,16 @@
         </footer>
     </div>
 
-    <!-- JAVASCRIPT FOR BALANCE DEPLETION -->
+    <!-- JAVASCRIPT FOR THREE-TIER BALANCE DEPLETION -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sliderDws = document.getElementById('slider-dws');
             const sliderCcf = document.getElementById('slider-ccf');
+            const sliderFilm = document.getElementById('slider-film');
             
             const displayDws = document.getElementById('display-dws');
             const displayCcf = document.getElementById('display-ccf');
+            const displayFilm = document.getElementById('display-film');
             
             const calcCost = document.getElementById('calc-cost');
             const calcRemaining = document.getElementById('calc-remaining');
@@ -741,18 +627,21 @@
 
             const DWS_COST_PER_MIN = 269.47;
             const CCF_COST_PER_MIN = 658.45;
+            const FILM_COST_PER_MIN = 1975.35; // 3X Forensic Rate
             const REMAINING_BALANCE = 15890.00;
 
             function updateDepletionForecast() {
                 const minsDws = parseInt(sliderDws.value, 10);
                 const minsCcf = parseInt(sliderCcf.value, 10);
+                const minsFilm = parseInt(sliderFilm.value, 10);
                 
-                const incrementalCost = (minsDws * DWS_COST_PER_MIN) + (minsCcf * CCF_COST_PER_MIN);
+                const incrementalCost = (minsDws * DWS_COST_PER_MIN) + (minsCcf * CCF_COST_PER_MIN) + (minsFilm * FILM_COST_PER_MIN);
                 const finalBalance = REMAINING_BALANCE - incrementalCost;
 
                 // Update text display bubbles
                 displayDws.textContent = minsDws + ' Mins';
                 displayCcf.textContent = minsCcf + ' Mins';
+                displayFilm.textContent = minsFilm + ' Mins';
                 
                 // Update cost display
                 calcCost.innerHTML = '$' + incrementalCost.toLocaleString('en-US', {
@@ -787,6 +676,7 @@
 
             sliderDws.addEventListener('input', updateDepletionForecast);
             sliderCcf.addEventListener('input', updateDepletionForecast);
+            sliderFilm.addEventListener('input', updateDepletionForecast);
             
             updateDepletionForecast(); // Initialize pass
         });
