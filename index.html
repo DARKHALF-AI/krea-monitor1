@@ -137,6 +137,45 @@
         .ledger-value.highlight { color: var(--cyan-accent); }
         .ledger-value.green { color: var(--green-accent); }
 
+        /* Credits Input Synchronizer Styling */
+        .credits-sync-container {
+            margin-top: 20px;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            border-radius: 6px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .credits-input-field {
+            background: #000;
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            width: 150px;
+            text-align: right;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .credits-input-field:focus {
+            border-color: var(--cyan-accent);
+            box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
+        }
+
         .ledger-note {
             margin-top: 16px;
             font-size: 12px;
@@ -331,6 +370,14 @@
                 grid-template-columns: 1fr;
                 gap: 8px;
             }
+            .credits-sync-container {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .credits-input-field {
+                width: 100%;
+            }
         }
     </style>
 </head>
@@ -352,11 +399,11 @@
                 </div>
                 <div class="ledger-cell">
                     <span class="stat-label">Spent</span>
-                    <span class="ledger-value">$57,000.00 <span>CDN</span></span>
+                    <span class="ledger-value" id="val-spent">$57,000.00 <span>CDN</span></span>
                 </div>
                 <div class="ledger-cell">
                     <span class="stat-label">Left</span>
-                    <span class="ledger-value highlight" style="color: var(--cyan-accent); font-size: 18px;">$15,890.00 <span>CDN</span></span>
+                    <span class="ledger-value highlight" id="val-left" style="color: var(--cyan-accent); font-size: 18px;">$15,890.00 <span>CDN</span></span>
                 </div>
                 <div class="ledger-cell">
                     <span class="stat-label">Minutes Sold</span>
@@ -364,13 +411,26 @@
                 </div>
                 <div class="ledger-cell">
                     <span class="stat-label">Minutes Left</span>
-                    <span class="ledger-value">41 <span>Mins</span></span>
+                    <span class="ledger-value" id="val-mins-left">41 <span>Mins</span></span>
                 </div>
                 <div class="ledger-cell" style="border: none;">
                     <span class="stat-label">Cost per minute</span>
                     <span class="ledger-value green">$387.76</span>
                 </div>
             </div>
+
+            <!-- LIVE CREDITS SYNCHRONIZER CARD -->
+            <div class="credits-sync-container">
+                <div style="display: flex; flex-direction: column; gap: 4px;">
+                    <label for="input-credits" style="font-size: 11px; text-transform: uppercase; color: var(--cyan-accent); font-weight: bold; letter-spacing: 0.5px;">Sync Wallet Compute Credits</label>
+                    <span style="font-size: 11px; color: var(--text-muted);">Formula: Credits &times; $0.0018 USD &times; 1.37504 FX Rate &rarr; Deducted from $72,890.00 CDN Purchased pool</span>
+                </div>
+                <div class="input-wrapper">
+                    <span id="credit-usd-display" style="font-size: 12px; color: var(--text-secondary); font-family: monospace;">$11,556.00 USD</span>
+                    <input type="number" id="input-credits" value="6420000" step="50000" min="0" class="credits-input-field">
+                </div>
+            </div>
+
             <div class="ledger-note">
                 *Note: This ledger highlights a cross-portfolio macro blend tracking historical costs including a bulk discount tier (30M compute purchased for the price of 25M).
             </div>
@@ -407,7 +467,7 @@
                     <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
                 </div>
                 
-                <!-- Master Discount Slider Box (MOVED TO BOTTOM OF SLIDERS) -->
+                <!-- Master Discount Slider Box -->
                 <div class="master-slider-box">
                     <div class="slider-row">
                         <label style="color: var(--gold-accent);">Master New Spend Discount</label>
@@ -415,7 +475,7 @@
                         <div class="hours-bubble bubble-discount" id="display-discount">0% Off</div>
                     </div>
                     <p style="font-size: 11px; color: rgba(255, 204, 0, 0.6); margin-top: 6px; padding-left: 4px;">
-                        *Conditional Tracking: Existing credits deplete at our historical **discounted rate** until the remaining $15,890.00 CDN balance is gone. Spillovers become true overages priced at **full standard market rates** (+20%), subject to this master discount slider.
+                        *Conditional Tracking: Existing credits deplete at our historical **discounted rate** until the remaining wallet balance is gone. Spillovers become true overages priced at **full standard market rates** (+20%), subject to this master discount slider.
                     </p>
                 </div>
 
@@ -454,17 +514,25 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Inputs
+            const inputCredits = document.getElementById('input-credits');
             const sliderDiscount = document.getElementById('slider-discount');
             const sliderBlend = document.getElementById('slider-blend');
             const sliderDws = document.getElementById('slider-dws');
             const sliderCcf = document.getElementById('slider-ccf');
             const sliderFilm = document.getElementById('slider-film');
             
+            // Outputs/Displays
             const displayDiscount = document.getElementById('display-discount');
             const displayBlend = document.getElementById('display-blend');
             const displayDws = document.getElementById('display-dws');
             const displayCcf = document.getElementById('display-ccf');
             const displayFilm = document.getElementById('display-film');
+            const displayCreditUsd = document.getElementById('credit-usd-display');
+            
+            const valSpent = document.getElementById('val-spent');
+            const valLeft = document.getElementById('val-left');
+            const valMinsLeft = document.getElementById('val-mins-left');
             
             const calcCost = document.getElementById('calc-cost');
             const calcRemaining = document.getElementById('calc-remaining');
@@ -475,17 +543,49 @@
             const openModalBtn = document.getElementById('open-modal-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
 
+            // Constants
             const BLEND_DISC = 387.76; 
             const DWS_DISC = 269.47;
             const CCF_DISC = 658.45;
             const FILM_DISC = 2633.80; 
 
-            const REMAINING_BALANCE = 15890.00;
+            const TOTAL_PURCHASED_POOL = 72890.00; // CDN Static Pool
+            const CREDIT_USD_COST = 0.0018;       // Per credit cost
+            const FX_RATE_USD_CAD = 1.37504;       // Locked to current May 2026 data sync
             const UN_DISCOUNTED_MARKUP = 1.20;
+
+            // Global mutable tracking state for dynamic remaining balance
+            let currentRemainingBalance = 15890.00;
 
             openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
             closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
             window.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
+
+            function calculateWalletState() {
+                const credits = parseFloat(inputCredits.value) || 0;
+                
+                // 1. Convert credits to USD
+                const usdVal = credits * CREDIT_USD_COST;
+                displayCreditUsd.textContent = '$' + usdVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
+                
+                // 2. Convert USD to CDN
+                const cdnVal = usdVal * FX_RATE_USD_CAD;
+                currentRemainingBalance = cdnVal; // Assign directly to available runway pool
+                
+                // 3. Subtract from total purchased to get spent volume
+                const spentVal = TOTAL_PURCHASED_POOL - cdnVal;
+
+                // 4. Calculate Minutes Left dynamically based on global blend rate ($387.76)
+                const minsLeft = Math.round(cdnVal / BLEND_DISC);
+
+                // Update ledger card grid values in real-time
+                valLeft.innerHTML = '$' + cdnVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
+                valSpent.innerHTML = '$' + spentVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
+                valMinsLeft.innerHTML = minsLeft + ' <span>Mins</span>';
+
+                // Recalculate burn sliders based on newly adjusted baseline context
+                updateDepletionForecast();
+            }
 
             function updateDepletionForecast() {
                 const discountPct = parseInt(sliderDiscount.value, 10);
@@ -499,16 +599,16 @@
                 let finalIncrementalCost = 0;
                 let finalBalance = 0;
 
-                if (costAtDiscountedRate <= REMAINING_BALANCE) {
+                if (costAtDiscountedRate <= currentRemainingBalance) {
                     finalIncrementalCost = costAtDiscountedRate;
-                    finalBalance = REMAINING_BALANCE - costAtDiscountedRate;
+                    finalBalance = currentRemainingBalance - costAtDiscountedRate;
                 } else {
-                    const overageValueInDiscountedTerms = costAtDiscountedRate - REMAINING_BALANCE;
+                    const overageValueInDiscountedTerms = costAtDiscountedRate - currentRemainingBalance;
                     const rawOverageAtFullMarketRate = overageValueInDiscountedTerms * UN_DISCOUNTED_MARKUP;
                     const finalDiscountedOverage = rawOverageAtFullMarketRate * (1 - discountPct / 100);
                     
-                    finalIncrementalCost = REMAINING_BALANCE + finalDiscountedOverage;
-                    finalBalance = REMAINING_BALANCE - finalIncrementalCost;
+                    finalIncrementalCost = currentRemainingBalance + finalDiscountedOverage;
+                    finalBalance = currentRemainingBalance - finalIncrementalCost;
                 }
 
                 displayDiscount.textContent = discountPct + '% Off';
@@ -546,13 +646,15 @@
                 }
             }
 
+            inputCredits.addEventListener('input', calculateWalletState);
             sliderDiscount.addEventListener('input', updateDepletionForecast);
             sliderBlend.addEventListener('input', updateDepletionForecast);
             sliderDws.addEventListener('input', updateDepletionForecast);
             sliderCcf.addEventListener('input', updateDepletionForecast);
             sliderFilm.addEventListener('input', updateDepletionForecast);
             
-            updateDepletionForecast();
+            // First calculation pass
+            calculateWalletState();
         });
     </script>
 </body>
