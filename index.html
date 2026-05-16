@@ -269,6 +269,13 @@
         .bubble-dws { background: rgba(57, 255, 20, 0.1); color: var(--green-accent); border: 1px solid rgba(57, 255, 20, 0.2); }
         .bubble-ccf { background: rgba(255, 49, 49, 0.1); color: var(--red-accent); border: 1px solid rgba(255, 49, 49, 0.2); }
 
+        .forecast-outputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
         /* Table Design */
         .table-container {
             width: 100%;
@@ -460,7 +467,7 @@
         }
 
         @media (max-width: 900px) {
-            .summary-layout, .analytics-layout, .divergence-grid, .reco-container {
+            .summary-layout, .analytics-layout, .divergence-grid, .reco-container, .forecast-outputs {
                 grid-template-columns: 1fr;
             }
             .slider-row {
@@ -534,7 +541,7 @@
                 </div>
                 <div class="ledger-cell">
                     <span class="stat-label">Remaining Balance</span>
-                    <span class="ledger-value highlight">$15,890.00 <span>CDN</span></span>
+                    <span class="ledger-value highlight" style="color: var(--cyan-accent); font-size: 18px;">$15,890.00 <span>CDN</span></span>
                 </div>
                 <div class="ledger-cell">
                     <span class="stat-label">Minutes Produced</span>
@@ -555,37 +562,33 @@
 
             <!-- DUAL CLASSIFIER IN MINUTES INCREMENTS -->
             <div class="forecaster-panel">
-                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Show Classification & Compute Scaling Predictor</div>
+                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Account Burn Simulator (Minute-by-Minute Depletion)</div>
                 <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-                    Isolate pipeline demands by show type to forecast custom compute scaling requirements. Sliders update in <strong>1-minute increments</strong> based on internal profile records: <strong>$269.47/min</strong> for Zero-Friction Creative pipelines vs. <strong>$658.45/min</strong> for High-Friction Forensic Realism pipelines.
+                    Simulate how estimating new footage allocations will drain the remaining <strong>$15,890.00 CDN</strong> account balance. Adjust the production lengths below to watch the balance decay using real profile rates ($269.47/min for Creative vs. $658.45/min for Forensic).
                 </p>
                 
                 <!-- Slider 1: DWS Style -->
                 <div class="slider-row">
                     <label style="color: var(--green-accent);">Creative / Fictional (DWS Style)</label>
-                    <input type="range" id="slider-dws" min="0" max="600" step="1" value="0">
+                    <input type="range" id="slider-dws" min="0" max="100" step="1" value="0">
                     <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
                 </div>
 
                 <!-- Slider 2: CCF Style -->
                 <div class="slider-row">
                     <label style="color: var(--red-accent);">Forensic / Realism (CCF Style)</label>
-                    <input type="range" id="slider-ccf" min="0" max="600" step="1" value="0">
+                    <input type="range" id="slider-ccf" min="0" max="50" step="1" value="0">
                     <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
                 </div>
 
-                <div class="ledger-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
-                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03);">
-                        <span class="stat-label">Combined Converted Runtime</span>
-                        <span class="ledger-value" id="calc-minutes" style="color: #ffffff;">0 <span>Mins</span></span>
-                    </div>
-                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03);">
+                <div class="forecast-outputs">
+                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03); padding: 20px;">
                         <span class="stat-label">Incremental Cost Increase</span>
-                        <span class="ledger-value highlight" id="calc-cost" style="color: var(--orange-accent);">$0.00 <span>CDN</span></span>
+                        <span class="ledger-value highlight" id="calc-cost" style="color: var(--orange-accent); font-size: 22px;">$0.00 <span>CDN</span></span>
                     </div>
-                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03); border-right: none;">
-                        <span class="stat-label">Total Projected Account Spend</span>
-                        <span class="ledger-value" id="calc-total" style="color: var(--cyan-accent);">$57,000.00 <span>CDN</span></span>
+                    <div class="ledger-cell" id="balance-cell" style="background: rgba(0, 212, 255, 0.02); border: 1px solid rgba(0, 212, 255, 0.1); padding: 20px;">
+                        <span class="stat-label" id="balance-label">Projected Adjusted Balance</span>
+                        <span class="ledger-value" id="calc-remaining" style="color: var(--green-accent); font-size: 22px;">$15,890.00 <span>CDN</span></span>
                     </div>
                 </div>
             </div>
@@ -721,7 +724,7 @@
         </footer>
     </div>
 
-    <!-- JAVASCRIPT FOR MINUTE INCREMENTS -->
+    <!-- JAVASCRIPT FOR BALANCE DEPLETION -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sliderDws = document.getElementById('slider-dws');
@@ -730,45 +733,62 @@
             const displayDws = document.getElementById('display-dws');
             const displayCcf = document.getElementById('display-ccf');
             
-            const calcMinutes = document.getElementById('calc-minutes');
             const calcCost = document.getElementById('calc-cost');
-            const calcTotal = document.getElementById('calc-total');
+            const calcRemaining = document.getElementById('calc-remaining');
+            
+            const balanceCell = document.getElementById('balance-cell');
+            const balanceLabel = document.getElementById('balance-label');
 
             const DWS_COST_PER_MIN = 269.47;
             const CCF_COST_PER_MIN = 658.45;
-            const BASELINE_SPEND = 57000.00;
+            const REMAINING_BALANCE = 15890.00;
 
-            function updateMinuteForecast() {
-                // Read straight slider integers (Minutes)
+            function updateDepletionForecast() {
                 const minsDws = parseInt(sliderDws.value, 10);
                 const minsCcf = parseInt(sliderCcf.value, 10);
                 
-                const combinedMinutes = minsDws + minsCcf;
                 const incrementalCost = (minsDws * DWS_COST_PER_MIN) + (minsCcf * CCF_COST_PER_MIN);
-                const totalProjected = BASELINE_SPEND + incrementalCost;
+                const finalBalance = REMAINING_BALANCE - incrementalCost;
 
-                // Update visual slider layout output arrays
+                // Update text display bubbles
                 displayDws.textContent = minsDws + ' Mins';
                 displayCcf.textContent = minsCcf + ' Mins';
                 
-                // Update tracker data outputs
-                calcMinutes.innerHTML = combinedMinutes.toLocaleString() + ' <span>Mins</span>';
-                
+                // Update cost display
                 calcCost.innerHTML = '$' + incrementalCost.toLocaleString('en-US', {
                     minimumFractionDigits: 2, 
                     maximumFractionDigits: 2
                 }) + ' <span>CDN</span>';
                 
-                calcTotal.innerHTML = '$' + totalProjected.toLocaleString('en-US', {
-                    minimumFractionDigits: 2, 
-                    maximumFractionDigits: 2
-                }) + ' <span>CDN</span>';
+                // Handle remaining balance vs budget deficit
+                if (finalBalance >= 0) {
+                    balanceLabel.textContent = "Projected Remaining Balance";
+                    balanceLabel.style.color = "var(--text-muted)";
+                    calcRemaining.style.color = "var(--green-accent)";
+                    balanceCell.style.background = "rgba(57, 255, 20, 0.02)";
+                    balanceCell.style.borderColor = "rgba(57, 255, 20, 0.1)";
+                    calcRemaining.innerHTML = '$' + finalBalance.toLocaleString('en-US', {
+                        minimumFractionDigits: 2, 
+                        maximumFractionDigits: 2
+                    }) + ' <span>CDN</span>';
+                } else {
+                    const deficit = Math.abs(finalBalance);
+                    balanceLabel.textContent = "Account Deficit (Overrun)";
+                    balanceLabel.style.color = "var(--red-accent)";
+                    calcRemaining.style.color = "var(--red-accent)";
+                    balanceCell.style.background = "rgba(255, 49, 49, 0.05)";
+                    balanceCell.style.borderColor = "rgba(255, 49, 49, 0.2)";
+                    calcRemaining.innerHTML = '-$' + deficit.toLocaleString('en-US', {
+                        minimumFractionDigits: 2, 
+                        maximumFractionDigits: 2
+                    }) + ' <span>CDN</span>';
+                }
             }
 
-            sliderDws.addEventListener('input', updateMinuteForecast);
-            sliderCcf.addEventListener('input', updateMinuteForecast);
+            sliderDws.addEventListener('input', updateDepletionForecast);
+            sliderCcf.addEventListener('input', updateDepletionForecast);
             
-            updateMinuteForecast(); // Setup pass
+            updateDepletionForecast(); // Initialize pass
         });
     </script>
 </body>
