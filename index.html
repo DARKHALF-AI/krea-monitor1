@@ -220,7 +220,7 @@
             line-height: 1.4;
         }
 
-        /* Dual Slider Forecaster Layout */
+        /* Minute Slider Forecaster Layout */
         .forecaster-panel {
             margin-top: 24px;
             padding-top: 24px;
@@ -229,7 +229,7 @@
 
         .slider-row {
             display: grid;
-            grid-template-columns: 180px 1fr 100px;
+            grid-template-columns: 200px 1fr 110px;
             align-items: center;
             gap: 16px;
             background: rgba(0, 0, 0, 0.2);
@@ -553,25 +553,25 @@
                 *Note: This ledger highlights a cross-portfolio macro blend. It smooths out the extreme micro-economic variation between low-yield, high-ratio pipelines requiring rigid location geometry matching (e.g., The Pond, Cold Case Files) and frictionless, high-yield creative generation models (e.g., Deepwater Secrets).
             </div>
 
-            <!-- MULTI-CLASSIFIER INTERACTIVE SLIDER FORECASTER -->
+            <!-- DUAL CLASSIFIER IN MINUTES INCREMENTS -->
             <div class="forecaster-panel">
                 <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Show Classification & Compute Scaling Predictor</div>
                 <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-                    Isolate pipeline demands by show type to forecast custom compute scaling requirements. Burn rates are derived directly from portfolio tracking: <strong>$269.47/min</strong> for Zero-Friction Creative pipelines vs. <strong>$658.45/min</strong> for High-Friction Forensic Realism pipelines.
+                    Isolate pipeline demands by show type to forecast custom compute scaling requirements. Sliders update in <strong>1-minute increments</strong> based on internal profile records: <strong>$269.47/min</strong> for Zero-Friction Creative pipelines vs. <strong>$658.45/min</strong> for High-Friction Forensic Realism pipelines.
                 </p>
                 
                 <!-- Slider 1: DWS Style -->
                 <div class="slider-row">
                     <label style="color: var(--green-accent);">Creative / Fictional (DWS Style)</label>
-                    <input type="range" id="slider-dws" min="0" max="20" step="0.5" value="0">
-                    <div class="hours-bubble bubble-dws" id="display-dws">0.0 Hours</div>
+                    <input type="range" id="slider-dws" min="0" max="600" step="1" value="0">
+                    <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
                 </div>
 
                 <!-- Slider 2: CCF Style -->
                 <div class="slider-row">
                     <label style="color: var(--red-accent);">Forensic / Realism (CCF Style)</label>
-                    <input type="range" id="slider-ccf" min="0" max="20" step="0.5" value="0">
-                    <div class="hours-bubble bubble-ccf" id="display-ccf">0.0 Hours</div>
+                    <input type="range" id="slider-ccf" min="0" max="600" step="1" value="0">
+                    <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
                 </div>
 
                 <div class="ledger-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
@@ -721,7 +721,7 @@
         </footer>
     </div>
 
-    <!-- JAVASCRIPT FOR DUAL-CLASSIFIER CALCULATIONS -->
+    <!-- JAVASCRIPT FOR MINUTE INCREMENTS -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sliderDws = document.getElementById('slider-dws');
@@ -734,27 +734,24 @@
             const calcCost = document.getElementById('calc-cost');
             const calcTotal = document.getElementById('calc-total');
 
-            // Derived exact rates per minute based on compute burn distribution
             const DWS_COST_PER_MIN = 269.47;
             const CCF_COST_PER_MIN = 658.45;
             const BASELINE_SPEND = 57000.00;
 
-            function updateDualForecast() {
-                const hoursDws = parseFloat(sliderDws.value);
-                const hoursCcf = parseFloat(sliderCcf.value);
-                
-                const minsDws = Math.round(hoursDws * 60);
-                const minsCcf = Math.round(hoursCcf * 60);
+            function updateMinuteForecast() {
+                // Read straight slider integers (Minutes)
+                const minsDws = parseInt(sliderDws.value, 10);
+                const minsCcf = parseInt(sliderCcf.value, 10);
                 
                 const combinedMinutes = minsDws + minsCcf;
                 const incrementalCost = (minsDws * DWS_COST_PER_MIN) + (minsCcf * CCF_COST_PER_MIN);
                 const totalProjected = BASELINE_SPEND + incrementalCost;
 
-                // Update visual slider bubble nodes
-                displayDws.textContent = hoursDws.toFixed(1) + ' Hours';
-                displayCcf.textContent = hoursCcf.toFixed(1) + ' Hours';
+                // Update visual slider layout output arrays
+                displayDws.textContent = minsDws + ' Mins';
+                displayCcf.textContent = minsCcf + ' Mins';
                 
-                // Update final tracking tables
+                // Update tracker data outputs
                 calcMinutes.innerHTML = combinedMinutes.toLocaleString() + ' <span>Mins</span>';
                 
                 calcCost.innerHTML = '$' + incrementalCost.toLocaleString('en-US', {
@@ -768,10 +765,10 @@
                 }) + ' <span>CDN</span>';
             }
 
-            sliderDws.addEventListener('input', updateDualForecast);
-            sliderCcf.addEventListener('input', updateDualForecast);
+            sliderDws.addEventListener('input', updateMinuteForecast);
+            sliderCcf.addEventListener('input', updateMinuteForecast);
             
-            updateDualForecast(); // Run initial setup pass
+            updateMinuteForecast(); // Setup pass
         });
     </script>
 </body>
