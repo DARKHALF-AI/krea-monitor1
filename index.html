@@ -18,6 +18,7 @@
             --orange-accent: #ffa500;
             --red-accent: #ff3131;
             --purple-accent: #d400ff;
+            --gold-accent: #ffcc00;
         }
 
         * {
@@ -46,6 +47,7 @@
             border-radius: 12px;
             padding: 40px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+            position: relative;
         }
 
         header {
@@ -97,6 +99,7 @@
             padding: 16px 12px;
             border-radius: 6px;
             text-align: center;
+            position: relative;
         }
 
         .stat-label {
@@ -132,11 +135,113 @@
             line-height: 1.4;
         }
 
+        /* Interactive Help Bubble CSS */
+        .help-trigger {
+            display: inline-block;
+            width: 14px;
+            height: 14px;
+            background-color: rgba(0, 212, 255, 0.15);
+            color: var(--cyan-accent);
+            border-radius: 50%;
+            font-size: 9px;
+            line-height: 14px;
+            text-align: center;
+            cursor: pointer;
+            margin-left: 4px;
+            font-weight: bold;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            vertical-align: middle;
+            transition: all 0.2s ease;
+        }
+
+        .help-trigger:hover {
+            background-color: var(--cyan-accent);
+            color: #000000;
+            box-shadow: 0 0 8px var(--cyan-accent);
+        }
+
+        /* Custom Pop-up Modal Container */
+        .popup-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: #0d0d11;
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            max-width: 460px;
+            width: 90%;
+            padding: 24px;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
+            position: relative;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .popup-header {
+            color: var(--cyan-accent);
+            font-size: 13px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+            border-bottom: 1px solid #222;
+            padding-bottom: 8px;
+        }
+
+        .popup-text {
+            color: var(--text-secondary);
+            font-size: 13.5px;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .popup-close-btn {
+            background-color: var(--cyan-accent);
+            color: #000000;
+            border: none;
+            padding: 8px 16px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            float: right;
+            transition: opacity 0.2s ease;
+        }
+
+        .popup-close-btn:hover {
+            opacity: 0.9;
+        }
+
         /* Minute Slider Forecaster Layout */
         .forecaster-panel {
             margin-top: 24px;
             padding-top: 24px;
             border-top: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .master-slider-box {
+            background: rgba(255, 204, 0, 0.03);
+            border: 1px solid rgba(255, 204, 0, 0.15);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 20px;
         }
 
         .slider-row {
@@ -149,6 +254,10 @@
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.02);
             margin-bottom: 12px;
+        }
+
+        .slider-row:last-child {
+            margin-bottom: 0;
         }
 
         .slider-row label {
@@ -167,6 +276,8 @@
             cursor: pointer;
         }
 
+        #slider-discount { accent-color: var(--gold-accent); }
+        #slider-blend { accent-color: var(--cyan-accent); }
         #slider-dws { accent-color: var(--green-accent); }
         #slider-ccf { accent-color: var(--red-accent); }
         #slider-film { accent-color: var(--purple-accent); }
@@ -179,6 +290,8 @@
             text-align: center;
         }
 
+        .bubble-discount { background: rgba(255, 204, 0, 0.1); color: var(--gold-accent); border: 1px solid rgba(255, 204, 0, 0.2); }
+        .bubble-blend { background: rgba(0, 212, 255, 0.1); color: var(--cyan-accent); border: 1px solid rgba(0, 212, 255, 0.2); }
         .bubble-dws { background: rgba(57, 255, 20, 0.1); color: var(--green-accent); border: 1px solid rgba(57, 255, 20, 0.2); }
         .bubble-ccf { background: rgba(255, 49, 49, 0.1); color: var(--red-accent); border: 1px solid rgba(255, 49, 49, 0.2); }
         .bubble-film { background: rgba(212, 0, 255, 0.1); color: var(--purple-accent); border: 1px solid rgba(212, 0, 255, 0.2); }
@@ -243,45 +356,61 @@
                     <span class="ledger-value">41 <span>Mins</span></span>
                 </div>
                 <div class="ledger-cell" style="border: none;">
-                    <span class="stat-label">Cost per minute</span>
+                    <span class="stat-label">Cost per minute <span class="help-trigger" id="open-modal-btn">?</span></span>
                     <span class="ledger-value green">$387.76</span>
                 </div>
             </div>
             <div class="ledger-note">
-                *Note: This ledger highlights a cross-portfolio macro blend tracking the variance between project budgets sold to the network vs. actual pipeline minutes produced. It smooths out the operational delta between low-yield, high-ratio projects (e.g., The Pond, Cold Case Files) and frictionless, high-yield creative generation models (e.g., Deepwater Secrets).
+                *Note: This ledger highlights a cross-portfolio macro blend tracking historical costs including a bulk discount tier (30M compute purchased for the price of 25M).
             </div>
 
-            <!-- THREE CLASSIFIER TIERS IN MINUTES INCREMENTS -->
+            <!-- FOUR CLASSIFIER TIERS -->
             <div class="forecaster-panel">
-                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Account Burn Simulator (Minute-by-Minute Depletion)</div>
-                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-                    Simulate how estimating new footage allocations will drain the remaining <strong>$15,890.00 CDN</strong> account balance. Adjust the production lengths below to watch the balance decay using custom profile tracking rates ($269.47/min for Creative, $658.45/min for Forensic, and $2,633.80/min for 4X Feature Film work).
-                </p>
+                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Account Burn Simulator (Non-Discounted New Spend)</div>
                 
-                <!-- Slider 1: DWS Style (Extended to 150 Mins) -->
+                <!-- Master Discount Slider Box -->
+                <div class="master-slider-box">
+                    <div class="slider-row">
+                        <label style="color: var(--gold-accent);">Master New Spend Discount</label>
+                        <input type="range" id="slider-discount" min="0" max="30" step="1" value="0">
+                        <div class="hours-bubble bubble-discount" id="display-discount">0% Off</div>
+                    </div>
+                    <p style="font-size: 11px; color: rgba(255, 204, 0, 0.6); margin-top: 6px; padding-left: 4px;">
+                        *Conditional Rule: This volume discount applies exclusively to fresh overage spend generated <strong>after</strong> the existing $15,890.00 CDN contract balance is completely burned down.
+                    </p>
+                </div>
+
+                <!-- Slider 0: Global Blended -->
                 <div class="slider-row">
-                    <label style="color: var(--green-accent);">Creative / Fictional (DWS Style)</label>
+                    <label style="color: var(--cyan-accent);">Global Blended ($465.31/min)</label>
+                    <input type="range" id="slider-blend" min="0" max="100" step="1" value="0">
+                    <div class="hours-bubble bubble-blend" id="display-blend">0 Mins</div>
+                </div>
+
+                <!-- Slider 1: DWS Style -->
+                <div class="slider-row">
+                    <label style="color: var(--green-accent);">Creative / Fictional ($323.36/min)</label>
                     <input type="range" id="slider-dws" min="0" max="150" step="1" value="0">
                     <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
                 </div>
 
                 <!-- Slider 2: CCF Style -->
                 <div class="slider-row">
-                    <label style="color: var(--red-accent);">Forensic / Realism (CCF Style)</label>
+                    <label style="color: var(--red-accent);">Forensic / Realism ($790.14/min)</label>
                     <input type="range" id="slider-ccf" min="0" max="50" step="1" value="0">
                     <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
                 </div>
 
                 <!-- Slider 3: AIVFX Feature Film work -->
                 <div class="slider-row">
-                    <label style="color: var(--purple-accent);">AIVFX Feature Film work</label>
+                    <label style="color: var(--purple-accent);">AIVFX Feature Film ($3,160.56/min)</label>
                     <input type="range" id="slider-film" min="0" max="20" step="1" value="0">
                     <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
                 </div>
 
                 <div class="forecast-outputs">
                     <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03); padding: 20px;">
-                        <span class="stat-label">Incremental Cost Increase</span>
+                        <span class="stat-label">Incremental New Spend Cost</span>
                         <span class="ledger-value highlight" id="calc-cost" style="color: var(--orange-accent); font-size: 22px;">$0.00 <span>CDN</span></span>
                     </div>
                     <div class="ledger-cell" id="balance-cell" style="background: rgba(0, 212, 255, 0.02) !important; border: 1px solid rgba(0, 212, 255, 0.1) !important; padding: 20px;">
@@ -297,44 +426,94 @@
         </footer>
     </div>
 
+    <!-- POP-UP MODAL MARKUP -->
+    <div class="popup-modal" id="explanation-modal">
+        <div class="popup-content">
+            <div class="popup-header">Package Rate Distortion Audit</div>
+            <div class="popup-text">
+                The original historical cost of <strong>$387.76/minute</strong> includes a promotional multi-show bulk package deal where we secured <strong>30 minutes of compute allocation for the price of 25 minutes</strong>.
+                <br><br>
+                Because future incremental additions must be billed at standard, un-discounted market rates, new compute spend is <strong>exactly 20.0% more expensive</strong> than our initial contract average. The simulators below use corrected standard parameters to protect cash tracking precision.
+            </div>
+            <button class="popup-close-btn" id="close-modal-btn">Close</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // Slider elements
+            const sliderDiscount = document.getElementById('slider-discount');
+            const sliderBlend = document.getElementById('slider-blend');
             const sliderDws = document.getElementById('slider-dws');
             const sliderCcf = document.getElementById('slider-ccf');
             const sliderFilm = document.getElementById('slider-film');
             
+            // Text display elements
+            const displayDiscount = document.getElementById('display-discount');
+            const displayBlend = document.getElementById('display-blend');
             const displayDws = document.getElementById('display-dws');
             const displayCcf = document.getElementById('display-ccf');
             const displayFilm = document.getElementById('display-film');
             
+            // Output layout elements
             const calcCost = document.getElementById('calc-cost');
             const calcRemaining = document.getElementById('calc-remaining');
-            
             const balanceCell = document.getElementById('balance-cell');
             const balanceLabel = document.getElementById('balance-label');
 
-            const DWS_COST_PER_MIN = 269.47;
-            const CCF_COST_PER_MIN = 658.45;
-            const FILM_COST_PER_MIN = 2633.80; 
+            // Modal elements
+            const modal = document.getElementById('explanation-modal');
+            const openModalBtn = document.getElementById('open-modal-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+
+            // Base 20% Adjusted Market Constants
+            const BLEND_COST_PER_MIN = 465.31; 
+            const DWS_COST_PER_MIN = 323.36;
+            const CCF_COST_PER_MIN = 790.14;
+            const FILM_COST_PER_MIN = 3160.56; 
             const REMAINING_BALANCE = 15890.00;
 
+            // Modal Trigger Actions
+            openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
+            closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
+            window.addEventListener('click', (e) => { if(e.target === modal) modal.style.display = 'none'; });
+
             function updateDepletionForecast() {
+                const discountPct = parseInt(sliderDiscount.value, 10);
+                const minsBlend = parseInt(sliderBlend.value, 10);
                 const minsDws = parseInt(sliderDws.value, 10);
                 const minsCcf = parseInt(sliderCcf.value, 10);
                 const minsFilm = parseInt(sliderFilm.value, 10);
                 
-                const incrementalCost = (minsDws * DWS_COST_PER_MIN) + (minsCcf * CCF_COST_PER_MIN) + (minsFilm * FILM_COST_PER_MIN);
-                const finalBalance = REMAINING_BALANCE - incrementalCost;
+                // 1. Calculate raw market cost of additions
+                const rawIncrementalCost = (minsBlend * BLEND_COST_PER_MIN) + (minsDws * DWS_COST_PER_MIN) + (minsCcf * CCF_COST_PER_MIN) + (minsFilm * FILM_COST_PER_MIN);
+                
+                let finalIncrementalCost = rawIncrementalCost;
+                let finalBalance = REMAINING_BALANCE - rawIncrementalCost;
 
+                // 2. If additions exceed current remaining pool, apply the master discount strictly to the overrun/new spend
+                if (rawIncrementalCost > REMAINING_BALANCE) {
+                    const overage = rawIncrementalCost - REMAINING_BALANCE;
+                    const discountedOverage = overage * (1 - discountPct / 100);
+                    
+                    finalIncrementalCost = REMAINING_BALANCE + discountedOverage;
+                    finalBalance = REMAINING_BALANCE - finalIncrementalCost; // Results in -discountedOverage
+                }
+
+                // Update text display bubbles
+                displayDiscount.textContent = discountPct + '% Off';
+                displayBlend.textContent = minsBlend + ' Mins';
                 displayDws.textContent = minsDws + ' Mins';
                 displayCcf.textContent = minsCcf + ' Mins';
                 displayFilm.textContent = minsFilm + ' Mins';
                 
-                calcCost.innerHTML = '$' + incrementalCost.toLocaleString('en-US', {
+                // Update dynamic cost tracker
+                calcCost.innerHTML = '$' + finalIncrementalCost.toLocaleString('en-US', {
                     minimumFractionDigits: 2, 
                     maximumFractionDigits: 2
                 }) + ' <span>CDN</span>';
                 
+                // Handle remaining balance vs discounted budget deficit
                 if (finalBalance >= 0) {
                     balanceLabel.textContent = "Projected Remaining Balance";
                     balanceLabel.style.color = "var(--text-muted)";
@@ -347,7 +526,7 @@
                     }) + ' <span>CDN</span>';
                 } else {
                     const deficit = Math.abs(finalBalance);
-                    balanceLabel.textContent = "Account Deficit (Overrun)";
+                    balanceLabel.textContent = "Account Deficit (With " + discountPct + "% Overage Disc.)";
                     balanceLabel.style.color = "var(--red-accent)";
                     calcRemaining.style.color = "var(--red-accent)";
                     balanceCell.style.setProperty('background', 'rgba(255, 49, 49, 0.05)', 'important');
@@ -359,6 +538,8 @@
                 }
             }
 
+            sliderDiscount.addEventListener('input', updateDepletionForecast);
+            sliderBlend.addEventListener('input', updateDepletionForecast);
             sliderDws.addEventListener('input', updateDepletionForecast);
             sliderCcf.addEventListener('input', updateDepletionForecast);
             sliderFilm.addEventListener('input', updateDepletionForecast);
