@@ -101,7 +101,6 @@
             height: 100%;
         }
 
-        /* Transition properties are now injected dynamically via JS parameters for the diagnostic loop */
         .gauge-needle {
             transform-origin: 45px 45px;
             stroke: var(--red-accent);
@@ -475,7 +474,7 @@
                     <text x="69" y="68" class="gauge-text label-f">F</text>
                     <text x="32" y="78" class="gauge-text" style="font-size: 6px; fill: #444;">COMPUTE</text>
                     
-                    <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="fuel-needle" style="transform: rotate(-120deg); transition: none;" />
+                    <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="fuel-needle" style="transform: rotate(-120deg);" />
                     <circle cx="45" cy="45" r="5" class="gauge-center-cap" />
                 </svg>
             </div>
@@ -718,8 +717,15 @@
             let currentRemainingBalance = 15890.00;
             const averageBlendRate = (DWS_DISC + CCF_DISC) / 2;
             
-            // Initialization Flag to hook the cinematic startup sequence
-            let isFirstLoad = true;
+            // Startup sweeping state control flag to keep calculations isolated from checkout sequences
+            let isStartupSweeping = true;
+
+            function applyNeedleStyle(angleDegrees, transitionString) {
+                if (fuelNeedle) {
+                    fuelNeedle.style.transition = transitionString;
+                    fuelNeedle.style.transform = `rotate(${angleDegrees}deg)`;
+                }
+            }
 
             function calculateWalletState() {
                 const credits = parseFloat(inputCredits.value) || 0;
@@ -743,32 +749,9 @@
                 
                 const needleRotationDegrees = -120 + (fillPercentage * 240);
                 
-                // MULTI-STAGE DIAGNOSTIC GAUGE ANIMATION RENDER
-                if (isFirstLoad) {
-                    isFirstLoad = false;
-                    
-                    // Stage 1: Jump out from Empty to Full quickly on load
-                    setTimeout(() => {
-                        fuelNeedle.style.transition = "transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                        fuelNeedle.style.transform = "rotate(120deg)";
-                    }, 100);
-                    
-                    // Stage 2: Fall back down to Empty instantly
-                    setTimeout(() => {
-                        fuelNeedle.style.transition = "transform 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53)";
-                        fuelNeedle.style.transform = "rotate(-120deg)";
-                    }, 650);
-                    
-                    // Stage 3: Smooth premium creeping rise to target ledger balance position
-                    setTimeout(() => {
-                        fuelNeedle.style.transition = "transform 2.8s cubic-bezier(0.1, 0.9, 0.15, 1)";
-                        fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
-                    }, 1150);
-                    
-                } else {
-                    // Standard instant/snappy updates when modifying sliders during session
-                    fuelNeedle.style.transition = "transform 0.3s ease-out";
-                    fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
+                // Real-time interactivity condition gate
+                if (!isStartupSweeping) {
+                    applyNeedleStyle(needleRotationDegrees, "transform 0.3s ease-out");
                 }
 
                 updateDepletionForecast();
@@ -813,41 +796,3 @@
                 calcCost.innerHTML = '$' + finalIncrementalCost.toLocaleString('en-US', {
                     minimumFractionDigits: 2, 
                     maximumFractionDigits: 2
-                }) + ' <span>CDN</span>';
-                
-                if (finalBalance >= 0) {
-                    balanceLabel.textContent = "Projected Remaining Balance";
-                    balanceLabel.style.color = "var(--text-muted)";
-                    calcRemaining.style.color = "var(--green-accent)";
-                    balanceCell.style.setProperty('background', 'rgba(57, 255, 20, 0.02)', 'important');
-                    balanceCell.style.setProperty('border-color', 'rgba(57, 255, 20, 0.1)', 'important');
-                    calcRemaining.innerHTML = '$' + finalBalance.toLocaleString('en-US', {
-                        minimumFractionDigits: 2, 
-                        maximumFractionDigits: 2
-                    }) + ' <span>CDN</span>';
-                } else {
-                    const deficit = Math.abs(finalBalance);
-                    balanceLabel.textContent = "Account Deficit (With " + discountPct + "% Overage Disc.)";
-                    balanceLabel.style.color = "var(--red-accent)";
-                    calcRemaining.style.color = "var(--red-accent)";
-                    balanceCell.style.setProperty('background', 'rgba(255, 49, 49, 0.05)', 'important');
-                    balanceCell.style.setProperty('border-color', 'rgba(255, 49, 49, 0.2)', 'important');
-                    calcRemaining.innerHTML = '-$' + deficit.toLocaleString('en-US', {
-                        minimumFractionDigits: 2, 
-                        maximumFractionDigits: 2
-                    }) + ' <span>CDN</span>';
-                }
-            }
-
-            inputCredits.addEventListener('input', calculateWalletState);
-            sliderDiscount.addEventListener('input', updateDepletionForecast);
-            sliderBlend.addEventListener('input', updateDepletionForecast);
-            sliderDws.addEventListener('input', updateDepletionForecast);
-            sliderCcf.addEventListener('input', updateDepletionForecast);
-            sliderFilm.addEventListener('input', updateDepletionForecast);
-            
-            calculateWalletState();
-        });
-    </script>
-</body>
-</html>
