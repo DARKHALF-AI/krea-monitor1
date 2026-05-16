@@ -157,7 +157,7 @@
             font-weight: bold;
         }
 
-        /* Ledger & Interactive Forecaster Widget Styles */
+        /* Ledger & Forecaster Widget Styles */
         .ledger-box {
             background: linear-gradient(135deg, #061118 0%, #020507 100%);
             border: 1px solid rgba(0, 212, 255, 0.3);
@@ -220,45 +220,54 @@
             line-height: 1.4;
         }
 
-        /* Slider Styles */
+        /* Dual Slider Forecaster Layout */
         .forecaster-panel {
             margin-top: 24px;
             padding-top: 24px;
             border-top: 1px dashed rgba(255, 255, 255, 0.1);
         }
 
-        .slider-container {
-            display: flex;
+        .slider-row {
+            display: grid;
+            grid-template-columns: 180px 1fr 100px;
             align-items: center;
-            gap: 20px;
-            margin: 16px 0;
+            gap: 16px;
             background: rgba(0, 0, 0, 0.2);
-            padding: 16px;
+            padding: 12px 16px;
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.02);
+            margin-bottom: 12px;
+        }
+
+        .slider-row label {
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         input[type="range"] {
-            flex: 1;
+            width: 100%;
             height: 6px;
             background: #222;
             border-radius: 3px;
             outline: none;
-            accent-color: var(--orange-accent);
             cursor: pointer;
         }
 
+        #slider-dws { accent-color: var(--green-accent); }
+        #slider-ccf { accent-color: var(--red-accent); }
+
         .hours-bubble {
-            background-color: rgba(255, 165, 0, 0.1);
-            color: var(--orange-accent);
-            border: 1px solid rgba(255, 165, 0, 0.2);
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 14px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
             font-weight: bold;
-            min-width: 110px;
             text-align: center;
         }
+
+        .bubble-dws { background: rgba(57, 255, 20, 0.1); color: var(--green-accent); border: 1px solid rgba(57, 255, 20, 0.2); }
+        .bubble-ccf { background: rgba(255, 49, 49, 0.1); color: var(--red-accent); border: 1px solid rgba(255, 49, 49, 0.2); }
 
         /* Table Design */
         .table-container {
@@ -327,11 +336,7 @@
             overflow: hidden;
         }
 
-        .bar-fill {
-            height: 100%;
-            border-radius: 3px;
-        }
-
+        .bar-fill { height: 100%; border-radius: 3px; }
         .fill-dws { width: 40%; background-color: var(--green-accent); }
         .fill-ub3 { width: 72%; background-color: var(--orange-accent); }
         .fill-ccf { width: 100%; background-color: var(--red-accent); }
@@ -458,6 +463,10 @@
             .summary-layout, .analytics-layout, .divergence-grid, .reco-container {
                 grid-template-columns: 1fr;
             }
+            .slider-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
             .meta-grid {
                 grid-template-columns: 1fr;
                 gap: 12px;
@@ -503,16 +512,15 @@
                     <span class="stat-large">-30% Cost</span>
                     <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">Legacy infrastructure unit rates were 30% cheaper; basic workflows drew 50% fewer units per generation.</p>
                 </div>
-                <div class="wild-west-grid" style="border: none;">
-                    <div class="ww-cell" style="border-right: none; border-bottom: 1px solid var(--border-color);">
-                        <span class="stat-label">2026 Baseline</span>
-                        <span class="stat-large">3x Shot Cost</span>
-                    </div>
+                <div class="ww-cell" style="border: none;">
+                    <span class="stat-label">2026 Baseline</span>
+                    <span class="stat-large">3x Shot Cost</span>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">The shift to premium production standards (Kling 3.0) has effectively tripled individual high-end render costs.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Global Account Ledger Widget + Interactive Slider Forecaster -->
+        <!-- Global Account Ledger Widget + Multi-Classifier Interactive Slider -->
         <div class="ledger-box">
             <div class="ledger-title">KREA Enterprise Compute Ledger (Global Blended Account Data)</div>
             <div class="ledger-grid">
@@ -545,29 +553,37 @@
                 *Note: This ledger highlights a cross-portfolio macro blend. It smooths out the extreme micro-economic variation between low-yield, high-ratio pipelines requiring rigid location geometry matching (e.g., The Pond, Cold Case Files) and frictionless, high-yield creative generation models (e.g., Deepwater Secrets).
             </div>
 
-            <!-- INTERACTIVE SLIDER WIDGET -->
+            <!-- MULTI-CLASSIFIER INTERACTIVE SLIDER FORECASTER -->
             <div class="forecaster-panel">
-                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Predictive Volume Cost Forecaster</div>
-                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">
-                    Adjust the slider below to project the financial impact of expanding project scales. Computations scale hours directly to runtime minutes evaluated at our historical blended operational rate of <strong>$387.76/minute</strong>.
+                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Show Classification & Compute Scaling Predictor</div>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
+                    Isolate pipeline demands by show type to forecast custom compute scaling requirements. Burn rates are derived directly from portfolio tracking: <strong>$269.47/min</strong> for Zero-Friction Creative pipelines vs. <strong>$658.45/min</strong> for High-Friction Forensic Realism pipelines.
                 </p>
                 
-                <div class="slider-container">
-                    <span class="stat-label" style="color: var(--text-primary);">Add AI Video Volume:</span>
-                    <input type="range" id="hours-slider" min="0" max="24" step="0.5" value="0">
-                    <div class="hours-bubble" id="hours-display">0.0 Hours</div>
+                <!-- Slider 1: DWS Style -->
+                <div class="slider-row">
+                    <label style="color: var(--green-accent);">Creative / Fictional (DWS Style)</label>
+                    <input type="range" id="slider-dws" min="0" max="20" step="0.5" value="0">
+                    <div class="hours-bubble bubble-dws" id="display-dws">0.0 Hours</div>
+                </div>
+
+                <!-- Slider 2: CCF Style -->
+                <div class="slider-row">
+                    <label style="color: var(--red-accent);">Forensic / Realism (CCF Style)</label>
+                    <input type="range" id="slider-ccf" min="0" max="20" step="0.5" value="0">
+                    <div class="hours-bubble bubble-ccf" id="display-ccf">0.0 Hours</div>
                 </div>
 
                 <div class="ledger-grid" style="grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px;">
-                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.02); border: 1px solid rgba(255, 165, 0, 0.1);">
-                        <span class="stat-label">Converted Runtime</span>
+                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03);">
+                        <span class="stat-label">Combined Converted Runtime</span>
                         <span class="ledger-value" id="calc-minutes" style="color: #ffffff;">0 <span>Mins</span></span>
                     </div>
-                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.02); border: 1px solid rgba(255, 165, 0, 0.1);">
+                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03);">
                         <span class="stat-label">Incremental Cost Increase</span>
                         <span class="ledger-value highlight" id="calc-cost" style="color: var(--orange-accent);">$0.00 <span>CDN</span></span>
                     </div>
-                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.02); border: 1px solid rgba(255, 165, 0, 0.1); border-right: none;">
+                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03); border-right: none;">
                         <span class="stat-label">Total Projected Account Spend</span>
                         <span class="ledger-value" id="calc-total" style="color: var(--cyan-accent);">$57,000.00 <span>CDN</span></span>
                     </div>
@@ -705,27 +721,41 @@
         </footer>
     </div>
 
-    <!-- JAVASCRIPT FOR LIVE CALCULATIONS -->
+    <!-- JAVASCRIPT FOR DUAL-CLASSIFIER CALCULATIONS -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const slider = document.getElementById('hours-slider');
-            const hoursDisplay = document.getElementById('hours-display');
+            const sliderDws = document.getElementById('slider-dws');
+            const sliderCcf = document.getElementById('slider-ccf');
+            
+            const displayDws = document.getElementById('display-dws');
+            const displayCcf = document.getElementById('display-ccf');
+            
             const calcMinutes = document.getElementById('calc-minutes');
             const calcCost = document.getElementById('calc-cost');
             const calcTotal = document.getElementById('calc-total');
 
-            const COST_PER_MIN = 387.76;
-            const CURRENT_SPEND = 57000.00;
+            // Derived exact rates per minute based on compute burn distribution
+            const DWS_COST_PER_MIN = 269.47;
+            const CCF_COST_PER_MIN = 658.45;
+            const BASELINE_SPEND = 57000.00;
 
-            function updateForecast() {
-                const hours = parseFloat(slider.value);
-                const minutes = Math.round(hours * 60);
-                const incrementalCost = minutes * COST_PER_MIN;
-                const totalProjected = CURRENT_SPEND + incrementalCost;
+            function updateDualForecast() {
+                const hoursDws = parseFloat(sliderDws.value);
+                const hoursCcf = parseFloat(sliderCcf.value);
+                
+                const minsDws = Math.round(hoursDws * 60);
+                const minsCcf = Math.round(hoursCcf * 60);
+                
+                const combinedMinutes = minsDws + minsCcf;
+                const incrementalCost = (minsDws * DWS_COST_PER_MIN) + (minsCcf * CCF_COST_PER_MIN);
+                const totalProjected = BASELINE_SPEND + incrementalCost;
 
-                // Update visual metrics
-                hoursDisplay.textContent = hours.toFixed(1) + ' Hours';
-                calcMinutes.innerHTML = minutes.toLocaleString() + ' <span>Mins</span>';
+                // Update visual slider bubble nodes
+                displayDws.textContent = hoursDws.toFixed(1) + ' Hours';
+                displayCcf.textContent = hoursCcf.toFixed(1) + ' Hours';
+                
+                // Update final tracking tables
+                calcMinutes.innerHTML = combinedMinutes.toLocaleString() + ' <span>Mins</span>';
                 
                 calcCost.innerHTML = '$' + incrementalCost.toLocaleString('en-US', {
                     minimumFractionDigits: 2, 
@@ -738,8 +768,10 @@
                 }) + ' <span>CDN</span>';
             }
 
-            slider.addEventListener('input', updateForecast);
-            updateForecast(); // Initial build
+            sliderDws.addEventListener('input', updateDualForecast);
+            sliderCcf.addEventListener('input', updateDualForecast);
+            
+            updateDualForecast(); // Run initial setup pass
         });
     </script>
 </body>
