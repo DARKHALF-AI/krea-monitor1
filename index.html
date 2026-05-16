@@ -272,10 +272,6 @@
             transition: opacity 0.2s ease;
         }
 
-        .popup-close-btn:hover {
-            opacity: 0.9;
-        }
-
         /* Minute Slider Forecaster Layout */
         .forecaster-panel {
             margin-top: 24px;
@@ -411,11 +407,11 @@
                 </div>
                 <div class="ledger-cell">
                     <span class="stat-label">Minutes Left</span>
-                    <span class="ledger-value" id="val-mins-left">41 <span>Mins</span></span>
+                    <span class="ledger-value" id="val-mins-left">27 <span>Mins</span></span>
                 </div>
                 <div class="ledger-cell" style="border: none;">
                     <span class="stat-label">Cost per minute</span>
-                    <span class="ledger-value green">$387.76</span>
+                    <span class="ledger-value green" id="val-cost-per-min">$598.21</span>
                 </div>
             </div>
 
@@ -439,14 +435,14 @@
             <div class="forecaster-panel">
                 <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 12px;">Account Burn Simulator</div>
 
-                <!-- Slider 0: Global Blended -->
+                <!-- Slider 0: Global Blended (ROUTED TO STATIC RE-BENCHMARKED AVERAGE) -->
                 <div class="slider-row">
-                    <label style="color: var(--cyan-accent);">Global Blended (Base: $387.76 / Full: $465.31)</label>
+                    <label style="color: var(--cyan-accent);" id="label-blend">Global Blended (Base: $598.21 / Full: $717.85)</label>
                     <input type="range" id="slider-blend" min="0" max="100" step="1" value="0">
                     <div class="hours-bubble bubble-blend" id="display-blend">0 Mins</div>
                 </div>
 
-                <!-- Slider 1: DWS Style (UPDATED WITH +10% MARGIN) -->
+                <!-- Slider 1: DWS Style -->
                 <div class="slider-row">
                     <label style="color: var(--green-accent);">Creative / Fictional (Base: $296.42 / Full: $355.70)</label>
                     <input type="range" id="slider-dws" min="0" max="150" step="1" value="0">
@@ -531,6 +527,8 @@
             const valSpent = document.getElementById('val-spent');
             const valLeft = document.getElementById('val-left');
             const valMinsLeft = document.getElementById('val-mins-left');
+            const valCostPerMin = document.getElementById('val-cost-per-min');
+            const labelBlend = document.getElementById('label-blend');
             
             const calcCost = document.getElementById('calc-cost');
             const calcRemaining = document.getElementById('calc-remaining');
@@ -541,9 +539,8 @@
             const openModalBtn = document.getElementById('open-modal-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
 
-            // RE-CALIBRATED WORKLOAD CONSTANTS (Creative scaled up by +10%)
-            const BLEND_DISC = 387.76; 
-            const DWS_DISC = 296.42;   // Modified Base: $269.47 * 1.10
+            // Hardcoded Structural Workload Workhorses
+            const DWS_DISC = 296.42;   
             const CCF_DISC = 900.00;   
             const FILM_DISC = 3600.00; 
 
@@ -553,6 +550,9 @@
             const UN_DISCOUNTED_MARKUP = 1.20;
 
             let currentRemainingBalance = 15890.00;
+
+            // RE-BENCHMARKED GLOBAL BLENDED BASELINE: Explicit Midpoint between Forensic and Creative
+            const averageBlendRate = (DWS_DISC + CCF_DISC) / 2; // (296.42 + 900.00) / 2 = 598.21
 
             openModalBtn.addEventListener('click', () => modal.style.display = 'flex');
             closeModalBtn.addEventListener('click', () => modal.style.display = 'none');
@@ -567,11 +567,18 @@
                 currentRemainingBalance = cdnVal; 
                 
                 const spentVal = TOTAL_PURCHASED_POOL - cdnVal;
-                const minsLeft = Math.round(cdnVal / BLEND_DISC);
+                
+                // Minutes Left shifts based on the new, highly accurate projected blended index
+                const minsLeft = Math.round(cdnVal / averageBlendRate);
 
+                // Update ledger items dynamically
                 valLeft.innerHTML = '$' + cdnVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
                 valSpent.innerHTML = '$' + spentVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
                 valMinsLeft.innerHTML = minsLeft + ' <span>Mins</span>';
+                valCostPerMin.innerHTML = '$' + averageBlendRate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                
+                // Standardize layout titles
+                labelBlend.textContent = `Global Blended (Base: $${averageBlendRate.toFixed(2)} / Full: $${(averageBlendRate * UN_DISCOUNTED_MARKUP).toFixed(2)})`;
 
                 updateDepletionForecast();
             }
@@ -583,7 +590,8 @@
                 const minsCcf = parseInt(sliderCcf.value, 10);
                 const minsFilm = parseInt(sliderFilm.value, 10);
                 
-                const costAtDiscountedRate = (minsBlend * BLEND_DISC) + (minsDws * DWS_DISC) + (minsCcf * CCF_DISC) + (minsFilm * FILM_DISC);
+                // Inject the steady averageBlendRate metric into slider calculation index 0
+                const costAtDiscountedRate = (minsBlend * averageBlendRate) + (minsDws * DWS_DISC) + (minsCcf * CCF_DISC) + (minsFilm * FILM_DISC);
                 
                 let finalIncrementalCost = 0;
                 let finalBalance = 0;
