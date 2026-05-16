@@ -103,7 +103,7 @@
 
         .gauge-needle {
             transform-origin: 45px 45px;
-            transition: transform 0.4s cubic-bezier(0.25, 0.1, 0.25, 1);
+            transition: transform 2.2s cubic-bezier(0.1, 0.9, 0.15, 1);
             stroke: var(--red-accent);
             stroke-width: 2.5;
             stroke-linecap: round;
@@ -306,6 +306,7 @@
         .popup-header.header-contract { color: var(--cyan-accent); }
         .popup-header.header-fictional { color: var(--green-accent); }
         .popup-header.header-realism { color: var(--red-accent); }
+        .popup-header.header-discount { color: var(--gold-accent); }
 
         .popup-text {
             color: var(--text-secondary);
@@ -473,7 +474,9 @@
                     <text x="40" y="16" class="gauge-text">1/2</text>
                     <text x="69" y="68" class="gauge-text label-f">F</text>
                     <text x="32" y="78" class="gauge-text" style="font-size: 6px; fill: #444;">COMPUTE</text>
-                    <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="fuel-needle" />
+                    
+                    <!-- Hardcoded zero-state initial marker mapping -->
+                    <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="fuel-needle" style="transform: rotate(-120deg);" />
                     <circle cx="45" cy="45" r="5" class="gauge-center-cap" />
                 </svg>
             </div>
@@ -537,7 +540,6 @@
                     </div>
                 </div>
 
-                <!-- Slider 1: Fictional Category Extended to 200 Max Minutes -->
                 <div class="slider-row">
                     <label style="color: var(--green-accent);">
                         Fictional:  ⬆️% delivered used (DWS) <span class="help-trigger" id="open-fictional-btn">?</span>
@@ -549,7 +551,6 @@
                     </div>
                 </div>
 
-                <!-- Slider 2: Realism Category Extended to 200 Max Minutes -->
                 <div class="slider-row">
                     <label style="color: var(--red-accent);">
                         Realism: ⬇️% delivered used (CCF) <span class="help-trigger" id="open-realism-btn">?</span>
@@ -569,15 +570,15 @@
                     </div>
                 </div>
                 
+                <!-- Master Discount Slider Box with removed explanation block (Hiding behind Pop-up modal) -->
                 <div class="master-slider-box">
-                    <div class="slider-row">
-                        <label style="color: var(--gold-accent);">Master New Spend Discount</label>
+                    <div class="slider-row" style="margin-bottom: 0;">
+                        <label style="color: var(--gold-accent);">
+                            Master New Spend Discount <span class="help-trigger" id="open-discount-btn">?</span>
+                        </label>
                         <input type="range" id="slider-discount" min="0" max="30" step="1" value="0">
                         <div class="hours-bubble bubble-discount" id="display-discount">0% Off</div>
                     </div>
-                    <p style="font-size: 11px; color: rgba(255, 204, 0, 0.6); margin-top: 6px; padding-left: 4px;">
-                        *Conditional Tracking: Existing credits deplete at our historical **discounted rate** until the remaining wallet balance is gone. Spillovers become true overages priced at **full standard market rates** (+20%), subject to this master discount slider.
-                    </p>
                 </div>
 
                 <div class="forecast-outputs">
@@ -643,6 +644,21 @@
         </div>
     </div>
 
+    <!-- MODAL 4: MASTERspend CONDITIONAL TRACKING DETAILS (NEW ADDITION) -->
+    <div class="popup-modal" id="discount-modal">
+        <div class="popup-content">
+            <div class="popup-header header-discount">Conditional Tracking Mechanics</div>
+            <div class="popup-text">
+                <strong>Overage Processing Protocol:</strong>
+                <br><br>
+                Existing compute wallet credits deplete at our historical **discounted baseline rate** until the remaining active balance reaches $0.00. 
+                <br><br>
+                Any simulation spillovers that crack past our active funds are categorized as true project overages. These scope expansions are standardly priced at **full standard un-discounted market rates (+20.0%)**, and become subject to your adjustments on this master discount selection slider.
+            </div>
+            <button class="popup-close-btn btn-close" data-target="discount-modal">Close</button>
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const inputCredits = document.getElementById('input-credits');
@@ -676,10 +692,12 @@
             const modalContract = document.getElementById('explanation-modal');
             const modalFictional = document.getElementById('fictional-modal');
             const modalRealism = document.getElementById('realism-modal');
+            const modalDiscount = document.getElementById('discount-modal');
 
             document.getElementById('open-modal-btn').addEventListener('click', () => modalContract.style.display = 'flex');
             document.getElementById('open-fictional-btn').addEventListener('click', () => modalFictional.style.display = 'flex');
             document.getElementById('open-realism-btn').addEventListener('click', () => modalRealism.style.display = 'flex');
+            document.getElementById('open-discount-btn').addEventListener('click', () => modalDiscount.style.display = 'flex');
 
             document.querySelectorAll('.btn-close').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -691,6 +709,7 @@
                 if(e.target === modalContract) modalContract.style.display = 'none';
                 if(e.target === modalFictional) modalFictional.style.display = 'none';
                 if(e.target === modalRealism) modalRealism.style.display = 'none';
+                if(e.target === modalDiscount) modalDiscount.style.display = 'none';
             });
 
             const DWS_DISC = 296.42;   
@@ -704,6 +723,8 @@
 
             let currentRemainingBalance = 15890.00;
             const averageBlendRate = (DWS_DISC + CCF_DISC) / 2;
+            
+            let isFirstLoad = true;
 
             function calculateWalletState() {
                 const credits = parseFloat(inputCredits.value) || 0;
@@ -726,7 +747,15 @@
                 if (fillPercentage < 0) fillPercentage = 0;
                 
                 const needleRotationDegrees = -120 + (fillPercentage * 240);
-                fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
+                
+                if (isFirstLoad) {
+                    setTimeout(() => {
+                        fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
+                    }, 250);
+                    isFirstLoad = false;
+                } else {
+                    fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
+                }
 
                 updateDepletionForecast();
             }
