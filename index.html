@@ -34,11 +34,13 @@
             padding: 40px 20px;
             display: flex;
             justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .container {
             width: 100%;
-            max-width: 1100px;
+            max-width: 900px;
             background-color: var(--surface-color);
             border: 1px solid var(--border-color);
             border-radius: 12px;
@@ -60,28 +62,12 @@
             color: var(--cyan-accent);
         }
 
-        h2 {
-            font-size: 16px;
-            border-left: 3px solid var(--cyan-accent);
-            padding-left: 12px;
-            margin: 40px 0 20px 0;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        p {
-            color: var(--text-secondary);
-            margin-bottom: 16px;
-            font-size: 14px;
-        }
-
         /* Ledger & Forecaster Widget Styles */
         .ledger-box {
             background: linear-gradient(135deg, #061118 0%, #020507 100%);
             border: 1px solid rgba(0, 212, 255, 0.3);
             border-radius: 8px;
             padding: 24px;
-            margin-bottom: 32px;
         }
 
         .ledger-title {
@@ -196,198 +182,18 @@
             margin-top: 16px;
         }
 
-        /* Table Design */
-        .table-container {
-            width: 100%;
-            overflow-x: auto;
-            margin: 20px 0;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-            font-size: 14px;
-        }
-
-        th {
-            background-color: var(--surface-accent);
-            color: var(--cyan-accent);
-            padding: 16px;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        td {
-            padding: 16px;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        tr:last-child td {
-            border-bottom: none;
-        }
-
-        .highlight-green { color: var(--green-accent); font-weight: 600; }
-        .highlight-orange { color: var(--orange-accent); font-weight: 600; }
-        .highlight-red { color: var(--red-accent); font-weight: 600; }
-
-        /* Metrics & Analysis Grids */
-        .analytics-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin: 24px 0;
-        }
-
-        .analytics-card {
-            background-color: rgba(255, 255, 255, 0.01);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            padding: 24px;
-        }
-
-        .bar-container {
-            margin-bottom: 16px;
-        }
-
-        .bar-bg {
-            height: 6px;
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 3px;
-            width: 100%;
-            margin-top: 6px;
-            overflow: hidden;
-        }
-
-        .bar-fill { height: 100%; border-radius: 3px; }
-        .fill-dws { width: 40%; background-color: var(--green-accent); }
-        .fill-ub3 { width: 72%; background-color: var(--orange-accent); }
-        .fill-ccf { width: 100%; background-color: var(--red-accent); }
-
-        .metric-bullet {
-            font-size: 13.5px;
-            color: var(--text-secondary);
-            margin-bottom: 12px;
-            padding-left: 16px;
-            position: relative;
-        }
-
-        .metric-bullet::before {
-            content: "•";
-            color: var(--cyan-accent);
-            position: absolute;
-            left: 0;
-            font-weight: bold;
-        }
-
-        /* Divergence Grid */
-        .divergence-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin: 24px 0;
-        }
-
-        .div-card {
-            background-color: var(--surface-accent);
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 8px;
-        }
-
-        .div-card.dws-card { border-top: 3px solid var(--green-accent); }
-        .div-card.ub3-card { border-top: 3px solid var(--orange-accent); }
-        .div-card.ccf-card { border-top: 3px solid var(--red-accent); }
-
-        .div-card h3 {
-            font-size: 13px;
-            text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
-        }
-
-        .div-card p {
-            font-size: 12.5px;
-            line-height: 1.4;
-            margin-bottom: 12px;
-        }
-
-        .div-card ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .div-card li {
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 6px;
-            padding-left: 12px;
-            position: relative;
-        }
-
-        .div-card li::before {
-            content: "›";
-            position: absolute;
-            left: 0;
-            color: var(--text-muted);
-        }
-
-        .pricing-box {
-            border: 1px solid rgba(0, 212, 255, 0.2);
-            background: linear-gradient(180deg, rgba(0, 212, 255, 0.02) 0%, transparent 100%);
-            padding: 24px;
-            margin: 32px 0;
-            border-radius: 8px;
-        }
-
-        .pricing-box h3 {
-            color: var(--cyan-accent);
-            margin-bottom: 8px;
-        }
-
-        .reco-container {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-top: 16px;
-        }
-
-        .reco-card {
-            border-left: 3px solid var(--green-accent);
-            background-color: rgba(255, 255, 255, 0.01);
-            padding: 16px;
-            border-radius: 0 6px 6px 0;
-            border-top: 1px solid var(--border-color);
-            border-right: 1px solid var(--border-color);
-            border-bottom: 1px solid var(--border-color);
-            font-size: 13px;
-        }
-
-        .reco-card strong {
-            display: block;
-            color: var(--text-primary);
-            margin-bottom: 4px;
-            text-transform: uppercase;
-            font-size: 11px;
-            letter-spacing: 0.5px;
-        }
-
         footer.doc-footer {
-            margin-top: 48px;
+            margin-top: 32px;
             padding-top: 16px;
             border-top: 1px solid var(--border-color);
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             font-size: 11px;
             color: var(--text-muted);
         }
 
-        @media (max-width: 900px) {
-            .analytics-layout, .divergence-grid, .reco-container, .forecast-outputs {
+        @media (max-width: 768px) {
+            .forecast-outputs {
                 grid-template-columns: 1fr;
             }
             .slider-row {
@@ -441,7 +247,7 @@
             <div class="forecaster-panel">
                 <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 8px;">Account Burn Simulator (Minute-by-Minute Depletion)</div>
                 <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px;">
-                    Simulate how estimating new footage allocations will drain the remaining <strong>$15,890.00 CDN</strong> account balance. Adjust the production lengths below to watch the balance decay using custom profile tracking rates ($269.47/min for Creative, $658.45/min for Forensic, and $1,975.35/min for Feature Film work).
+                    Simulate how estimating new footage allocations will drain the remaining <strong>$15,890.00 CDN</strong> account balance. Adjust the production lengths below to watch the balance decay using custom profile tracking rates ($269.47/min for Creative, $658.45/min for Forensic, and $2,633.80/min for 4X Feature Film work).
                 </p>
                 
                 <!-- Slider 1: DWS Style -->
@@ -461,7 +267,7 @@
                 <!-- Slider 3: AIVFX Feature Film work -->
                 <div class="slider-row">
                     <label style="color: var(--purple-accent);">AIVFX Feature Film work</label>
-                    <input type="range" id="slider-film" min="0" max="25" step="1" value="0">
+                    <input type="range" id="slider-film" min="0" max="20" step="1" value="0">
                     <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
                 </div>
 
@@ -470,7 +276,7 @@
                         <span class="stat-label">Incremental Cost Increase</span>
                         <span class="ledger-value highlight" id="calc-cost" style="color: var(--orange-accent); font-size: 22px;">$0.00 <span>CDN</span></span>
                     </div>
-                    <div class="ledger-cell" id="balance-cell" style="background: rgba(0, 212, 255, 0.02); border: 1px solid rgba(0, 212, 255, 0.1); padding: 20px;">
+                    <div class="ledger-cell" id="balance-cell" style="background: rgba(0, 212, 255, 0.02) !important; border: 1px solid rgba(0, 212, 255, 0.1) !important; padding: 20px;">
                         <span class="stat-label" id="balance-label">Projected Remaining Balance</span>
                         <span class="ledger-value" id="calc-remaining" style="color: var(--green-accent); font-size: 22px;">$15,890.00 <span>CDN</span></span>
                     </div>
@@ -478,137 +284,12 @@
             </div>
         </div>
 
-        <h2>Unit Performance & Content Profile</h2>
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Production Unit</th>
-                        <th>Content Profile / Methodological Designation</th>
-                        <th>Delivered</th>
-                        <th>Compute / Min</th>
-                        <th>Rounds 2 & 3 Revision Matrix</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="highlight-green">Sacha & Will (DWS)</td>
-                        <td>High Volume AI Show | Zero-Friction Pipeline</td>
-                        <td>60.0 Min</td>
-                        <td class="highlight-green">56,144</td>
-                        <td>1/3 requiring Round 2 | 3% scaling to Round 3</td>
-                    </tr>
-                    <tr>
-                        <td class="highlight-orange">Paul & Ian (Ub3)</td>
-                        <td>Fantasy & Fictional Standalone | Model Discipline</td>
-                        <td>16.0 Min</td>
-                        <td class="highlight-orange">99,184</td>
-                        <td>1/3 requiring Round 2 | 3% scaling to Round 3</td>
-                    </tr>
-                    <tr>
-                        <td class="highlight-red">James & Marty (CCF)</td>
-                        <td>Photo-Real Substitutes for Real Places | Multi-Gate</td>
-                        <td>21.0 Min</td>
-                        <td class="highlight-red">137,187</td>
-                        <td>> 1/2 forced to Round 2 | 1/3 scaling to Round 3</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-
-        <div class="analytics-layout">
-            <div class="analytics-card">
-                <h3 style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.5px; margin-bottom: 16px;">Friction Index: Compute Units / Minute</h3>
-                <div class="bar-container">
-                    <span class="stat-label">DWS (Zero-Friction Workflow)</span>
-                    <div class="bar-bg"><div class="bar-fill fill-dws"></div></div>
-                </div>
-                <div class="bar-container">
-                    <span class="stat-label">Ub3 (Boutique Lab Framework)</span>
-                    <div class="bar-bg"><div class="bar-fill fill-ub3"></div></div>
-                </div>
-                <div class="bar-container">
-                    <span class="stat-label">CCF (Forensic Accuracy Tax)</span>
-                    <div class="bar-bg"><div class="bar-fill fill-ccf"></div></div>
-                </div>
-            </div>
-            
-            <div class="analytics-card">
-                <h3 style="font-size: 11px; text-transform: uppercase; color: var(--text-secondary); letter-spacing: 0.5px; margin-bottom: 16px;">Utilization & Asset Tracking Breakdown</h3>
-                <div class="metric-bullet">
-                    <strong>DWS Structural Yield:</strong> Operates at an optimal conversion index, displaying <strong>3x the finished AI footage length</strong> within the actual show cuts vs peer units. Near 100% frame utilization.
-                </div>
-                <div class="metric-bullet">
-                    <strong>CCF Over-Delivery Overages:</strong> Currently commissioned and invoiced for a rigid 5 minutes per episode, but the unit must deliver <strong>7–8 minutes of raw motion asset volume</strong> to pass network editorial gates. Ultimately, less than 4 minutes are used in final cuts. We are gifting top-tier compute assets to support network indecision.
-                </div>
-                <div class="metric-bullet">
-                    <strong>Ub3 Target Auditing:</strong> Currently running overages on the baseline 90s/story target array. Julia is compiling these tracking logs to safeguard future structural overages.
-                </div>
-            </div>
-        </div>
-
-        <h2>Workflow Divergence Analysis</h2>
-        <div class="divergence-grid">
-            <div class="div-card dws-card">
-                <h3 class="highlight-green">Zero-Friction (DWS)</h3>
-                <p>Designed as standalone fantasy/fictional content layout structures. The artists built internal start frames and initiated immediate generation strings.</p>
-                <ul>
-                    <li><strong>Required zero rounds of stills</strong> for network authorization layers.</li>
-                    <li>Low ratio of start frames relative to completed video.</li>
-                    <li>Technical hallucinations fold seamlessly into creative assets.</li>
-                </ul>
-            </div>
-            
-            <div class="div-card">
-                <h3 class="highlight-orange">The Boutique Lab (Ub3)</h3>
-                <p>Fictional timeline architecture. This cell successfully maintained high margin health by asserting strict tool discipline on standalone items.</p>
-                <ul>
-                    <li><strong>Expectation Isolation:</strong> Intentionally held back high-fidelity Kling 3.0 tests during baseline initialization.</li>
-                    <li>Prevented client quality creep, keeping asset generation costs stable.</li>
-                    <li>Revision curve matches DWS pipeline asset metrics.</li>
-                </ul>
-            </div>
-            
-            <div class="div-card ccf-card">
-                <h3 class="highlight-red">The Forensic Tax (CCF)</h3>
-                <p>Tasked with fabricating direct photo-real substitutes for geographically precise real places. Large chunks of budget are consumed rendering target configurations.</p>
-                <ul>
-                    <li>High volume of start frames built on Nano Banana Pro to "find" matches.</li>
-                    <li>Rejected start frames create a 100% compute asset write-off.</li>
-                    <li><strong>1/3 of all elements</strong> forced into expensive 60fps upsampling processes.</li>
-                </ul>
-            </div>
-        </div>
-
-        <div class="pricing-box">
-            <h3>Strategic Pricing Discussion: Flat Rate vs. Categorization</h3>
-            <p>As we plot infrastructure scaling parameters for the upcoming fiscal calendar, this audit surfaces an underlying business strategy question: <strong>How do we handle the operational reality of these distinct job classes?</strong></p>
-            <p style="margin-top: 12px;">Do we continue asserting a uniform flat rate of <strong>$4,000 USD per minute</strong> and hope that frictionless Tier 1 creative jobs adequately insulate the compounding technical losses of Tier 3 photo-real projects? Or do we officially split jobs by complexity tier? The primary risk remains client volatility: a "Creative" client who sees premium output midway through a schedule can instantly pivot and demand forensic precision, collapsing a standard margin structure.</p>
-        </div>
-
-        <h2>Structural Recommendations</h2>
-        <div class="reco-container">
-            <div class="reco-card">
-                <strong>1. Tiered Bidding Framework</strong>
-                Enforce an absolute 2.5x base premium invoice calculation multiplier on any project matching the Forensic or Photo-Real definition.
-            </div>
-            <div class="reco-card" style="border-color: #ffa500;">
-                <strong>2. Generation Threshold Caps</strong>
-                Incentivize reduced start-frame-to-motion generation ratios. Codify workflows that prioritize high-yielding creative freedom.
-            </div>
-            <div class="reco-card" style="border-color: var(--cyan-accent);">
-                <strong>3. Strict Volume Waste Caps</strong>
-                Align contract terms with real delivery outputs. Forcing an 8-minute high-end compute draw to satisfy a 5-minute invoice allocation is unsustainable.
-            </div>
-        </div>
-
         <footer class="doc-footer">
-            <div>INTERNAL BUSINESS BRIEF — DARK HALF LABS</div>
             <div>CONFIDENTIAL — PROPERTY OF CREAM PRODUCTIONS © 2026</div>
         </footer>
     </div>
 
-    <!-- JAVASCRIPT FOR THREE-TIER BALANCE DEPLETION -->
+    <!-- JAVASCRIPT FOR THREE-TIER BALANCE DEPLETION (4X MODE) -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const sliderDws = document.getElementById('slider-dws');
@@ -627,7 +308,7 @@
 
             const DWS_COST_PER_MIN = 269.47;
             const CCF_COST_PER_MIN = 658.45;
-            const FILM_COST_PER_MIN = 1975.35; // 3X Forensic Rate
+            const FILM_COST_PER_MIN = 2633.80; // 4X Forensic Multiplier ($658.45 * 4)
             const REMAINING_BALANCE = 15890.00;
 
             function updateDepletionForecast() {
@@ -654,8 +335,10 @@
                     balanceLabel.textContent = "Projected Remaining Balance";
                     balanceLabel.style.color = "var(--text-muted)";
                     calcRemaining.style.color = "var(--green-accent)";
-                    balanceCell.style.background = "rgba(57, 255, 20, 0.02)";
-                    balanceCell.style.borderColor = "rgba(57, 255, 20, 0.1)";
+                    balanceCell.style.setProperty('background', 'rgba(57, 255, 20, 0.02)', 'important');
+                    balanceCell.style.setProperty('border-color', 'rgba(57, 255, 20, 0.1)', 'important');
+                    balanceCell.style.setProperty('color', 'var(--green-accent)', 'important');
+                    
                     calcRemaining.innerHTML = '$' + finalBalance.toLocaleString('en-US', {
                         minimumFractionDigits: 2, 
                         maximumFractionDigits: 2
@@ -665,8 +348,10 @@
                     balanceLabel.textContent = "Account Deficit (Overrun)";
                     balanceLabel.style.color = "var(--red-accent)";
                     calcRemaining.style.color = "var(--red-accent)";
-                    balanceCell.style.background = "rgba(255, 49, 49, 0.05)";
-                    balanceCell.style.borderColor = "rgba(255, 49, 49, 0.2)";
+                    balanceCell.style.setProperty('background', 'rgba(255, 49, 49, 0.05)', 'important');
+                    balanceCell.style.setProperty('border-color', 'rgba(255, 49, 49, 0.2)', 'important');
+                    balanceCell.style.setProperty('color', 'var(--red-accent)', 'important');
+                    
                     calcRemaining.innerHTML = '-$' + deficit.toLocaleString('en-US', {
                         minimumFractionDigits: 2, 
                         maximumFractionDigits: 2
