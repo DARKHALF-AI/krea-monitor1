@@ -225,6 +225,10 @@
             transition: opacity 0.2s ease;
         }
 
+        .popup-close-btn:hover {
+            opacity: 0.9;
+        }
+
         /* Minute Slider Forecaster Layout */
         .forecaster-panel {
             margin-top: 24px;
@@ -328,7 +332,7 @@
             <div class="ledger-title">KREA Enterprise Compute Ledger (Global Blended Account Data)</div>
             <div class="ledger-grid">
                 <div class="ledger-cell">
-                    <span class="stat-label">Purchased</span>
+                    <span class="stat-label">Purchased <span class="help-trigger" id="open-modal-btn">?</span></span>
                     <span class="ledger-value">$72,890.00 <span>CDN</span></span>
                 </div>
                 <div class="ledger-cell">
@@ -348,7 +352,7 @@
                     <span class="ledger-value">41 <span>Mins</span></span>
                 </div>
                 <div class="ledger-cell" style="border: none;">
-                    <span class="stat-label">Cost per minute <span class="help-trigger" id="open-modal-btn">?</span></span>
+                    <span class="stat-label">Cost per minute</span>
                     <span class="ledger-value green">$387.76</span>
                 </div>
             </div>
@@ -476,7 +480,7 @@
                 const minsCcf = parseInt(sliderCcf.value, 10);
                 const minsFilm = parseInt(sliderFilm.value, 10);
                 
-                // Calculate what this exact mix of minutes costs at the DISCOUNTED baseline rate
+                // Calculate what this exact mix of minutes costs at the "DISCOUNTED" baseline rate
                 const costAtDiscountedRate = (minsBlend * BLEND_DISC) + (minsDws * DWS_DISC) + (minsCcf * CCF_DISC) + (minsFilm * FILM_DISC);
                 
                 let finalIncrementalCost = 0;
