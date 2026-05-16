@@ -446,21 +446,21 @@
                     <div class="hours-bubble bubble-blend" id="display-blend">0 Mins</div>
                 </div>
 
-                <!-- Slider 1: DWS Style -->
+                <!-- Slider 1: DWS Style (UPDATED WITH +10% MARGIN) -->
                 <div class="slider-row">
-                    <label style="color: var(--green-accent);">Creative / Fictional (Base: $269.47 / Full: $323.36)</label>
+                    <label style="color: var(--green-accent);">Creative / Fictional (Base: $296.42 / Full: $355.70)</label>
                     <input type="range" id="slider-dws" min="0" max="150" step="1" value="0">
                     <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
                 </div>
 
-                <!-- Slider 2: CCF Style (UPDATED TO $900 BASELINE) -->
+                <!-- Slider 2: CCF Style -->
                 <div class="slider-row">
                     <label style="color: var(--red-accent);">Forensic / Realism (Base: $900.00 / Full: $1,080.00)</label>
                     <input type="range" id="slider-ccf" min="0" max="50" step="1" value="0">
                     <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
                 </div>
 
-                <!-- Slider 3: AIVFX Feature Film work (4X SCALED) -->
+                <!-- Slider 3: AIVFX Feature Film work -->
                 <div class="slider-row">
                     <label style="color: var(--purple-accent);">AIVFX Feature Film (Base: $3,600.00 / Full: $4,320.00)</label>
                     <input type="range" id="slider-film" min="0" max="20" step="1" value="0">
@@ -541,11 +541,11 @@
             const openModalBtn = document.getElementById('open-modal-btn');
             const closeModalBtn = document.getElementById('close-modal-btn');
 
-            // RE-CALIBRATED RATES MATRICES (Recalculated for Forensic @ $900/min)
+            // RE-CALIBRATED WORKLOAD CONSTANTS (Creative scaled up by +10%)
             const BLEND_DISC = 387.76; 
-            const DWS_DISC = 269.47;
-            const CCF_DISC = 900.00;   // Adjusted Forensic baseline rate
-            const FILM_DISC = 3600.00; // Adjusted 4X Feature Film rate ($900 * 4)
+            const DWS_DISC = 296.42;   // Modified Base: $269.47 * 1.10
+            const CCF_DISC = 900.00;   
+            const FILM_DISC = 3600.00; 
 
             const TOTAL_PURCHASED_POOL = 72890.00; 
             const CREDIT_USD_COST = 0.0018;       
