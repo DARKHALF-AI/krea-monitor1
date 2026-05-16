@@ -101,9 +101,9 @@
             height: 100%;
         }
 
+        /* Transition properties are now injected dynamically via JS parameters for the diagnostic loop */
         .gauge-needle {
             transform-origin: 45px 45px;
-            transition: transform 2.2s cubic-bezier(0.1, 0.9, 0.15, 1);
             stroke: var(--red-accent);
             stroke-width: 2.5;
             stroke-linecap: round;
@@ -475,8 +475,7 @@
                     <text x="69" y="68" class="gauge-text label-f">F</text>
                     <text x="32" y="78" class="gauge-text" style="font-size: 6px; fill: #444;">COMPUTE</text>
                     
-                    <!-- Hardcoded zero-state initial marker mapping -->
-                    <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="fuel-needle" style="transform: rotate(-120deg);" />
+                    <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="fuel-needle" style="transform: rotate(-120deg); transition: none;" />
                     <circle cx="45" cy="45" r="5" class="gauge-center-cap" />
                 </svg>
             </div>
@@ -570,7 +569,6 @@
                     </div>
                 </div>
                 
-                <!-- Master Discount Slider Box with removed explanation block (Hiding behind Pop-up modal) -->
                 <div class="master-slider-box">
                     <div class="slider-row" style="margin-bottom: 0;">
                         <label style="color: var(--gold-accent);">
@@ -599,7 +597,6 @@
         </footer>
     </div>
 
-    <!-- MODAL 1: ORIGINAL CONTRACT DETAILS -->
     <div class="popup-modal" id="explanation-modal">
         <div class="popup-content">
             <div class="popup-header header-contract">Package Rate Distortion Audit</div>
@@ -614,7 +611,6 @@
         </div>
     </div>
 
-    <!-- MODAL 2: FICTIONAL TRACK AUDIT (DWS) -->
     <div class="popup-modal" id="fictional-modal">
         <div class="popup-content">
             <div class="popup-header header-fictional">Fictional Delivery Structure</div>
@@ -629,7 +625,6 @@
         </div>
     </div>
 
-    <!-- MODAL 3: REALISM TRACK AUDIT (CCF) -->
     <div class="popup-modal" id="realism-modal">
         <div class="popup-content">
             <div class="popup-header header-realism">Realism Pipeline Waste Dynamics</div>
@@ -644,7 +639,6 @@
         </div>
     </div>
 
-    <!-- MODAL 4: MASTERspend CONDITIONAL TRACKING DETAILS (NEW ADDITION) -->
     <div class="popup-modal" id="discount-modal">
         <div class="popup-content">
             <div class="popup-header header-discount">Conditional Tracking Mechanics</div>
@@ -724,6 +718,7 @@
             let currentRemainingBalance = 15890.00;
             const averageBlendRate = (DWS_DISC + CCF_DISC) / 2;
             
+            // Initialization Flag to hook the cinematic startup sequence
             let isFirstLoad = true;
 
             function calculateWalletState() {
@@ -748,12 +743,31 @@
                 
                 const needleRotationDegrees = -120 + (fillPercentage * 240);
                 
+                // MULTI-STAGE DIAGNOSTIC GAUGE ANIMATION RENDER
                 if (isFirstLoad) {
-                    setTimeout(() => {
-                        fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
-                    }, 250);
                     isFirstLoad = false;
+                    
+                    // Stage 1: Jump out from Empty to Full quickly on load
+                    setTimeout(() => {
+                        fuelNeedle.style.transition = "transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
+                        fuelNeedle.style.transform = "rotate(120deg)";
+                    }, 100);
+                    
+                    // Stage 2: Fall back down to Empty instantly
+                    setTimeout(() => {
+                        fuelNeedle.style.transition = "transform 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53)";
+                        fuelNeedle.style.transform = "rotate(-120deg)";
+                    }, 650);
+                    
+                    // Stage 3: Smooth premium creeping rise to target ledger balance position
+                    setTimeout(() => {
+                        fuelNeedle.style.transition = "transform 2.8s cubic-bezier(0.1, 0.9, 0.15, 1)";
+                        fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
+                    }, 1150);
+                    
                 } else {
+                    // Standard instant/snappy updates when modifying sliders during session
+                    fuelNeedle.style.transition = "transform 0.3s ease-out";
                     fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
                 }
 
