@@ -101,6 +101,7 @@
             height: 100%;
         }
 
+        /* Transition properties are now injected dynamically via JS parameters for the diagnostic loop */
         .gauge-needle {
             transform-origin: 45px 45px;
             stroke: var(--red-accent);
@@ -422,6 +423,7 @@
             .brand-title { font-size: 16px; letter-spacing: 1px; }
             .gauge-container { width: 100px; height: 100px; margin: 0 auto; }
             .ledger-box { padding: 16px 12px; }
+            .ledger-title { font-size: 11px; text-align: center; margin-bottom: 12px; }
             .ledger-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .ledger-cell { padding: 10px 6px; min-height: 72px; }
             .stat-label { font-size: 9px; }
@@ -602,9 +604,9 @@
             <div class="popup-text">
                 <strong>Show Profile: 35% AI Content Content Density | 2 Revision Cycles</strong>
                 <br><br>
-                This format heavily integrates generative assets; **35% of the final on-screen broadcast runtime consists of AI content**. Because the creative scope relies significantly on these assets, the client requires a large volume of generative footage and actively takes and locks what is commissioned directly into the final edit as finished content. 
+                This format heavily integrates generative assets; **35% of the final on-screen broadcast runtime consists of AI content**. Because the creative scope relies significantly on these assets, the client requires a large volume of generative footage and takes a larger percentage of what is commissioned into the final edit as finished content.
                 <br><br>
-                Since the client utilizes the vast majority of commissioned sequences with very few discarded setups, waste remains extremely low. This high content utilization combined with a brief 2-stage revision pass keeps the baseline cost highly efficient at <strong>$296.42 CDN per minute</strong>.
+                Since the client utilizes the majority of commissioned with very few discarded setups, waste remains low. This high content utilization combined with a brief 2-stage revision passes, keeps the baseline cost highly efficient as low as $296.42 CDN per minute.
             </div>
             <button class="popup-close-btn btn-close" data-target="fictional-modal">Close</button>
         </div>
@@ -616,9 +618,9 @@
             <div class="popup-text">
                 <strong>Show Profile: 10% AI Content Content Density | 4 Revision Cycles</strong>
                 <br><br>
-                A severe high-waste bottleneck. While both shows commission the exact same duration of finished content capacity from the team, this client handles delivery via an incredibly high rejection rate. Even though AI visuals only make up a small **10% of the final show's broadcast runtime**, the client routinely commissions three entirely different variations of a shot—only to decide at the assembly stage to use absolutely none of them.
+                This client handles delivery with a higher rejection rate. they commissions 30% more shots than used in the final show. AI visuals only make up a smaller portion of the show  **10% of the final show's broadcast runtime**
                 <br><br>
-                This results in immense behind-the-scenes compute power burned on discarded shots that never make it to air. This systemic layout inefficiency is severely compounded by <strong>4 separate revision loops</strong>, tripling the cost to deliver a single finished minute to <strong>$900.00 CDN per minute</strong>.
+                This results in compute burned on discarded shots that never make it to air. This inefficiency is compounded by 4 separate revision loops, tripling the cost to deliver a single finished minute to $600-$900.00 CDN per minute.
             </div>
             <button class="popup-close-btn btn-close" data-target="realism-modal">Close</button>
         </div>
