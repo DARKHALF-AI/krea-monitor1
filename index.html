@@ -101,7 +101,6 @@
             height: 100%;
         }
 
-        /* Transition properties are now injected dynamically via JS parameters for the diagnostic loop */
         .gauge-needle {
             transform-origin: 45px 45px;
             stroke: var(--red-accent);
@@ -230,14 +229,6 @@
         .credits-input-field:focus {
             border-color: var(--cyan-accent);
             box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
-        }
-
-        .ledger-note {
-            margin-top: 16px;
-            font-size: 12px;
-            color: rgba(255, 255, 255, 0.4);
-            font-style: italic;
-            line-height: 1.4;
         }
 
         .help-trigger {
@@ -431,7 +422,6 @@
             .brand-title { font-size: 16px; letter-spacing: 1px; }
             .gauge-container { width: 100px; height: 100px; margin: 0 auto; }
             .ledger-box { padding: 16px 12px; }
-            .ledger-title { font-size: 11px; text-align: center; margin-bottom: 12px; }
             .ledger-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
             .ledger-cell { padding: 10px 6px; min-height: 72px; }
             .stat-label { font-size: 9px; }
@@ -482,7 +472,6 @@
         </header>
 
         <div class="ledger-box">
-            <div class="ledger-title">KREA Enterprise Compute Ledger (Global Blended Account Data)</div>
             <div class="ledger-grid">
                 <div class="ledger-cell">
                     <span class="stat-label">Purchased</span>
@@ -516,16 +505,12 @@
             <div class="credits-sync-container">
                 <div style="display: flex; flex-direction: column; gap: 4px;">
                     <label for="input-credits" style="font-size: 11px; text-transform: uppercase; color: var(--cyan-accent); font-weight: bold; letter-spacing: 0.5px;">Sync Wallet Compute Credits</label>
-                    <span style="font-size: 11px; color: var(--text-muted);">Formula: Credits &times; $0.0018 USD &times; 1.37504 FX Rate &rarr; Deducted from $72,890.00 CDN Purchased pool</span>
+                    <span style="font-size: 11px; color: var(--text-muted);">Input the current KREA credits from the KREA account here.</span>
                 </div>
                 <div class="input-wrapper">
                     <span id="credit-usd-display" style="font-size: 12px; color: var(--text-secondary); font-family: monospace;">$11,556.00 USD</span>
                     <input type="number" id="input-credits" value="6420000" step="50000" min="0" class="credits-input-field">
                 </div>
-            </div>
-
-            <div class="ledger-note">
-                *Note: This ledger highlights a cross-portfolio macro blend tracking historical costs including a bulk discount tier (30M compute purchased for the price of 25M).
             </div>
 
             <div class="forecaster-panel">
