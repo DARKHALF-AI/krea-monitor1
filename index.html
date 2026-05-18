@@ -576,6 +576,28 @@
                         <span class="ledger-value" id="calc-remaining" style="color: var(--green-accent); font-size: 22px;">$15,890.00 <span>CDN</span></span>
                     </div>
                 </div>
+
+                <div id="krea-deficit-box" style="margin-top: 20px; background: rgba(255, 49, 49, 0.02); border: 1px solid rgba(255, 49, 49, 0.15); border-radius: 6px; padding: 16px; display: none;">
+                    <div style="font-size: 11px; text-transform: uppercase; color: var(--red-accent); font-weight: bold; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span style="display: inline-block; width: 6px; height: 6px; background-color: var(--red-accent); border-radius: 50%;"></span>
+                        KREA Compute Credit Replenishment Ledger
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px;">
+                        <div class="ledger-cell" style="padding: 10px 6px;">
+                            <span class="stat-label">Deficit (USD)</span>
+                            <span class="ledger-value" id="deficit-usd-display" style="font-size: 14px; color: #ffffff;">$0.00</span>
+                        </div>
+                        <div class="ledger-cell" style="padding: 10px 6px;">
+                            <span class="stat-label">Overage Discount</span>
+                            <span class="ledger-value" id="deficit-discount-display" style="font-size: 14px; color: var(--gold-accent);">0%</span>
+                        </div>
+                        <div class="ledger-cell" style="padding: 10px 6px; border: 1px solid rgba(255, 49, 49, 0.3);">
+                            <span class="stat-label" style="color: var(--red-accent);">Credits to Order</span>
+                            <span class="ledger-value" id="required-credits-display" style="font-size: 15px; color: var(--red-accent); font-weight: 900;">0 Units</span>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
 
@@ -802,6 +824,8 @@
                     maximumFractionDigits: 2
                 }) + ' <span>CDN</span>';
                 
+                const deficitBox = document.getElementById('krea-deficit-box');
+
                 if (finalBalance >= 0) {
                     balanceLabel.textContent = "Projected Remaining Balance";
                     balanceLabel.style.color = "var(--text-muted)";
@@ -812,6 +836,9 @@
                         minimumFractionDigits: 2, 
                         maximumFractionDigits: 2
                     }) + ' <span>CDN</span>';
+
+                    // Hide the credit conversion block when not in deficit
+                    deficitBox.style.display = 'none';
                 } else {
                     const deficit = Math.abs(finalBalance);
                     balanceLabel.textContent = "Account Deficit (With " + discountPct + "% Overage Disc.)";
@@ -823,6 +850,17 @@
                         minimumFractionDigits: 2, 
                         maximumFractionDigits: 2
                     }) + ' <span>CDN</span>';
+
+                    // Process dynamic inversion back into KREA compute credits at overage cost ($0.0022 USD)
+                    const deficitUSD = deficit / FX_RATE_USD_CAD;
+                    const creditsToOrder = Math.ceil(deficitUSD / 0.0022);
+
+                    document.getElementById('deficit-usd-display').textContent = '$' + deficitUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
+                    document.getElementById('deficit-discount-display').textContent = discountPct + '%';
+                    document.getElementById('required-credits-display').textContent = creditsToOrder.toLocaleString('en-US') + ' Units';
+                    
+                    // Display the widget layout cleanly below outputs
+                    deficitBox.style.display = 'block';
                 }
             }
 
