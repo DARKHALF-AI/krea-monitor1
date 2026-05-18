@@ -559,10 +559,10 @@
                 <div class="master-slider-box">
                     <div class="slider-row" style="margin-bottom: 0;">
                         <label style="color: var(--gold-accent);">
-                            Master New Spend Discount <span class="help-trigger" id="open-discount-btn">?</span>
+                            Cost per Compute Unit <span class="help-trigger" id="open-discount-btn">?</span>
                         </label>
-                        <input type="range" id="slider-discount" min="0" max="30" step="1" value="0">
-                        <div class="hours-bubble bubble-discount" id="display-discount">0% Off</div>
+                        <input type="range" id="slider-discount" min="0.0015" max="0.0025" step="0.00001" value="0.00220">
+                        <div class="hours-bubble bubble-discount" id="display-discount" style="font-family: monospace;">$0.00220</div>
                     </div>
                 </div>
 
@@ -588,8 +588,8 @@
                             <span class="ledger-value" id="deficit-usd-display" style="font-size: 14px; color: #ffffff;">$0.00</span>
                         </div>
                         <div class="ledger-cell" style="padding: 10px 6px;">
-                            <span class="stat-label">Overage Discount</span>
-                            <span class="ledger-value" id="deficit-discount-display" style="font-size: 14px; color: var(--gold-accent);">0%</span>
+                            <span class="stat-label">Overage Unit Cost</span>
+                            <span class="ledger-value" id="deficit-discount-display" style="font-size: 13px; color: var(--gold-accent); font-family: monospace;">$0.00220</span>
                         </div>
                         <div class="ledger-cell" style="padding: 10px 6px; border: 1px solid rgba(255, 49, 49, 0.3);">
                             <span class="stat-label" style="color: var(--red-accent);">Credits to Order</span>
@@ -654,9 +654,11 @@
             <div class="popup-text">
                 <strong>Overage Processing Protocol:</strong>
                 <br><br>
-                Existing compute wallet credits deplete at our historical **discounted baseline rate of 0.0018USD** until the remaining active balance reaches $0.00.
+                Existing compute wallet credits deplete at our historical **discounted baseline rate of 0.0018 USD** until the remaining active balance reaches $0.00.
                 <br><br>
-                Any simulation spillovers that crack past our active funds are categorized as true project overages. These scope expansions are standardly priced at **0.0022 un-discounted rates (+20.0%)**, and become subject to your adjustments on this master discount selection slider.
+                Any simulation spillovers that crack past our active funds are categorized as true project overages.
+                <br><br>
+                Base price sits at <strong>0.0022 USD</strong> per compute unit. Spends exceeding $25,000 automatically drop the baseline cost down to <strong>0.0017 USD</strong>, and spends exceeding $35,000 lock in a maximum volume contract discount rate of <strong>0.00165 USD</strong> per unit.
             </div>
             <button class="popup-close-btn btn-close" data-target="discount-modal">Close</button>
         </div>
@@ -784,7 +786,8 @@
             }
 
             function updateDepletionForecast() {
-                const discountPct = parseInt(sliderDiscount.value, 10);
+                // Read exact slider micro-cent metric instead of a percentage
+                const activeUnitCost = parseFloat(sliderDiscount.value);
                 const minsBlend = parseInt(sliderBlend.value, 10);
                 const minsDws = parseInt(sliderDws.value, 10);
                 const minsCcf = parseInt(sliderCcf.value, 10);
@@ -807,13 +810,18 @@
                 } else {
                     const overageValueInDiscountedTerms = costAtDiscountedRate - currentRemainingBalance;
                     const rawOverageAtFullMarketRate = overageValueInDiscountedTerms * UN_DISCOUNTED_MARKUP;
-                    const finalDiscountedOverage = rawOverageAtFullMarketRate * (1 - discountPct / 100);
+                    
+                    // Pivot equation math from slider percentage reductions over to explicit slider value overrides
+                    // (Old calculation: rawOverageAtFullMarketRate * (1 - discountPct / 100))
+                    // New mapping applies the literal customized active pricing directly to the overage delta scaling factor
+                    const overageScalingFactor = activeUnitCost / 0.0022;
+                    const finalDiscountedOverage = rawOverageAtFullMarketRate * overageScalingFactor;
                     
                     finalIncrementalCost = currentRemainingBalance + finalDiscountedOverage;
                     finalBalance = currentRemainingBalance - finalIncrementalCost;
                 }
 
-                displayDiscount.textContent = discountPct + '% Off';
+                displayDiscount.textContent = '$' + activeUnitCost.toFixed(5);
                 displayBlend.textContent = minsBlend + ' Mins';
                 displayDws.textContent = minsDws + ' Mins';
                 displayCcf.textContent = minsCcf + ' Mins';
@@ -841,7 +849,7 @@
                     deficitBox.style.display = 'none';
                 } else {
                     const deficit = Math.abs(finalBalance);
-                    balanceLabel.textContent = "Account Deficit (With " + discountPct + "% Overage Disc.)";
+                    balanceLabel.textContent = "Account Deficit";
                     balanceLabel.style.color = "var(--red-accent)";
                     calcRemaining.style.color = "var(--red-accent)";
                     balanceCell.style.setProperty('background', 'rgba(255, 49, 49, 0.05)', 'important');
@@ -851,12 +859,12 @@
                         maximumFractionDigits: 2
                     }) + ' <span>CDN</span>';
 
-                    // Process dynamic inversion back into KREA compute credits at overage cost ($0.0022 USD)
+                    // Process dynamic inversion back into KREA compute credits using the specific Slider cost setting
                     const deficitUSD = deficit / FX_RATE_USD_CAD;
-                    const creditsToOrder = Math.ceil(deficitUSD / 0.0022);
+                    const creditsToOrder = Math.ceil(deficitUSD / activeUnitCost);
 
                     document.getElementById('deficit-usd-display').textContent = '$' + deficitUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
-                    document.getElementById('deficit-discount-display').textContent = discountPct + '%';
+                    document.getElementById('deficit-discount-display').textContent = '$' + activeUnitCost.toFixed(5);
                     document.getElementById('required-credits-display').textContent = creditsToOrder.toLocaleString('en-US') + ' Units';
                     
                     // Display the widget layout cleanly below outputs
