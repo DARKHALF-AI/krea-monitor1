@@ -256,13 +256,13 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
 
   // saved slate defaults
   const prodDefaults=[
-    {name:'CTD',          mins:15, draft:3, edit:4, eps:8, seed:16, k3:53, k26:30, oneoff:false, open:true},
-    {name:'Production 2', mins:0,  draft:3, edit:3, eps:8, seed:30, k3:30, k26:40, oneoff:false, open:false},
-    {name:'Production 3', mins:0,  draft:3, edit:3, eps:8, seed:30, k3:30, k26:40, oneoff:false, open:false},
-    {name:'Production 4', mins:0,  draft:3, edit:3, eps:8, seed:30, k3:30, k26:40, oneoff:false, open:false},
-    {name:'Mooflower',    mins:5,  draft:5, edit:5, eps:1, seed:100, k3:0, k26:0,  oneoff:true,  open:true},
-    {name:'Mythical',     mins:2,  draft:5, edit:5, eps:1, seed:100, k3:0, k26:0,  oneoff:true,  open:true},
-    {name:'Film / Dev 3', mins:0,  draft:3, edit:3, eps:1, seed:30, k3:30, k26:40, oneoff:true,  open:false}
+    {name:'CTD',          mins:15, draft:3, edit:4, eps:8, deliv:30, seed:16, k3:53, k26:30, oneoff:false, open:true},
+    {name:'Production 2', mins:0,  draft:3, edit:3, eps:8, deliv:0,  seed:30, k3:30, k26:40, oneoff:false, open:false},
+    {name:'Production 3', mins:0,  draft:3, edit:3, eps:8, deliv:0,  seed:30, k3:30, k26:40, oneoff:false, open:false},
+    {name:'Production 4', mins:0,  draft:3, edit:3, eps:8, deliv:0,  seed:30, k3:30, k26:40, oneoff:false, open:false},
+    {name:'Mooflower',    mins:5,  draft:5, edit:5, eps:1, deliv:0,  seed:100, k3:0, k26:0,  oneoff:true,  open:true},
+    {name:'Mythical',     mins:2,  draft:5, edit:5, eps:1, deliv:0,  seed:100, k3:0, k26:0,  oneoff:true,  open:true},
+    {name:'Film / Dev 3', mins:0,  draft:3, edit:3, eps:1, deliv:0,  seed:30, k3:30, k26:40, oneoff:true,  open:false}
   ];
 
   function prodHTML(i){
@@ -313,10 +313,10 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
           <button class="preset-btn" data-p="${i}" data-s="100" data-k3="0" data-k26="0">All Seed2</button>
           <button class="preset-btn" data-p="${i}" data-s="34" data-k3="33" data-k26="33">Even</button>
         </div>
-        <div class="slider-row" style="grid-template-columns:200px 1fr 120px">
+        <div class="slider-row" style="grid-template-columns:200px 1fr 1fr">
           <label style="color:var(--cyan-accent)">${P.oneoff?'# Episodes <span class="sub-note">one-off</span>':'# Episodes'} <span class="help" data-help="eps">?</span></label>
-          <div><input type="number" class="eps-input" id="p${i}-eps" value="${P.eps}" step="1" min="0" style="width:80px"></div>
-          <div></div>
+          <div style="display:flex;align-items:center;gap:8px"><input type="number" class="eps-input" id="p${i}-eps" value="${P.eps}" step="1" min="0" style="width:80px"><span class="sub-note">episodes total</span></div>
+          <div style="display:flex;align-items:center;gap:8px"><input type="number" class="eps-input" id="p${i}-deliv" value="${P.deliv}" step="5" min="0" max="100" style="width:70px"><span class="sub-note">% already delivered <span class="help" data-help="deliv">?</span></span></div>
         </div>
         <div class="prod-out">
           <div class="o"><span class="stat-label">Cost / min</span><b id="p${i}-omin">$0</b></div>
@@ -348,7 +348,8 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
     seed:["Seedance 2","Premium model, highest render cost (≈ $4.55/clip). The label shows raw render → finished cost after the make-to-use ratios are applied."],
     k3:["Kling 3","Mid-tier model (≈ $1.49/clip). The label shows raw render → finished cost after ratios."],
     k26:["Kling 2.6","Cheapest model (≈ $0.47/clip). The label shows raw render → finished cost after ratios."],
-    eps:["Number of Episodes","How many episodes in this production. Multiplies the per-episode cost into the season total. Set to 0 (or 0 minutes) to turn the production off."]
+    eps:["Number of Episodes","Total episodes in this production. Multiplies the per-episode cost into the season total. Set to 0 (or 0 minutes) to turn the production off."],
+    deliv:["% Already Delivered","How much of this production is already finished and handed off. Only the <b>remaining</b> episodes still burn compute, so the season cost = per-episode cost × episodes × (1 − %delivered). CTD is 30% delivered, so it only counts 70% of its 8 episodes."]
   };
   const helpModal=$('help-modal');
   function openHelp(key){
@@ -403,6 +404,8 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
     for(let i=0;i<N;i++){
       const mins=+$(`p${i}-mins`).value, draft=+$(`p${i}-draft`).value, edit=+$(`p${i}-edit`).value;
       const eps=+$(`p${i}-eps`).value||0;
+      const deliv=Math.min(100,Math.max(0,+$(`p${i}-deliv`).value||0));
+      const epsRem=eps*(1-deliv/100);
       const s=+$(`p${i}-seed`).value, k3=+$(`p${i}-k3`).value, k26=+$(`p${i}-k26`).value;
       const sum=s+k3+k26, ps=sum?s/sum:0, pk3=sum?k3/sum:0, pk26=sum?k26/sum:0;
       const totalRatio=draft*edit;
@@ -425,9 +428,9 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
       const costPerEp=finalClip*clipsPerEp;
       // GHOST FIX: 0 minutes or 0 episodes => fully zero
       const isOff=(mins<=0||eps<=0);
-      const season=isOff?0:costPerEp*eps;
+      const season=isOff?0:costPerEp*epsRem;   // only remaining (undelivered) episodes burn compute
       const costPerMin=cliplen?finalClip*(60/cliplen):0;
-      const prodMins=isOff?0:mins*eps;
+      const prodMins=isOff?0:mins*epsRem;
 
       $(`p${i}-omin`).textContent=isOff?'$0':usd(costPerMin,0);
       $(`p${i}-oclip`).textContent=isOff?'$0':usd(finalClip,2);
@@ -436,7 +439,9 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
 
       const scost=$(`p${i}-scost`), smin=$(`p${i}-smin`);
       if(isOff){ scost.textContent='OFF'; scost.classList.add('off'); smin.textContent='0 min'; }
-      else{ scost.textContent=usd(season,0); scost.classList.remove('off'); smin.textContent=(mins*eps)+' min · '+eps+' eps'; active++; }
+      else{ scost.textContent=usd(season,0); scost.classList.remove('off');
+        smin.textContent = deliv>0 ? Math.round(mins*epsRem)+' min left · '+deliv+'% done' : (mins*eps)+' min · '+eps+' eps';
+        active++; }
 
       totalSeason+=season; totalMins+=prodMins;
     }
