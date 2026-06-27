@@ -1,886 +1,497 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DARKHALF KREA GAS GAUGE</title>
-    <style>
-        :root {
-            --bg-color: #000000;
-            --surface-color: #0a0a0c;
-            --surface-accent: #121216;
-            --border-color: #222226;
-            --text-primary: #ffffff;
-            --text-secondary: #a0a0aa;
-            --text-muted: #52525b;
-            --cyan-accent: #00d4ff;
-            --green-accent: #39ff14;
-            --orange-accent: #ffa500;
-            --red-accent: #ff3131;
-            --purple-accent: #d400ff;
-            --gold-accent: #ffcc00;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DARKHALF KREA GAS GAUGE — SLATE</title>
+<style>
+:root{
+  --bg-color:#000;--surface-color:#0a0a0c;--surface-accent:#121216;--border-color:#222226;
+  --text-primary:#fff;--text-secondary:#a0a0aa;--text-muted:#52525b;
+  --cyan-accent:#00d4ff;--green-accent:#39ff14;--orange-accent:#ffa500;
+  --red-accent:#ff3131;--purple-accent:#d400ff;--gold-accent:#ffcc00;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg-color);color:var(--text-primary);line-height:1.5;padding:40px 20px;
+  display:flex;justify-content:center;align-items:flex-start;min-height:100vh}
+.container{width:100%;max-width:940px;background:var(--surface-color);border:1px solid var(--border-color);
+  border-radius:12px;padding:40px;box-shadow:0 20px 40px rgba(0,0,0,.8);position:relative}
+header{border-bottom:1px solid var(--border-color);padding-bottom:20px;margin-bottom:24px;
+  display:flex;justify-content:space-between;align-items:center;gap:16px}
+.header-left{display:flex;align-items:center;gap:16px}
+.brand-title{font-size:22px;font-weight:900;letter-spacing:2px;text-transform:uppercase;color:var(--cyan-accent)}
+.brand-sub{font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px}
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+.gauge-container{width:90px;height:90px;position:relative;background:radial-gradient(circle,#15151c 0%,#050508 100%);
+  border:3px solid #1c1c24;border-radius:50%;box-shadow:inset 0 2px 5px rgba(0,0,0,.8),0 4px 10px rgba(0,0,0,.5);
+  display:flex;justify-content:center;align-items:center;flex-shrink:0}
+.gauge-svg{width:100%;height:100%}
+.gauge-needle{transform-origin:45px 45px;stroke:var(--red-accent);stroke-width:2.5;stroke-linecap:round}
+.gauge-center-cap{fill:#2a2a35;stroke:#09090d;stroke-width:1.5}
+.gauge-text{font-size:8px;font-weight:bold;fill:var(--text-muted);font-family:monospace}
+.gauge-text.label-e{fill:var(--red-accent)}.gauge-text.label-f{fill:var(--cyan-accent)}
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-primary);
-            line-height: 1.5;
-            padding: 40px 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
+.panel{background:linear-gradient(135deg,#061118 0%,#020507 100%);border:1px solid rgba(0,212,255,.2);
+  border-radius:8px;padding:24px;margin-bottom:20px}
+.panel-title{color:var(--cyan-accent);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;font-weight:bold}
 
-        .container {
-            width: 100%;
-            max-width: 900px;
-            background-color: var(--surface-color);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 40px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
-            position: relative;
-        }
+.ledger-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:680px){.ledger-grid{grid-template-columns:repeat(4,1fr)}}
+.ledger-cell{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.04);padding:14px 12px;border-radius:6px;text-align:center}
+.stat-label{font-size:9px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;font-weight:bold}
+.ledger-value{font-size:16px;font-weight:bold;display:block;color:var(--text-primary);margin-top:5px}
+.ledger-value span{font-size:9px;color:var(--text-muted);font-weight:normal}
+.ledger-value.highlight{color:var(--cyan-accent)}.ledger-value.green{color:var(--green-accent)}
 
-        header {
-            border-bottom: 1px solid var(--border-color);
-            padding-bottom: 20px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-        }
+.credits-sync{margin-top:16px;background:rgba(0,0,0,.4);border:1px solid rgba(0,212,255,.1);border-radius:6px;
+  padding:14px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.credits-input-field{background:#000;border:1px solid var(--border-color);color:#fff;padding:8px 12px;border-radius:4px;
+  font-family:monospace;font-size:14px;width:160px;text-align:right;outline:none}
+.credits-input-field:focus{border-color:var(--cyan-accent);box-shadow:0 0 8px rgba(0,212,255,.2)}
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+/* collapsible */
+.acc-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;user-select:none}
+.acc-head-left{display:flex;align-items:center;gap:10px;min-width:0}
+.chevron{color:var(--cyan-accent);font-size:12px;transition:transform .2s;flex-shrink:0}
+.acc.open .chevron{transform:rotate(90deg)}
+.acc-body{display:none;margin-top:18px;padding-top:18px;border-top:1px dashed rgba(255,255,255,.08)}
+.acc.open .acc-body{display:block}
+.prod-name{background:rgba(0,0,0,.35);border:1px solid var(--border-color);border-radius:4px;color:#fff;font-size:14px;
+  font-weight:bold;letter-spacing:.5px;outline:none;padding:6px 10px;width:200px;max-width:60vw}
+.prod-name:focus{border-color:var(--cyan-accent);box-shadow:0 0 6px rgba(0,212,255,.2)}
+.prod-name::placeholder{color:var(--text-muted);font-weight:normal}
+.acc-sum{display:flex;align-items:center;gap:12px;flex-shrink:0;font-family:monospace}
+.acc-sum .s-min{font-size:11px;color:var(--text-muted)}
+.acc-sum .s-cost{font-size:15px;font-weight:bold;color:var(--gold-accent)}
+.acc-sum .s-cost.off{color:var(--text-muted)}
 
-        .brand-logo {
-            height: 42px;
-            width: auto;
-            object-fit: contain;
-            display: block;
-        }
+.slider-row{display:grid;grid-template-columns:200px 1fr 120px;align-items:center;gap:14px;
+  background:rgba(0,0,0,.25);padding:12px 14px;border-radius:6px;border:1px solid rgba(255,255,255,.03);margin-bottom:10px}
+.slider-row label{font-size:12px;font-weight:bold;letter-spacing:.3px;display:flex;flex-direction:column;gap:2px}
+.sub-note{font-size:10px;color:var(--text-muted);font-weight:normal;font-family:monospace}
+input[type="range"]{width:100%;height:6px;background:#222;border-radius:3px;outline:none;cursor:pointer}
+.pct-bubble{padding:5px 8px;border-radius:4px;font-size:14px;font-weight:bold;text-align:center;width:100%;font-family:monospace}
+.bub-seed{background:rgba(255,49,49,.1);color:var(--red-accent);border:1px solid rgba(255,49,49,.25)}
+.bub-k3{background:rgba(0,212,255,.1);color:var(--cyan-accent);border:1px solid rgba(0,212,255,.25)}
+.bub-k26{background:rgba(57,255,20,.1);color:var(--green-accent);border:1px solid rgba(57,255,20,.25)}
+.bub-mins{background:rgba(255,204,0,.1);color:var(--gold-accent);border:1px solid rgba(255,204,0,.25)}
+.bub-draft{background:rgba(212,0,255,.1);color:var(--purple-accent);border:1px solid rgba(212,0,255,.25)}
+.bub-edit{background:rgba(255,165,0,.1);color:var(--orange-accent);border:1px solid rgba(255,165,0,.25)}
+.rng-seed{accent-color:var(--red-accent)}.rng-k3{accent-color:var(--cyan-accent)}.rng-k26{accent-color:var(--green-accent)}
+.rng-mins{accent-color:var(--gold-accent)}.rng-draft{accent-color:var(--purple-accent)}.rng-edit{accent-color:var(--orange-accent)}
+.preset-row{display:flex;gap:8px;flex-wrap:wrap;margin:4px 0 10px}
+.preset-btn{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.25);color:var(--cyan-accent);
+  font-size:10px;padding:5px 10px;border-radius:4px;cursor:pointer;font-weight:bold}
+.preset-btn:hover{background:var(--cyan-accent);color:#000}
+.prod-out{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:6px}
+@media(min-width:680px){.prod-out{grid-template-columns:repeat(4,1fr)}}
+.prod-out .o{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.04);border-radius:6px;padding:10px;text-align:center}
+.prod-out .o b{font-size:15px;display:block;margin-top:3px;color:var(--cyan-accent)}
+.eps-input{background:#000;border:1px solid var(--border-color);color:#fff;padding:4px 6px;border-radius:4px;font-family:monospace;font-size:13px;width:54px;text-align:right;outline:none}
 
-        .brand-title {
-            font-size: 22px;
-            font-weight: 900;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: var(--cyan-accent);
-        }
+.mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:680px){.mini-grid{grid-template-columns:repeat(3,1fr)}}
+.mini-cell{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.04);border-radius:6px;padding:8px;text-align:center}
+.mini-cell label{display:block;font-size:9px;text-transform:uppercase;color:var(--text-muted);letter-spacing:.5px;font-weight:bold;margin-bottom:5px}
+.mini-cell input{width:100%;background:#000;border:1px solid var(--border-color);color:#fff;padding:6px;border-radius:4px;font-family:monospace;font-size:13px;text-align:right;outline:none}
 
-        /* Aviation Fuel/Gas Gauge Component Styling */
-        .gauge-container {
-            width: 90px;
-            height: 90px;
-            position: relative;
-            background: radial-gradient(circle, #15151c 0%, #050508 100%);
-            border: 3px solid #1c1c24;
-            border-radius: 50%;
-            box-shadow: inset 0 2px 5px rgba(0,0,0,0.8), 0 4px 10px rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-shrink: 0;
-        }
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.hero-cell{border-radius:8px;padding:22px;text-align:center}
+.hero-cell.a{background:rgba(255,165,0,.04);border:1px solid rgba(255,165,0,.2)}
+.hero-cell.b{background:rgba(57,255,20,.04);border:1px solid rgba(57,255,20,.2)}
+.hero-cell .hero-val{font-size:28px;font-weight:900;display:block;margin-top:8px}
+.hero-cell.a .hero-val{color:var(--orange-accent)}.hero-cell.b .hero-val{color:var(--green-accent)}
+.hero-cell .hero-sub{font-size:11px;color:var(--text-muted);margin-top:4px;font-family:monospace}
 
-        .gauge-svg {
-            width: 100%;
-            height: 100%;
-        }
+.totals-panel{border:1px solid rgba(255,204,0,.3);background:linear-gradient(135deg,#14110a 0%,#070502 100%)}
+.out-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(min-width:680px){.out-grid{grid-template-columns:repeat(4,1fr)}}
+.out-cell{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.04);border-radius:6px;padding:14px 10px;text-align:center}
+.out-cell .out-val{font-size:18px;font-weight:bold;display:block;margin-top:5px}
+.out-val.cyan{color:var(--cyan-accent)}.out-val.green{color:var(--green-accent)}.out-val.gold{color:var(--gold-accent)}.out-val.orange{color:var(--orange-accent)}
 
-        .gauge-needle {
-            transform-origin: 45px 45px;
-            stroke: var(--red-accent);
-            stroke-width: 2.5;
-            stroke-linecap: round;
-        }
+#deficit-box{margin-top:18px;background:rgba(255,49,49,.03);border:1px solid rgba(255,49,49,.2);border-radius:6px;padding:16px;display:none}
+.deficit-title{font-size:11px;text-transform:uppercase;color:var(--red-accent);font-weight:bold;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.deficit-dot{width:6px;height:6px;background:var(--red-accent);border-radius:50%}
+.deficit-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
 
-        .gauge-center-cap {
-            fill: #2a2a35;
-            stroke: #09090d;
-            stroke-width: 1.5;
-        }
-
-        .gauge-text {
-            font-size: 8px;
-            font-weight: bold;
-            fill: var(--text-muted);
-            font-family: monospace;
-            letter-spacing: 0.5px;
-        }
-
-        .gauge-text.label-e { fill: var(--red-accent); }
-        .gauge-text.label-f { fill: var(--cyan-accent); }
-
-        /* Ledger & Forecaster Widget Styles */
-        .ledger-box {
-            background: linear-gradient(135deg, #061118 0%, #020507 100%);
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 8px;
-            padding: 24px;
-        }
-
-        .ledger-title {
-            color: var(--cyan-accent);
-            font-size: 12px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 16px;
-            font-weight: bold;
-        }
-
-        .ledger-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        @media (min-width: 768px) {
-            .ledger-grid {
-                grid-template-columns: repeat(6, 1fr);
-            }
-        }
-
-        .ledger-cell {
-            background: rgba(0, 0, 0, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            padding: 16px 12px;
-            border-radius: 6px;
-            text-align: center;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .stat-label {
-            font-size: 10px;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-            font-weight: bold;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .ledger-value {
-            font-size: 16px;
-            font-weight: bold;
-            display: block;
-            color: var(--text-primary);
-            margin-top: 4px;
-        }
-
-        .ledger-value span {
-            font-size: 10px;
-            color: var(--text-muted);
-            font-weight: normal;
-        }
-
-        .ledger-value.highlight { color: var(--cyan-accent); }
-        .ledger-value.green { color: var(--green-accent); }
-
-        /* Credits Input Synchronizer Styling */
-        .credits-sync-container {
-            margin-top: 20px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(0, 212, 255, 0.1);
-            border-radius: 6px;
-            padding: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-
-        .input-wrapper {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .credits-input-field {
-            background: #000;
-            border: 1px solid var(--border-color);
-            color: #fff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-family: monospace;
-            font-size: 14px;
-            width: 150px;
-            text-align: right;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
-        }
-
-        .credits-input-field:focus {
-            border-color: var(--cyan-accent);
-            box-shadow: 0 0 8px rgba(0, 212, 255, 0.2);
-        }
-
-        .help-trigger {
-            display: inline-block;
-            width: 14px;
-            height: 14px;
-            background-color: rgba(0, 212, 255, 0.15);
-            color: var(--cyan-accent);
-            border-radius: 50%;
-            font-size: 9px;
-            line-height: 14px;
-            text-align: center;
-            cursor: pointer;
-            font-weight: bold;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            transition: all 0.2s ease;
-            text-transform: none;
-        }
-
-        .help-trigger:hover {
-            background-color: var(--cyan-accent);
-            color: #000000;
-            box-shadow: 0 0 8px var(--cyan-accent);
-        }
-
-        .popup-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.85);
-            backdrop-filter: blur(4px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .popup-content {
-            background-color: #0d0d11;
-            border: 1px solid rgba(0, 212, 255, 0.3);
-            border-radius: 10px;
-            max-width: 480px;
-            width: 90%;
-            padding: 24px;
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.1);
-            position: relative;
-            animation: fadeIn 0.2s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .popup-header {
-            font-size: 13px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 12px;
-            border-bottom: 1px solid #222;
-            padding-bottom: 8px;
-        }
-        
-        .popup-header.header-contract { color: var(--cyan-accent); }
-        .popup-header.header-fictional { color: var(--green-accent); }
-        .popup-header.header-realism { color: var(--red-accent); }
-        .popup-header.header-discount { color: var(--gold-accent); }
-
-        .popup-text {
-            color: var(--text-secondary);
-            font-size: 13px;
-            line-height: 1.5;
-            margin-bottom: 20px;
-        }
-
-        .popup-close-btn {
-            background-color: var(--cyan-accent);
-            color: #000000;
-            border: none;
-            padding: 8px 16px;
-            font-size: 11px;
-            font-weight: bold;
-            border-radius: 4px;
-            cursor: pointer;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            float: right;
-            transition: opacity 0.2s ease;
-        }
-
-        .popup-close-btn:hover { opacity: 0.9; }
-
-        /* Minute Slider Forecaster Layout */
-        .forecaster-panel {
-            margin-top: 24px;
-            padding-top: 24px;
-            border-top: 1px dashed rgba(255, 255, 255, 0.1);
-        }
-
-        .master-slider-box {
-            background: rgba(255, 204, 0, 0.03);
-            border: 1px solid rgba(255, 204, 0, 0.15);
-            border-radius: 6px;
-            padding: 16px;
-            margin-top: 20px;
-            margin-bottom: 12px;
-        }
-
-        .slider-row {
-            display: grid;
-            grid-template-columns: 240px 1fr 110px;
-            align-items: center;
-            gap: 16px;
-            background: rgba(0, 0, 0, 0.2);
-            padding: 12px 16px;
-            border-radius: 6px;
-            border: 1px solid rgba(255, 255, 255, 0.02);
-            margin-bottom: 12px;
-        }
-
-        .slider-row label {
-            font-size: 12px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        input[type="range"] {
-            width: 100%;
-            height: 6px;
-            background: #222;
-            border-radius: 3px;
-            outline: none;
-            cursor: pointer;
-        }
-
-        #slider-discount { accent-color: var(--gold-accent); }
-        #slider-blend { accent-color: var(--cyan-accent); }
-        #slider-dws { accent-color: var(--green-accent); }
-        #slider-ccf { accent-color: var(--red-accent); }
-        #slider-film { accent-color: var(--purple-accent); }
-
-        .counter-stack {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            width: 100%;
-        }
-
-        .hours-bubble {
-            padding: 4px 10px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-weight: bold;
-            text-align: center;
-            width: 100%;
-        }
-
-        .episode-subtext {
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--text-secondary);
-            letter-spacing: 0.5px;
-            font-family: monospace;
-        }
-
-        .bubble-discount { background: rgba(255, 204, 0, 0.1); color: var(--gold-accent); border: 1px solid rgba(255, 204, 0, 0.2); }
-        .bubble-blend { background: rgba(0, 212, 255, 0.1); color: var(--cyan-accent); border: 1px solid rgba(0, 212, 255, 0.2); }
-        .bubble-dws { background: rgba(57, 255, 20, 0.1); color: var(--green-accent); border: 1px solid rgba(57, 255, 20, 0.2); }
-        .bubble-ccf { background: rgba(255, 49, 49, 0.1); color: var(--red-accent); border: 1px solid rgba(255, 49, 49, 0.2); }
-        .bubble-film { background: rgba(212, 0, 255, 0.1); color: var(--purple-accent); border: 1px solid rgba(212, 0, 255, 0.2); }
-
-        .forecast-outputs {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 16px;
-            margin-top: 16px;
-        }
-
-        @media (max-width: 600px) {
-            body { padding: 12px 8px; }
-            .container { padding: 16px; border-radius: 8px; }
-            header { flex-direction: column-reverse; align-items: center; text-align: center; gap: 16px; padding-bottom: 16px; }
-            .header-left { flex-direction: column; align-items: center; gap: 8px; width: 100%; }
-            .brand-logo { height: 36px; }
-            .brand-title { font-size: 16px; letter-spacing: 1px; }
-            .gauge-container { width: 100px; height: 100px; margin: 0 auto; }
-            .ledger-box { padding: 16px 12px; }
-            .ledger-title { font-size: 11px; text-align: center; margin-bottom: 12px; }
-            .ledger-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
-            .ledger-cell { padding: 10px 6px; min-height: 72px; }
-            .stat-label { font-size: 9px; }
-            .ledger-value { font-size: 13.5px; }
-            .credits-sync-container { flex-direction: column; align-items: stretch; text-align: center; padding: 12px; gap: 12px; }
-            .input-wrapper { flex-direction: column; gap: 8px; width: 100%; }
-            .credits-input-field { width: 100%; text-align: center; }
-            .slider-row { grid-template-columns: 1fr; gap: 8px; padding: 12px; }
-            .slider-row label { font-size: 11px; justify-content: center; }
-            .counter-stack { width: 100%; }
-            .hours-bubble { width: 100%; text-align: center; }
-            .forecast-outputs { grid-template-columns: 1fr; gap: 8px; }
-        }
-
-        footer.doc-footer {
-            margin-top: 32px;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
-            display: flex;
-            justify-content: center;
-            font-size: 10px;
-            color: var(--text-muted);
-            text-align: center;
-        }
-    </style>
+footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color);text-align:center;font-size:10px;color:var(--text-muted)}
+@media(max-width:600px){
+  .container{padding:18px}header{flex-direction:column-reverse;text-align:center}
+  .slider-row{grid-template-columns:1fr;gap:8px}.slider-row label{align-items:center;text-align:center}
+  .hero{grid-template-columns:1fr}.deficit-grid{grid-template-columns:1fr}
+  .acc-head{flex-wrap:wrap;gap:8px}
+}
+.help{display:inline-flex;width:14px;height:14px;background:rgba(0,212,255,.15);color:var(--cyan-accent);
+  border-radius:50%;font-size:9px;line-height:1;align-items:center;justify-content:center;cursor:pointer;
+  font-weight:bold;border:1px solid rgba(0,212,255,.3);margin-left:5px;flex-shrink:0}
+.help:hover{background:var(--cyan-accent);color:#000;box-shadow:0 0 8px var(--cyan-accent)}
+.popup-modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);
+  z-index:1000;justify-content:center;align-items:center}
+.popup-modal.show{display:flex}
+.popup-content{background:#0d0d11;border:1px solid rgba(0,212,255,.3);border-radius:10px;max-width:470px;
+  width:90%;padding:24px;box-shadow:0 10px 30px rgba(0,212,255,.12);animation:popin .18s ease-out}
+@keyframes popin{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.popup-header{font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;
+  border-bottom:1px solid #222;padding-bottom:8px;color:var(--cyan-accent)}
+.popup-text{color:var(--text-secondary);font-size:13px;line-height:1.6;margin-bottom:20px}
+.popup-text b{color:var(--text-primary)}
+.popup-close-btn{background:var(--cyan-accent);color:#000;border:none;padding:8px 16px;font-size:11px;
+  font-weight:bold;border-radius:4px;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;float:right}
+.popup-close-btn:hover{opacity:.9}
+</style>
 </head>
 <body>
-
-    <div class="container">
-        <header>
-            <div class="header-left">
-                <img src="DHILOGO.png" alt="Dark Half Labs Logo" class="brand-logo" onerror="this.style.display='none';">
-                <h1 class="brand-title">DARKHALF KREA GAS GAUGE</h1>
-            </div>
-            
-            <div class="gauge-container">
-                <svg class="gauge-svg" viewBox="0 0 90 90">
-                    <path d="M 20 65 A 32 32 0 1 1 70 65" fill="none" stroke="#222" stroke-width="3" stroke-dasharray="2,3" />
-                    <text x="14" y="68" class="gauge-text label-e">E</text>
-                    <text x="40" y="16" class="gauge-text">1/2</text>
-                    <text x="69" y="68" class="gauge-text label-f">F</text>
-                    <text x="32" y="78" class="gauge-text" style="font-size: 6px; fill: #444;">COMPUTE</text>
-                    
-                    <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="fuel-needle" style="transform: rotate(-120deg); transition: none;" />
-                    <circle cx="45" cy="45" r="5" class="gauge-center-cap" />
-                </svg>
-            </div>
-        </header>
-
-        <div class="ledger-box">
-            <div class="ledger-grid">
-                <div class="ledger-cell">
-                    <span class="stat-label">Purchased <span class="help-trigger" id="open-modal-btn">?</span></span>
-                    <span class="ledger-value">$72,890.00 <span>CDN</span></span>
-                </div>
-                <div class="ledger-cell">
-                    <span class="stat-label">Spent</span>
-                    <span class="ledger-value" id="val-spent">$57,000.00 <span>CDN</span></span>
-                </div>
-                <div class="ledger-cell">
-                    <span class="stat-label">Left</span>
-                    <span class="ledger-value highlight" id="val-left" style="color: var(--cyan-accent); font-size: 16px;">$15,890.00 <span>CDN</span></span>
-                </div>
-                <div class="ledger-cell">
-                    <span class="stat-label">Minutes Sold</span>
-                    <span class="ledger-value">147 <span>Mins</span></span>
-                </div>
-                <div class="ledger-cell">
-                    <span class="stat-label">Minutes Left</span>
-                    <span class="ledger-value" id="val-mins-left">27 <span>Mins</span></span>
-                </div>
-                <div class="ledger-cell" style="border: none;">
-                    <span class="stat-label">Cost per minute</span>
-                    <span class="ledger-value green" id="val-cost-per-min">$598.21</span>
-                </div>
-            </div>
-
-            <div class="credits-sync-container">
-                <div style="display: flex; flex-direction: column; gap: 4px;">
-                    <label for="input-credits" style="font-size: 11px; text-transform: uppercase; color: var(--cyan-accent); font-weight: bold; letter-spacing: 0.5px;">Sync Wallet Compute Credits</label>
-                    <span style="font-size: 11px; color: var(--text-muted);">This figure defaults to the state of credits left as of May 15th 2026, 6.42M. To get an accurate current picture, input the current remaining credits.</span>
-                </div>
-                <div class="input-wrapper">
-                    <span id="credit-usd-display" style="font-size: 12px; color: var(--text-secondary); font-family: monospace;">$11,556.00 USD</span>
-                    <input type="number" id="input-credits" value="6420000" step="50000" min="0" class="credits-input-field">
-                </div>
-            </div>
-
-            <div class="forecaster-panel">
-                <div class="ledger-title" style="color: var(--orange-accent); margin-bottom: 12px;">Account Burn Simulator</div>
-
-                <div class="slider-row">
-                    <label style="color: var(--cyan-accent);" id="label-blend">Global Blended (Base: $598.21 / Full: $717.85)</label>
-                    <input type="range" id="slider-blend" min="0" max="100" step="1" value="0">
-                    <div class="counter-stack">
-                        <div class="hours-bubble bubble-blend" id="display-blend">0 Mins</div>
-                    </div>
-                </div>
-
-                <div class="slider-row">
-                    <label style="color: var(--green-accent);">
-                        Fictional Content ($300.00) <span class="help-trigger" id="open-fictional-btn">?</span>
-                    </label>
-                    <input type="range" id="slider-dws" min="0" max="200" step="1" value="0">
-                    <div class="counter-stack">
-                        <div class="hours-bubble bubble-dws" id="display-dws">0 Mins</div>
-                        <div class="episode-subtext" id="episodes-dws">0.0 Eps</div>
-                    </div>
-                </div>
-
-                <div class="slider-row">
-                    <label style="color: var(--red-accent);">
-                        Realistic Content ($900.00) <span class="help-trigger" id="open-realism-btn">?</span>
-                    </label>
-                    <input type="range" id="slider-ccf" min="0" max="200" step="1" value="0">
-                    <div class="counter-stack">
-                        <div class="hours-bubble bubble-ccf" id="display-ccf">0 Mins</div>
-                        <div class="episode-subtext" id="episodes-ccf">0.0 Eps</div>
-                    </div>
-                </div>
-
-                <div class="slider-row">
-                    <label style="color: var(--purple-accent);">AIVFX Feature Film (Base: $3,600.00 / Full: $4,320.00)</label>
-                    <input type="range" id="slider-film" min="0" max="20" step="1" value="0">
-                    <div class="counter-stack">
-                        <div class="hours-bubble bubble-film" id="display-film">0 Mins</div>
-                    </div>
-                </div>
-                
-                <div class="master-slider-box">
-                    <div class="slider-row" style="margin-bottom: 0;">
-                        <label style="color: var(--gold-accent);">
-                            Cost per Compute Unit <span class="help-trigger" id="open-discount-btn">?</span>
-                        </label>
-                        <input type="range" id="slider-discount" min="0.0015" max="0.0025" step="0.00001" value="0.00220">
-                        <div class="hours-bubble bubble-discount" id="display-discount" style="font-family: monospace;">$0.00220</div>
-                    </div>
-                </div>
-
-                <div class="forecast-outputs">
-                    <div class="ledger-cell" style="background: rgba(255, 165, 0, 0.01); border: 1px solid rgba(255, 255, 255, 0.03); padding: 20px;">
-                        <span class="stat-label">Incremental Simulation Cost</span>
-                        <span class="ledger-value highlight" id="calc-cost" style="color: var(--orange-accent); font-size: 22px;">$0.00 <span>CDN</span></span>
-                    </div>
-                    <div class="ledger-cell" id="balance-cell" style="background: rgba(0, 212, 255, 0.02) !important; border: 1px solid rgba(0, 212, 255, 0.1) !important; padding: 20px;">
-                        <span class="stat-label" id="balance-label">Projected Remaining Balance</span>
-                        <span class="ledger-value" id="calc-remaining" style="color: var(--green-accent); font-size: 22px;">$15,890.00 <span>CDN</span></span>
-                    </div>
-                </div>
-
-                <div id="krea-deficit-box" style="margin-top: 20px; background: rgba(255, 49, 49, 0.02); border: 1px solid rgba(255, 49, 49, 0.15); border-radius: 6px; padding: 16px; display: none;">
-                    <div style="font-size: 11px; text-transform: uppercase; color: var(--red-accent); font-weight: bold; letter-spacing: 0.5px; margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-                        <span style="display: inline-block; width: 6px; height: 6px; background-color: var(--red-accent); border-radius: 50%;"></span>
-                        KREA Compute Credit Replenishment Ledger
-                    </div>
-                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 10px;">
-                        <div class="ledger-cell" style="padding: 10px 6px;">
-                            <span class="stat-label">Deficit (USD)</span>
-                            <span class="ledger-value" id="deficit-usd-display" style="font-size: 14px; color: #ffffff;">$0.00</span>
-                        </div>
-                        <div class="ledger-cell" style="padding: 10px 6px;">
-                            <span class="stat-label">Overage Unit Cost</span>
-                            <span class="ledger-value" id="deficit-discount-display" style="font-size: 13px; color: var(--gold-accent); font-family: monospace;">$0.00220</span>
-                        </div>
-                        <div class="ledger-cell" style="padding: 10px 6px; border: 1px solid rgba(255, 49, 49, 0.3);">
-                            <span class="stat-label" style="color: var(--red-accent);">Credits to Order</span>
-                            <span class="ledger-value" id="required-credits-display" style="font-size: 15px; color: var(--red-accent); font-weight: 900;">0 Units</span>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-
-        <footer class="doc-footer">
-            <div>CONFIDENTIAL — PROPERTY OF CREAM PRODUCTIONS © 2026</div>
-        </footer>
+<div class="container">
+  <header>
+    <div class="header-left">
+      <img src="DHILOGO.png" alt="" style="height:42px" onerror="this.style.display='none'">
+      <div>
+        <div class="brand-title">DARKHALF KREA GAS GAUGE</div>
+        <div class="brand-sub">Multi-production slate · model-mix cost ↔ compute burn</div>
+      </div>
     </div>
-
-    <div class="popup-modal" id="explanation-modal">
-        <div class="popup-content">
-            <div class="popup-header header-contract">Package Rate Distortion Audit</div>
-            <div class="popup-text">
-                We purchased <strong>30 million compute units for the price of 25 million</strong>. 
-                <br><br>
-                Throwing in 5 million free compute units means we received a <strong>16.67% true contract discount</strong> on total value, translating to a <strong>20% free volume bonus</strong> on top of our paid baseline.
-                <br><br>
-                This sets the cost of a compute unit at 0.0018 USD
-            </div>
-            <button class="popup-close-btn btn-close" data-target="explanation-modal">Close</button>
-        </div>
+    <div class="gauge-container">
+      <svg class="gauge-svg" viewBox="0 0 90 90">
+        <path d="M 20 65 A 32 32 0 1 1 70 65" fill="none" stroke="#222" stroke-width="3" stroke-dasharray="2,3"/>
+        <text x="14" y="68" class="gauge-text label-e">E</text>
+        <text x="40" y="16" class="gauge-text">1/2</text>
+        <text x="69" y="68" class="gauge-text label-f">F</text>
+        <text x="30" y="78" class="gauge-text" style="font-size:6px;fill:#444">COMPUTE</text>
+        <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="needle" style="transform:rotate(-120deg)"/>
+        <circle cx="45" cy="45" r="5" class="gauge-center-cap"/>
+      </svg>
     </div>
+  </header>
 
-    <div class="popup-modal" id="fictional-modal">
-        <div class="popup-content">
-            <div class="popup-header header-fictional">Fictional Delivery Structure (Deep Water Secrets case study)</div>
-            <div class="popup-text">
-                <strong>Show Profile: 35% AI Content Density | 2 Revision Cycles</strong>
-                <br><br>
-                This format heavily integrates generative assets, with **35% of the final on-screen broadcast runtime consisting of AI content**. Because these shows are leaning into AI content to create visuals that are obviously novel and fantastical, the AI isn't trying to match the real world or be passed off as reality.
-                <br><br>
-                Since the workflow doesn't require matching strict real-world mimesis or photorealism, the client actively takes and locks a much larger percentage of what is commissioned directly into the final edit. With very few discarded setups, compute waste remains extremely low. This high content utilization, combined with a brief 2-stage revision pass, keeps the baseline cost highly efficient at <strong>$300.00 CDN per minute</strong>.
-            </div>
-            <button class="popup-close-btn btn-close" data-target="fictional-modal">Close</button>
-        </div>
+  <!-- WALLET -->
+  <div class="panel">
+    <div class="panel-title">Compute Wallet</div>
+    <div class="ledger-grid">
+      <div class="ledger-cell"><span class="stat-label">Credits left</span><span class="ledger-value" id="w-credits">0 <span>units</span></span></div>
+      <div class="ledger-cell"><span class="stat-label">Value (USD)</span><span class="ledger-value highlight" id="w-usd">$0</span></div>
+      <div class="ledger-cell"><span class="stat-label">Value (CDN)</span><span class="ledger-value" id="w-cdn">$0</span></div>
+      <div class="ledger-cell"><span class="stat-label">Unit cost (USD)</span><span class="ledger-value green" id="w-unit">$0.00180</span></div>
     </div>
-
-    <div class="popup-modal" id="realism-modal">
-        <div class="popup-content">
-            <div class="popup-header header-realism">Realism Pipeline Waste Dynamics (Cold Case Files case study)</div>
-            <div class="popup-text">
-                <strong>Show Profile: 10% AI Content Density | 4 Revision Cycles</strong>
-                <br><br>
-                This client handles delivery with a higher rejection rate, commissioning 30% more shots than are actually used in the final show. AI visuals only make up a smaller portion of the show—specifically **10% of the final show's broadcast runtime**.
-                <br><br>
-                This results in compute power burned on discarded shots that never make it to air. This operational inefficiency is compounded by 4 separate revision loops, tripling the cost to deliver a single finished minute to <strong>$600.00 - $900.00 CDN per minute</strong>.
-            </div>
-            <button class="popup-close-btn btn-close" data-target="realism-modal">Close</button>
-        </div>
+    <div class="credits-sync">
+      <div style="display:flex;flex-direction:column;gap:4px;max-width:430px">
+        <label style="font-size:11px;text-transform:uppercase;color:var(--cyan-accent);font-weight:bold">Sync wallet compute credits <span class="help" data-help="credits">?</span></label>
+        <span style="font-size:11px;color:var(--text-muted)">Defaults to 6.42M units (state as of May 15 2026). Enter current remaining credits for an accurate read.</span>
+      </div>
+      <input type="number" id="in-credits" value="25750000" step="50000" min="0" class="credits-input-field">
     </div>
+  </div>
 
-    <div class="popup-modal" id="discount-modal">
-        <div class="popup-content">
-            <div class="popup-header header-discount">Conditional Tracking Mechanics</div>
-            <div class="popup-text">
-                <strong>Overage Processing Protocol:</strong>
-                <br><br>
-                Existing compute wallet credits deplete at our historical **discounted baseline rate of 0.0018 USD** until the remaining active balance reaches $0.00.
-                <br><br>
-                Any simulation spillovers that crack past our active funds are categorized as true project overages.
-                <br><br>
-                Base price sits at <strong>0.0022 USD</strong> per compute unit. Spends exceeding $25,000 automatically drop the baseline cost down to <strong>0.0017 USD</strong>, and spends exceeding $35,000 lock in a maximum volume contract discount rate of <strong>0.00165 USD</strong> per unit.
-            </div>
-            <button class="popup-close-btn btn-close" data-target="discount-modal">Close</button>
-        </div>
+  <!-- GLOBAL PRICING -->
+  <div class="panel acc" id="pricing-acc" style="border-color:rgba(57,255,20,.18)">
+    <div class="acc-head" data-acc="pricing-acc">
+      <div class="acc-head-left"><span class="chevron">▸</span><span class="panel-title" style="color:var(--green-accent);margin:0">Global Model Pricing (KREA constants)</span></div>
+      <span class="acc-sum"><span class="s-min">applies to all productions</span></span>
     </div>
+    <div class="acc-body">
+      <div class="mini-grid">
+        <div class="mini-cell"><label>Frames $/clip (start+end) <span class="help" data-help="frames">?</span></label><input type="number" id="g-frames" value="1.00" step="0.05"></div>
+        <div class="mini-cell"><label>Clip length (sec) <span class="help" data-help="cliplen">?</span></label><input type="number" id="g-cliplen" value="5" step="1"></div>
+        <div class="mini-cell"><label>Seedance2 render $ <span class="secnote" style="color:var(--gold-accent)">@5s</span> <span class="help" data-help="render">?</span></label><input type="number" id="g-rseed" value="4.55" step="0.01"></div>
+        <div class="mini-cell"><label>Kling 3 render $ <span class="secnote" style="color:var(--gold-accent)">@5s</span> <span class="help" data-help="render">?</span></label><input type="number" id="g-rk3" value="1.49" step="0.01"></div>
+        <div class="mini-cell"><label>Kling 2.6 render $ <span class="secnote" style="color:var(--gold-accent)">@5s</span> <span class="help" data-help="render">?</span></label><input type="number" id="g-rk26" value="0.47" step="0.01"></div>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const inputCredits = document.getElementById('input-credits');
-            const sliderDiscount = document.getElementById('slider-discount');
-            const sliderBlend = document.getElementById('slider-blend');
-            const sliderDws = document.getElementById('slider-dws');
-            const sliderCcf = document.getElementById('slider-ccf');
-            const sliderFilm = document.getElementById('slider-film');
-            
-            const displayDiscount = document.getElementById('display-discount');
-            const displayBlend = document.getElementById('display-blend');
-            const displayDws = document.getElementById('display-dws');
-            const displayCcf = document.getElementById('display-ccf');
-            const displayFilm = document.getElementById('display-film');
-            const displayCreditUsd = document.getElementById('credit-usd-display');
-            const fuelNeedle = document.getElementById('fuel-needle');
-            
-            const valSpent = document.getElementById('val-spent');
-            const valLeft = document.getElementById('val-left');
-            const valMinsLeft = document.getElementById('val-mins-left');
-            const valCostPerMin = document.getElementById('val-cost-per-min');
-            
-            const episodesDws = document.getElementById('episodes-dws');
-            const episodesCcf = document.getElementById('episodes-ccf');
-            
-            const calcCost = document.getElementById('calc-cost');
-            const calcRemaining = document.getElementById('calc-remaining');
-            const balanceCell = document.getElementById('balance-cell');
-            const balanceLabel = document.getElementById('balance-label');
+  <!-- PRODUCTIONS injected here -->
+  <div id="prods"></div>
 
-            const modalContract = document.getElementById('explanation-modal');
-            const modalFictional = document.getElementById('fictional-modal');
-            const modalRealism = document.getElementById('realism-modal');
-            const modalDiscount = document.getElementById('discount-modal');
+  <!-- HERO TOTALS -->
+  <div class="hero">
+    <div class="hero-cell a">
+      <span class="stat-label">Slate production cost (USD)</span>
+      <span class="hero-val" id="h-total">$0</span>
+      <span class="hero-sub" id="h-total-sub">$0 CDN · 0 finished min</span>
+    </div>
+    <div class="hero-cell b">
+      <span class="stat-label">Projected credits after slate</span>
+      <span class="hero-val" id="h-after">0</span>
+      <span class="hero-sub" id="h-after-sub">units · $0 USD</span>
+    </div>
+  </div>
 
-            document.getElementById('open-modal-btn').addEventListener('click', () => modalContract.style.display = 'flex');
-            document.getElementById('open-fictional-btn').addEventListener('click', () => modalFictional.style.display = 'flex');
-            document.getElementById('open-realism-btn').addEventListener('click', () => modalRealism.style.display = 'flex');
-            document.getElementById('open-discount-btn').addEventListener('click', () => modalDiscount.style.display = 'flex');
+  <!-- TOTALS PANEL -->
+  <div class="panel totals-panel">
+    <div class="panel-title" style="color:var(--gold-accent)">Slate Totals & Credit Burn</div>
+    <div class="out-grid">
+      <div class="out-cell"><span class="stat-label">Active productions</span><span class="out-val cyan" id="t-active">0</span></div>
+      <div class="out-cell"><span class="stat-label">Total finished minutes</span><span class="out-val cyan" id="t-mins">0</span></div>
+      <div class="out-cell"><span class="stat-label">Total season cost USD</span><span class="out-val orange" id="t-usd">$0</span></div>
+      <div class="out-cell"><span class="stat-label">Total credits burned</span><span class="out-val gold" id="t-burn">0</span></div>
+    </div>
+    <div id="deficit-box">
+      <div class="deficit-title"><span class="deficit-dot"></span>KREA compute credit replenishment ledger</div>
+      <div class="deficit-grid">
+        <div class="ledger-cell"><span class="stat-label">Deficit (USD)</span><span class="ledger-value" id="d-usd" style="font-size:14px">$0</span></div>
+        <div class="ledger-cell"><span class="stat-label">Deficit (CDN)</span><span class="ledger-value" id="d-cdn" style="font-size:14px">$0</span></div>
+        <div class="ledger-cell" style="border:1px solid rgba(255,49,49,.3)"><span class="stat-label" style="color:var(--red-accent)">Credits to order</span><span class="ledger-value" id="d-credits" style="font-size:15px;color:var(--red-accent);font-weight:900">0</span></div>
+      </div>
+    </div>
+  </div>
 
-            document.querySelectorAll('.btn-close').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.getElementById(this.getAttribute('data-target')).style.display = 'none';
-                });
-            });
+  <footer>CONFIDENTIAL — PROPERTY OF CREAM PRODUCTIONS © 2026 · Render costs from KREA compute pricing @ $0.0018/unit · FX 1.375 USD→CDN</footer>
+</div>
 
-            window.addEventListener('click', (e) => {
-                if(e.target === modalContract) modalContract.style.display = 'none';
-                if(e.target === modalFictional) modalFictional.style.display = 'none';
-                if(e.target === modalRealism) modalRealism.style.display = 'none';
-                if(e.target === modalDiscount) modalDiscount.style.display = 'none';
-            });
+<div class="popup-modal" id="help-modal">
+  <div class="popup-content">
+    <div class="popup-header" id="help-title">Title</div>
+    <div class="popup-text" id="help-text">Text</div>
+    <button class="popup-close-btn" id="help-close">Close</button>
+  </div>
+</div>
 
-            const DWS_DISC = 300.00;   
-            const CCF_DISC = 900.00;   
-            const FILM_DISC = 3600.00; 
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  const UNIT=0.0018, FX=1.37504, PURCHASED_UNITS=30000000, N=7;
+  const usd=(n,d=0)=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+  const num=n=>Math.round(n).toLocaleString('en-US');
 
-            const TOTAL_PURCHASED_POOL = 72890.00; 
-            const CREDIT_USD_COST = 0.0018;       
-            const FX_RATE_USD_CAD = 1.37504;       
-            const UN_DISCOUNTED_MARKUP = 1.20;
+  // saved slate defaults
+  const prodDefaults=[
+    {name:'CTD',          mins:15, draft:3, edit:4, eps:8, seed:16, k3:53, k26:30, oneoff:false, open:true},
+    {name:'Production 2', mins:0,  draft:3, edit:3, eps:8, seed:30, k3:30, k26:40, oneoff:false, open:false},
+    {name:'Production 3', mins:0,  draft:3, edit:3, eps:8, seed:30, k3:30, k26:40, oneoff:false, open:false},
+    {name:'Production 4', mins:0,  draft:3, edit:3, eps:8, seed:30, k3:30, k26:40, oneoff:false, open:false},
+    {name:'Mooflower',    mins:5,  draft:5, edit:5, eps:1, seed:100, k3:0, k26:0,  oneoff:true,  open:true},
+    {name:'Mythical',     mins:2,  draft:5, edit:5, eps:1, seed:100, k3:0, k26:0,  oneoff:true,  open:true},
+    {name:'Film / Dev 3', mins:0,  draft:3, edit:3, eps:1, seed:30, k3:30, k26:40, oneoff:true,  open:false}
+  ];
 
-            let currentRemainingBalance = 15890.00;
-            const averageBlendRate = (DWS_DISC + CCF_DISC) / 2;
-            
-            // Initialization Flag to hook the cinematic startup sequence
-            let isFirstLoad = true;
+  function prodHTML(i){
+    const P=prodDefaults[i], mins=P.mins;
+    return `<div class="panel acc${P.open?' open':''}" id="prod-${i}">
+      <div class="acc-head" data-acc="prod-${i}">
+        <div class="acc-head-left">
+          <span class="chevron">▸</span>
+          <input class="prod-name" id="p${i}-name" value="${P.name}" placeholder="Title this production…" onclick="event.stopPropagation()">
+        </div>
+        <span class="acc-sum"><span class="s-min" id="p${i}-smin">0 min</span><span class="s-cost off" id="p${i}-scost">OFF</span></span>
+      </div>
+      <div class="acc-body">
+        <div class="slider-row">
+          <label style="color:var(--gold-accent)">Minutes of AI / episode <span class="help" data-help="mins">?</span><span class="sub-note">0 = off · max 25</span></label>
+          <input type="range" class="rng-mins" id="p${i}-mins" min="0" max="25" step="1" value="${mins}">
+          <div class="pct-bubble bub-mins" id="p${i}-bmins">${mins} min</div>
+        </div>
+        <div class="slider-row">
+          <label style="color:var(--purple-accent)">Draft ratio <span class="help" data-help="draft">?</span><span class="sub-note">made : delivered</span></label>
+          <input type="range" class="rng-draft" id="p${i}-draft" min="1" max="8" step="1" value="${P.draft}">
+          <div class="pct-bubble bub-draft" id="p${i}-bdraft">${P.draft} : 1</div>
+        </div>
+        <div class="slider-row">
+          <label style="color:var(--orange-accent)">Edit ratio <span class="help" data-help="edit">?</span><span class="sub-note">delivered : used</span></label>
+          <input type="range" class="rng-edit" id="p${i}-edit" min="1" max="8" step="1" value="${P.edit}">
+          <div class="pct-bubble bub-edit" id="p${i}-bedit">${P.edit} : 1 · <span id="p${i}-btot">${P.draft*P.edit}×</span></div>
+        </div>
+        <div style="font-size:11px;text-transform:uppercase;color:var(--text-secondary);letter-spacing:.5px;font-weight:bold;margin:14px 0 10px">Model mix <span class="help" data-help="mix">?</span></div>
+        <div class="slider-row">
+          <label style="color:var(--red-accent)">Seedance 2 <span class="help" data-help="seed">?</span><span class="sub-note" id="p${i}-cseed"></span></label>
+          <input type="range" class="rng-seed" id="p${i}-seed" min="0" max="100" step="1" value="${P.seed}">
+          <div class="pct-bubble bub-seed" id="p${i}-pseed">30%</div>
+        </div>
+        <div class="slider-row">
+          <label style="color:var(--cyan-accent)">Kling 3 <span class="help" data-help="k3">?</span><span class="sub-note" id="p${i}-ck3"></span></label>
+          <input type="range" class="rng-k3" id="p${i}-k3" min="0" max="100" step="1" value="${P.k3}">
+          <div class="pct-bubble bub-k3" id="p${i}-pk3">30%</div>
+        </div>
+        <div class="slider-row">
+          <label style="color:var(--green-accent)">Kling 2.6 <span class="help" data-help="k26">?</span><span class="sub-note" id="p${i}-ck26"></span></label>
+          <input type="range" class="rng-k26" id="p${i}-k26" min="0" max="100" step="1" value="${P.k26}">
+          <div class="pct-bubble bub-k26" id="p${i}-pk26">40%</div>
+        </div>
+        <div class="preset-row">
+          <button class="preset-btn" data-p="${i}" data-s="30" data-k3="30" data-k26="40">40/30/30</button>
+          <button class="preset-btn" data-p="${i}" data-s="0" data-k3="0" data-k26="100">All K2.6</button>
+          <button class="preset-btn" data-p="${i}" data-s="100" data-k3="0" data-k26="0">All Seed2</button>
+          <button class="preset-btn" data-p="${i}" data-s="34" data-k3="33" data-k26="33">Even</button>
+        </div>
+        <div class="slider-row" style="grid-template-columns:200px 1fr 120px">
+          <label style="color:var(--cyan-accent)">${P.oneoff?'# Episodes <span class="sub-note">one-off</span>':'# Episodes'} <span class="help" data-help="eps">?</span></label>
+          <div><input type="number" class="eps-input" id="p${i}-eps" value="${P.eps}" step="1" min="0" style="width:80px"></div>
+          <div></div>
+        </div>
+        <div class="prod-out">
+          <div class="o"><span class="stat-label">Cost / min</span><b id="p${i}-omin">$0</b></div>
+          <div class="o"><span class="stat-label">Cost / final clip</span><b id="p${i}-oclip">$0</b></div>
+          <div class="o"><span class="stat-label">Cost / episode</span><b id="p${i}-oep">$0</b></div>
+          <div class="o"><span class="stat-label">Season cost</span><b id="p${i}-oseason">$0</b></div>
+        </div>
+      </div>
+    </div>`;
+  }
 
-            function calculateWalletState() {
-                const credits = parseFloat(inputCredits.value) || 0;
-                const usdVal = credits * CREDIT_USD_COST;
-                displayCreditUsd.textContent = '$' + usdVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
-                
-                const cdnVal = usdVal * FX_RATE_USD_CAD;
-                currentRemainingBalance = cdnVal; 
-                
-                const spentVal = TOTAL_PURCHASED_POOL - cdnVal;
-                const minsLeft = Math.round(cdnVal / averageBlendRate);
+  $('prods').innerHTML=Array.from({length:N},(_,i)=>prodHTML(i)).join('');
 
-                valLeft.innerHTML = '$' + cdnVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
-                valSpent.innerHTML = '$' + spentVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' <span>CDN</span>';
-                valMinsLeft.innerHTML = minsLeft + ' <span>Mins</span>';
-                valCostPerMin.innerHTML = '$' + averageBlendRate.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                
-                let fillPercentage = cdnVal / TOTAL_PURCHASED_POOL;
-                if (fillPercentage > 1) fillPercentage = 1;
-                if (fillPercentage < 0) fillPercentage = 0;
-                
-                const needleRotationDegrees = -120 + (fillPercentage * 240);
-                
-                // MULTI-STAGE DIAGNOSTIC GAUGE ANIMATION RENDER
-                if (isFirstLoad) {
-                    isFirstLoad = false;
-                    
-                    // Stage 1: Jump out from Empty to Full quickly on load
-                    setTimeout(() => {
-                        fuelNeedle.style.transition = "transform 0.45s cubic-bezier(0.25, 0.46, 0.45, 0.94)";
-                        fuelNeedle.style.transform = "rotate(120deg)";
-                    }, 100);
-                    
-                    // Stage 2: Fall back down to Empty instantly
-                    setTimeout(() => {
-                        fuelNeedle.style.transition = "transform 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53)";
-                        fuelNeedle.style.transform = "rotate(-120deg)";
-                    }, 650);
-                    
-                    // Stage 3: Smooth premium creeping rise to target ledger balance position
-                    setTimeout(() => {
-                        fuelNeedle.style.transition = "transform 2.8s cubic-bezier(0.1, 0.9, 0.15, 1)";
-                        fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
-                    }, 1150);
-                    
-                } else {
-                    // Standard instant/snappy updates when modifying sliders during session
-                    fuelNeedle.style.transition = "transform 0.3s ease-out";
-                    fuelNeedle.style.transform = `rotate(${needleRotationDegrees}deg)`;
-                }
+  // accordion toggles
+  document.querySelectorAll('.acc-head').forEach(h=>{
+    h.addEventListener('click',()=>$(h.dataset.acc).classList.toggle('open'));
+  });
 
-                updateDepletionForecast();
-            }
+  // help popups
+  const HELP={
+    credits:["Wallet Compute Credits","Your remaining KREA compute units. Everything is priced in these units. They convert to <b>USD at $0.0018/unit</b> and to CDN at <b>FX 1.375</b>. This figure drives the gas gauge and the deficit ledger at the bottom."],
+    frames:["Frame Cost per Clip","Every clip needs a NanoBanana <b>start frame and end frame</b> at $0.50 each = <b>$1.00 per clip</b>. This is charged on every rough-draft clip regardless of which video model renders it. It is the same across all productions."],
+    cliplen:["Clip Length","Length of each AI clip in seconds. Two roles: it converts finished runtime into a clip count (<b>clips per episode = minutes × 60 ÷ clip length</b>), and it <b>scales the render cost proportionally</b> — the per-model prices are quoted at 5 seconds, so a 6-second clip costs 6/5× the render. Frame cost does not scale (still just 2 images)."],
+    render:["Per-Model Render Cost (live)","KREA's render cost for one clip on this model. The field shows the <b>live price at the current clip length</b> (the @Ns tag) and <b>rises automatically when you change Clip Length</b> — anchored to a 5-second base (Seedance2 $4.55, Kling 3 $1.49, Kling 2.6 $0.47). Typing a value here sets the price for the current length; the base re-anchors so scaling stays consistent."],
+    mins:["Minutes of AI per Episode","How many minutes of finished AI content appear in each episode (0–25). This sets clips per episode. <b>Set to 0 to turn a production OFF</b> — it then contributes $0 to the slate totals."],
+    draft:["Draft Ratio (rough-draft stage)","The first 6:1-style funnel. How many videos you generate to get one good enough to <b>deliver to the story editors</b>. 3:1 means you make 3 rough clips for every 1 you hand off. Higher = more waste, more cost."],
+    edit:["Edit Ratio (final-selects stage)","The second funnel. Of the clips you deliver, how many the editors burn through to <b>lock one into the show</b>. 3:1 means you deliver 3 for every 1 that airs. The <b>combined multiplier (draft × edit)</b> is shown as e.g. 9× — that's total rough clips made per finished clip."],
+    mix:["Model Mix","Sets the share of clips rendered on each model. The three sliders <b>auto-normalize to 100%</b>, so any combination works. The blend determines your average render cost per clip — lean on Kling 2.6 to cut cost, Seedance2 for premium."],
+    seed:["Seedance 2","Premium model, highest render cost (≈ $4.55/clip). The label shows raw render → finished cost after the make-to-use ratios are applied."],
+    k3:["Kling 3","Mid-tier model (≈ $1.49/clip). The label shows raw render → finished cost after ratios."],
+    k26:["Kling 2.6","Cheapest model (≈ $0.47/clip). The label shows raw render → finished cost after ratios."],
+    eps:["Number of Episodes","How many episodes in this production. Multiplies the per-episode cost into the season total. Set to 0 (or 0 minutes) to turn the production off."]
+  };
+  const helpModal=$('help-modal');
+  function openHelp(key){
+    const h=HELP[key]; if(!h) return;
+    $('help-title').textContent=h[0]; $('help-text').innerHTML=h[1];
+    helpModal.classList.add('show');
+  }
+  document.addEventListener('click',e=>{
+    if(e.target.classList.contains('help')){ e.stopPropagation(); openHelp(e.target.dataset.help); }
+  });
+  $('help-close').addEventListener('click',()=>helpModal.classList.remove('show'));
+  helpModal.addEventListener('click',e=>{ if(e.target===helpModal) helpModal.classList.remove('show'); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') helpModal.classList.remove('show'); });
+  // presets
+  document.querySelectorAll('.preset-btn').forEach(b=>b.addEventListener('click',()=>{
+    const i=b.dataset.p;
+    $(`p${i}-seed`).value=b.dataset.s; $(`p${i}-k3`).value=b.dataset.k3; $(`p${i}-k26`).value=b.dataset.k26; calc();
+  }));
 
-            function updateDepletionForecast() {
-                // Read exact slider micro-cent metric instead of a percentage
-                const activeUnitCost = parseFloat(sliderDiscount.value);
-                const minsBlend = parseInt(sliderBlend.value, 10);
-                const minsDws = parseInt(sliderDws.value, 10);
-                const minsCcf = parseInt(sliderCcf.value, 10);
-                const minsFilm = parseInt(sliderFilm.value, 10);
-                
-                const epsDwsCalc = minsDws / 15;
-                const epsCcfCalc = minsCcf / 5;
-                
-                episodesDws.textContent = epsDwsCalc.toFixed(1) + ' Eps';
-                episodesCcf.textContent = epsCcfCalc.toFixed(1) + ' Eps';
+  // --- render price <-> clip length wiring ---
+  // render fields display the LIVE price at the current clip length; a hidden 5-sec base is kept.
+  const BASE_SEC=5;
+  const baseR={seed:4.55,k3:1.49,k26:0.47};
+  const clipSec=()=>(+$('g-cliplen').value||BASE_SEC);
+  const factor=()=>clipSec()/BASE_SEC;
+  function renderFieldsFromBase(){
+    const f=factor();
+    $('g-rseed').value=(baseR.seed*f).toFixed(2);
+    $('g-rk3').value=(baseR.k3*f).toFixed(2);
+    $('g-rk26').value=(baseR.k26*f).toFixed(2);
+    document.querySelectorAll('.secnote').forEach(s=>s.textContent='@'+clipSec()+'s');
+  }
+  function baseFromRenderFields(){
+    const f=factor()||1;
+    baseR.seed=(+$('g-rseed').value||0)/f;
+    baseR.k3=(+$('g-rk3').value||0)/f;
+    baseR.k26=(+$('g-rk26').value||0)/f;
+  }
+  $('g-cliplen').addEventListener('input',renderFieldsFromBase);
+  ['g-rseed','g-rk3','g-rk26'].forEach(id=>$(id).addEventListener('input',baseFromRenderFields));
+  renderFieldsFromBase();
 
-                const costAtDiscountedRate = (minsBlend * averageBlendRate) + (minsDws * DWS_DISC) + (minsCcf * CCF_DISC) + (minsFilm * FILM_DISC);
-                
-                let finalIncrementalCost = 0;
-                let finalBalance = 0;
+  let firstLoad=true;
 
-                if (costAtDiscountedRate <= currentRemainingBalance) {
-                    finalIncrementalCost = costAtDiscountedRate;
-                    finalBalance = currentRemainingBalance - costAtDiscountedRate;
-                } else {
-                    const overageValueInDiscountedTerms = costAtDiscountedRate - currentRemainingBalance;
-                    const rawOverageAtFullMarketRate = overageValueInDiscountedTerms * UN_DISCOUNTED_MARKUP;
-                    
-                    // Pivot equation math from slider percentage reductions over to explicit slider value overrides
-                    // (Old calculation: rawOverageAtFullMarketRate * (1 - discountPct / 100))
-                    // New mapping applies the literal customized active pricing directly to the overage delta scaling factor
-                    const overageScalingFactor = activeUnitCost / 0.0022;
-                    const finalDiscountedOverage = rawOverageAtFullMarketRate * overageScalingFactor;
-                    
-                    finalIncrementalCost = currentRemainingBalance + finalDiscountedOverage;
-                    finalBalance = currentRemainingBalance - finalIncrementalCost;
-                }
+  function calc(){
+    const credits=+$('in-credits').value||0;
+    const frames=+$('g-frames').value||0, cliplen=+$('g-cliplen').value||1;
+    const rSeed=+$('g-rseed').value||0, rK3=+$('g-rk3').value||0, rK26=+$('g-rk26').value||0;
 
-                displayDiscount.textContent = '$' + activeUnitCost.toFixed(5);
-                displayBlend.textContent = minsBlend + ' Mins';
-                displayDws.textContent = minsDws + ' Mins';
-                displayCcf.textContent = minsCcf + ' Mins';
-                displayFilm.textContent = minsFilm + ' Mins';
-                
-                calcCost.innerHTML = '$' + finalIncrementalCost.toLocaleString('en-US', {
-                    minimumFractionDigits: 2, 
-                    maximumFractionDigits: 2
-                }) + ' <span>CDN</span>';
-                
-                const deficitBox = document.getElementById('krea-deficit-box');
+    let totalSeason=0, totalMins=0, active=0;
 
-                if (finalBalance >= 0) {
-                    balanceLabel.textContent = "Projected Remaining Balance";
-                    balanceLabel.style.color = "var(--text-muted)";
-                    calcRemaining.style.color = "var(--green-accent)";
-                    balanceCell.style.setProperty('background', 'rgba(57, 255, 20, 0.02)', 'important');
-                    balanceCell.style.setProperty('border-color', 'rgba(57, 255, 20, 0.1)', 'important');
-                    calcRemaining.innerHTML = '$' + finalBalance.toLocaleString('en-US', {
-                        minimumFractionDigits: 2, 
-                        maximumFractionDigits: 2
-                    }) + ' <span>CDN</span>';
+    for(let i=0;i<N;i++){
+      const mins=+$(`p${i}-mins`).value, draft=+$(`p${i}-draft`).value, edit=+$(`p${i}-edit`).value;
+      const eps=+$(`p${i}-eps`).value||0;
+      const s=+$(`p${i}-seed`).value, k3=+$(`p${i}-k3`).value, k26=+$(`p${i}-k26`).value;
+      const sum=s+k3+k26, ps=sum?s/sum:0, pk3=sum?k3/sum:0, pk26=sum?k26/sum:0;
+      const totalRatio=draft*edit;
 
-                    // Hide the credit conversion block when not in deficit
-                    deficitBox.style.display = 'none';
-                } else {
-                    const deficit = Math.abs(finalBalance);
-                    balanceLabel.textContent = "Account Deficit";
-                    balanceLabel.style.color = "var(--red-accent)";
-                    calcRemaining.style.color = "var(--red-accent)";
-                    balanceCell.style.setProperty('background', 'rgba(255, 49, 49, 0.05)', 'important');
-                    balanceCell.style.setProperty('border-color', 'rgba(255, 49, 49, 0.2)', 'important');
-                    calcRemaining.innerHTML = '-$' + deficit.toLocaleString('en-US', {
-                        minimumFractionDigits: 2, 
-                        maximumFractionDigits: 2
-                    }) + ' <span>CDN</span>';
+      // labels
+      $(`p${i}-bmins`).textContent=mins+' min';
+      $(`p${i}-bdraft`).textContent=draft+' : 1';
+      $(`p${i}-bedit`).innerHTML=edit+' : 1 · <span>'+totalRatio+'×</span>';
+      $(`p${i}-pseed`).textContent=Math.round(ps*100)+'%';
+      $(`p${i}-pk3`).textContent=Math.round(pk3*100)+'%';
+      $(`p${i}-pk26`).textContent=Math.round(pk26*100)+'%';
+      const fin=r=>(frames+r)*totalRatio;
+      $(`p${i}-cseed`).textContent=usd(rSeed,2)+'→'+usd(fin(rSeed),2);
+      $(`p${i}-ck3`).textContent=usd(rK3,2)+'→'+usd(fin(rK3),2);
+      $(`p${i}-ck26`).textContent=usd(rK26,2)+'→'+usd(fin(rK26),2);
 
-                    // Process dynamic inversion back into KREA compute credits using the specific Slider cost setting
-                    const deficitUSD = deficit / FX_RATE_USD_CAD;
-                    const creditsToOrder = Math.ceil(deficitUSD / activeUnitCost);
+      const blend=ps*rSeed+pk3*rK3+pk26*rK26;
+      const finalClip=(frames+blend)*totalRatio;
+      const clipsPerEp=cliplen?(mins*60)/cliplen:0;
+      const costPerEp=finalClip*clipsPerEp;
+      // GHOST FIX: 0 minutes or 0 episodes => fully zero
+      const isOff=(mins<=0||eps<=0);
+      const season=isOff?0:costPerEp*eps;
+      const costPerMin=cliplen?finalClip*(60/cliplen):0;
+      const prodMins=isOff?0:mins*eps;
 
-                    document.getElementById('deficit-usd-display').textContent = '$' + deficitUSD.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USD';
-                    document.getElementById('deficit-discount-display').textContent = '$' + activeUnitCost.toFixed(5);
-                    document.getElementById('required-credits-display').textContent = creditsToOrder.toLocaleString('en-US') + ' Units';
-                    
-                    // Display the widget layout cleanly below outputs
-                    deficitBox.style.display = 'block';
-                }
-            }
+      $(`p${i}-omin`).textContent=isOff?'$0':usd(costPerMin,0);
+      $(`p${i}-oclip`).textContent=isOff?'$0':usd(finalClip,2);
+      $(`p${i}-oep`).textContent=isOff?'$0':usd(costPerEp,0);
+      $(`p${i}-oseason`).textContent=usd(season,0);
 
-            inputCredits.addEventListener('input', calculateWalletState);
-            sliderDiscount.addEventListener('input', updateDepletionForecast);
-            sliderBlend.addEventListener('input', updateDepletionForecast);
-            sliderDws.addEventListener('input', updateDepletionForecast);
-            sliderCcf.addEventListener('input', updateDepletionForecast);
-            sliderFilm.addEventListener('input', updateDepletionForecast);
-            
-            calculateWalletState();
-        });
-    </script>
+      const scost=$(`p${i}-scost`), smin=$(`p${i}-smin`);
+      if(isOff){ scost.textContent='OFF'; scost.classList.add('off'); smin.textContent='0 min'; }
+      else{ scost.textContent=usd(season,0); scost.classList.remove('off'); smin.textContent=(mins*eps)+' min · '+eps+' eps'; active++; }
+
+      totalSeason+=season; totalMins+=prodMins;
+    }
+
+    // wallet
+    const usdLeft=credits*UNIT, cdnLeft=usdLeft*FX;
+    $('w-credits').innerHTML=num(credits)+' <span>units</span>';
+    $('w-usd').textContent=usd(usdLeft,0);
+    $('w-cdn').textContent=usd(cdnLeft,0);
+    $('w-unit').textContent='$'+UNIT.toFixed(5);
+
+    // totals
+    const burn=totalSeason/UNIT;
+    const after=credits-burn;
+    const afterUSD=after*UNIT;
+
+    $('t-active').textContent=active;
+    $('t-mins').textContent=num(totalMins)+' min';
+    $('t-usd').textContent=usd(totalSeason,0);
+    $('t-burn').textContent=num(burn);
+
+    $('h-total').textContent=usd(totalSeason,0);
+    $('h-total-sub').textContent=usd(totalSeason*FX,0)+' CDN · '+num(totalMins)+' finished min';
+    $('h-after').textContent=num(after);
+    $('h-after-sub').textContent='units · '+(after>=0?usd(afterUSD,0)+' USD left':usd(Math.abs(afterUSD),0)+' USD short');
+
+    const defBox=$('deficit-box');
+    if(after>=0){
+      $('h-after').style.color='var(--green-accent)';
+      defBox.style.display='none';
+    } else {
+      $('h-after').style.color='var(--red-accent)';
+      const defUSD=Math.abs(afterUSD);
+      $('d-usd').textContent=usd(defUSD,0);
+      $('d-cdn').textContent=usd(defUSD*FX,0);
+      $('d-credits').textContent=num(Math.ceil(defUSD/UNIT))+' units';
+      defBox.style.display='block';
+    }
+
+    // gauge = credits left vs pool
+    let fill=credits/PURCHASED_UNITS; fill=Math.max(0,Math.min(1,fill));
+    const deg=-120+fill*240, needle=$('needle');
+    if(firstLoad){
+      firstLoad=false;
+      setTimeout(()=>{needle.style.transition="transform .45s cubic-bezier(.25,.46,.45,.94)";needle.style.transform="rotate(120deg)";},100);
+      setTimeout(()=>{needle.style.transition="transform .4s cubic-bezier(.55,.085,.68,.53)";needle.style.transform="rotate(-120deg)";},650);
+      setTimeout(()=>{needle.style.transition="transform 2.8s cubic-bezier(.1,.9,.15,1)";needle.style.transform=`rotate(${deg}deg)`;},1150);
+    } else {
+      needle.style.transition="transform .3s ease-out";needle.style.transform=`rotate(${deg}deg)`;
+    }
+  }
+
+  document.addEventListener('input',calc);
+  calc();
+})();
+</script>
 </body>
 </html>
