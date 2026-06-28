@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DARKHALF KREA GAS GAUGE — SLATE</title>
+<title>DARKHALF JOB BID DASHBOARD</title>
 <style>
 :root{
   --bg-color:#000;--surface-color:#0a0a0c;--surface-accent:#121216;--border-color:#222226;
@@ -35,6 +35,17 @@ header{border-bottom:1px solid var(--border-color);padding-bottom:20px;margin-bo
 .panel{background:linear-gradient(135deg,#061118 0%,#020507 100%);border:1px solid rgba(0,212,255,.2);
   border-radius:8px;padding:24px;margin-bottom:20px}
 .panel-title{color:var(--cyan-accent);font-size:12px;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px;font-weight:bold}
+.wallet-head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:16px}
+.wallet-head .gauge-container{width:72px;height:72px}
+.fx-bar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;
+  background:linear-gradient(135deg,#101418 0%,#050708 100%);border:1px solid rgba(0,212,255,.3);
+  border-radius:8px;padding:14px 20px;margin-bottom:20px}
+.fx-title{display:block;color:var(--cyan-accent);font-size:12px;letter-spacing:1px;text-transform:uppercase;font-weight:bold}
+.fx-note{display:block;font-size:10px;color:var(--text-muted);margin-top:3px}
+.fx-right{font-family:monospace;font-size:15px;font-weight:bold;color:var(--text-primary);white-space:nowrap}
+.fx-right input{background:#000;border:1px solid var(--cyan-accent);color:var(--cyan-accent);padding:7px 10px;border-radius:4px;
+  font-family:monospace;font-size:15px;font-weight:bold;width:90px;text-align:right;outline:none}
+.fx-right input:focus{box-shadow:0 0 8px rgba(0,212,255,.3)}
 
 .ledger-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 @media(min-width:680px){.ledger-grid{grid-template-columns:repeat(4,1fr)}}
@@ -90,6 +101,72 @@ input[type="range"]{width:100%;height:6px;background:#222;border-radius:3px;outl
 .prod-out .o b{font-size:15px;display:block;margin-top:3px;color:var(--cyan-accent)}
 .eps-input{background:#000;border:1px solid var(--border-color);color:#fff;padding:4px 6px;border-radius:4px;font-family:monospace;font-size:13px;width:54px;text-align:right;outline:none}
 
+/* crew & labour */
+.crew-section{margin-top:18px;padding-top:16px;border-top:1px dashed rgba(212,0,255,.22)}
+.crew-title{font-size:11px;text-transform:uppercase;color:var(--purple-accent);letter-spacing:.5px;font-weight:bold;
+  margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.crew-head-row{display:grid;grid-template-columns:1fr 130px 84px 96px 30px;gap:8px;padding:0 10px 6px;
+  font-size:9px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:bold}
+.crew-head-row span:nth-child(2),.crew-head-row span:nth-child(3),.crew-head-row span:nth-child(4){text-align:right}
+.crew-row{display:grid;grid-template-columns:1fr 130px 84px 96px 30px;gap:8px;align-items:center;
+  background:rgba(212,0,255,.04);border:1px solid rgba(212,0,255,.12);border-radius:6px;padding:8px 10px;margin-bottom:8px}
+.crew-row input{background:#000;border:1px solid var(--border-color);color:#fff;padding:6px 8px;border-radius:4px;
+  font-family:inherit;font-size:13px;outline:none;width:100%}
+.crew-row input:focus{border-color:var(--purple-accent);box-shadow:0 0 6px rgba(212,0,255,.2)}
+.crew-name{font-weight:bold}
+.crew-pick{display:flex;flex-direction:column;gap:6px;min-width:0}
+.crew-role{background:#000;border:1px solid var(--border-color);color:#fff;padding:7px 8px;border-radius:4px;
+  font-family:inherit;font-size:13px;font-weight:bold;outline:none;width:100%;cursor:pointer;appearance:auto}
+.crew-role:focus{border-color:var(--purple-accent);box-shadow:0 0 6px rgba(212,0,255,.2)}
+.crew-money{display:flex;align-items:center;gap:4px}
+.crew-money input{text-align:right;font-family:monospace}
+.crew-unit{font-size:10px;color:var(--text-muted);white-space:nowrap}
+.crew-line{font-family:monospace;font-size:13px;color:var(--purple-accent);text-align:right;white-space:nowrap;font-weight:bold}
+.del-person{background:rgba(255,49,49,.1);border:1px solid rgba(255,49,49,.25);color:var(--red-accent);border-radius:4px;
+  cursor:pointer;font-size:16px;line-height:1;width:30px;height:30px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.del-person:hover{background:var(--red-accent);color:#000}
+.add-person{background:rgba(212,0,255,.08);border:1px solid rgba(212,0,255,.3);color:var(--purple-accent);
+  font-size:11px;font-weight:bold;padding:8px 14px;border-radius:4px;cursor:pointer;margin-top:2px}
+.add-person:hover{background:var(--purple-accent);color:#000}
+.add-prod-row{display:flex;gap:12px;flex-wrap:wrap;margin:0 0 24px}
+.add-prod-btn{flex:1;min-width:200px;background:rgba(0,212,255,.07);border:1px dashed rgba(0,212,255,.45);color:var(--cyan-accent);
+  font-size:13px;font-weight:bold;letter-spacing:.5px;text-transform:uppercase;padding:16px;border-radius:8px;cursor:pointer}
+.add-prod-btn:hover{background:var(--cyan-accent);color:#000;border-style:solid}
+.add-prod-btn.film{border-color:rgba(212,0,255,.45);color:var(--purple-accent);background:rgba(212,0,255,.07)}
+.add-prod-btn.film:hover{background:var(--purple-accent);color:#000}
+.del-prod{background:rgba(255,49,49,.1);border:1px solid rgba(255,49,49,.3);color:var(--red-accent);border-radius:4px;
+  cursor:pointer;font-size:15px;line-height:1;width:26px;height:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-left:4px}
+.del-prod:hover{background:var(--red-accent);color:#000}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:20px}
+.tool-btn{background:rgba(0,212,255,.08);border:1px solid rgba(0,212,255,.3);color:var(--cyan-accent);font-size:11px;
+  font-weight:bold;text-transform:uppercase;letter-spacing:.5px;padding:8px 14px;border-radius:6px;cursor:pointer}
+.tool-btn:hover{background:var(--cyan-accent);color:#000}
+.tool-btn.reset{border-color:rgba(255,49,49,.3);color:var(--red-accent);background:rgba(255,49,49,.07)}
+.tool-btn.reset:hover{background:var(--red-accent);color:#000}
+.tool-note{font-size:10px;color:var(--text-muted);margin-left:auto}
+.crew-empty{font-size:11px;color:var(--text-muted);font-style:italic;padding:6px 0 10px}
+.crew-foot{display:flex;justify-content:flex-end;align-items:baseline;gap:10px;margin-top:12px;font-family:monospace}
+.crew-foot .cf-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.5px;color:var(--text-muted);font-weight:bold;font-family:inherit}
+.crew-foot b{color:var(--purple-accent);font-size:16px}
+.crew-foot .cf-sub{font-size:10px;color:var(--text-muted)}
+.prod-split{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:8px}
+@media(max-width:760px){.prod-split{grid-template-columns:repeat(2,1fr)}}
+.prod-split .o{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.05);border-radius:6px;padding:12px 10px;text-align:center}
+.prod-split .o b{font-size:16px;display:block;margin-top:3px}
+.prod-split .o.compute b{color:var(--cyan-accent)}
+.prod-split .o.labour b{color:var(--purple-accent)}
+.prod-split .o.total{border-color:rgba(57,255,20,.25)}
+.prod-split .o.total b{color:var(--green-accent)}
+.prod-split .o.bid{border-color:rgba(0,212,255,.3)}
+.bid-input{width:100%;background:#000;border:1px solid var(--border-color);color:var(--cyan-accent);padding:6px;border-radius:4px;
+  font-family:monospace;font-size:15px;font-weight:bold;text-align:center;outline:none;margin-top:3px}
+.bid-input:focus{border-color:var(--cyan-accent);box-shadow:0 0 6px rgba(0,212,255,.2)}
+.bid-input.locked{opacity:.6;border-style:dashed;cursor:not-allowed}
+.bid-auto{display:flex;align-items:center;justify-content:center;gap:4px;font-size:9px;text-transform:uppercase;
+  letter-spacing:.3px;color:var(--text-muted);margin-top:5px;cursor:pointer;user-select:none}
+.bid-auto input{cursor:pointer;accent-color:var(--cyan-accent)}
+.bid-sub{display:block;font-size:10px;font-family:monospace;margin-top:5px;color:var(--text-muted)}
+
 .mini-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 @media(min-width:680px){.mini-grid{grid-template-columns:repeat(3,1fr)}}
 .mini-cell{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.04);border-radius:6px;padding:8px;text-align:center}
@@ -104,12 +181,20 @@ input[type="range"]{width:100%;height:6px;background:#222;border-radius:3px;outl
 .hero-cell.a .hero-val{color:var(--orange-accent)}.hero-cell.b .hero-val{color:var(--green-accent)}
 .hero-cell .hero-sub{font-size:11px;color:var(--text-muted);margin-top:4px;font-family:monospace}
 
+.net-box{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;
+  border:2px solid rgba(57,255,20,.4);border-radius:10px;padding:24px 28px;margin-bottom:20px;
+  background:linear-gradient(135deg,#0a1206 0%,#050803 100%);box-shadow:0 0 24px rgba(57,255,20,.06)}
+.net-box .net-formula{display:block;font-size:11px;color:var(--text-muted);font-family:monospace;margin-top:6px}
+.net-box .net-val{font-size:36px;font-weight:900;color:var(--green-accent);font-family:'SF Mono',ui-monospace,monospace;white-space:nowrap}
+.bidmin-vals{display:flex;gap:28px}
+.bidmin-cell{text-align:right}
+.bidmin-cell .net-val{font-size:30px;display:block}
 .totals-panel{border:1px solid rgba(255,204,0,.3);background:linear-gradient(135deg,#14110a 0%,#070502 100%)}
 .out-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-@media(min-width:680px){.out-grid{grid-template-columns:repeat(4,1fr)}}
+@media(min-width:680px){.out-grid{grid-template-columns:repeat(3,1fr)}}
 .out-cell{background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.04);border-radius:6px;padding:14px 10px;text-align:center}
 .out-cell .out-val{font-size:18px;font-weight:bold;display:block;margin-top:5px}
-.out-val.cyan{color:var(--cyan-accent)}.out-val.green{color:var(--green-accent)}.out-val.gold{color:var(--gold-accent)}.out-val.orange{color:var(--orange-accent)}
+.out-val.cyan{color:var(--cyan-accent)}.out-val.green{color:var(--green-accent)}.out-val.gold{color:var(--gold-accent)}.out-val.orange{color:var(--orange-accent)}.out-val.purple{color:var(--purple-accent)}
 
 #deficit-box{margin-top:18px;background:rgba(255,49,49,.03);border:1px solid rgba(255,49,49,.2);border-radius:6px;padding:16px;display:none}
 .deficit-title{font-size:11px;text-transform:uppercase;color:var(--red-accent);font-weight:bold;letter-spacing:.5px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
@@ -122,6 +207,12 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
   .slider-row{grid-template-columns:1fr;gap:8px}.slider-row label{align-items:center;text-align:center}
   .hero{grid-template-columns:1fr}.deficit-grid{grid-template-columns:1fr}
   .acc-head{flex-wrap:wrap;gap:8px}
+  .crew-head-row{display:none}
+  .crew-row{grid-template-columns:1fr 1fr;gap:8px}
+  .crew-row .crew-pick{grid-column:1 / -1}
+  .crew-line{grid-column:1 / 2;text-align:left}
+  .del-person{justify-self:end}
+  .prod-split{grid-template-columns:1fr}
 }
 .help{display:inline-flex;width:14px;height:14px;background:rgba(0,212,255,.15);color:var(--cyan-accent);
   border-radius:50%;font-size:9px;line-height:1;align-items:center;justify-content:center;cursor:pointer;
@@ -148,26 +239,43 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
     <div class="header-left">
       <img src="DHILOGO.png" alt="" style="height:42px" onerror="this.style.display='none'">
       <div>
-        <div class="brand-title">DARKHALF KREA GAS GAUGE</div>
-        <div class="brand-sub">Multi-production slate · model-mix cost ↔ compute burn</div>
+        <div class="brand-title">DARKHALF JOB BID DASHBOARD</div>
+        <div class="brand-sub">Multi-production slate · model-mix compute + crew labour</div>
       </div>
-    </div>
-    <div class="gauge-container">
-      <svg class="gauge-svg" viewBox="0 0 90 90">
-        <path d="M 20 65 A 32 32 0 1 1 70 65" fill="none" stroke="#222" stroke-width="3" stroke-dasharray="2,3"/>
-        <text x="14" y="68" class="gauge-text label-e">E</text>
-        <text x="40" y="16" class="gauge-text">1/2</text>
-        <text x="69" y="68" class="gauge-text label-f">F</text>
-        <text x="30" y="78" class="gauge-text" style="font-size:6px;fill:#444">COMPUTE</text>
-        <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="needle" style="transform:rotate(-120deg)"/>
-        <circle cx="45" cy="45" r="5" class="gauge-center-cap"/>
-      </svg>
     </div>
   </header>
 
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <button class="tool-btn" id="save-btn">⤓ Save scenario</button>
+    <button class="tool-btn" id="load-btn">⤒ Load scenario</button>
+    <button class="tool-btn reset" id="reset-btn">↺ Reset to defaults</button>
+    <input type="file" id="load-file" accept="application/json,.json" style="display:none">
+    <span class="tool-note">Auto-saves your session on this device only</span>
+  </div>
+
+  <!-- MASTER FX -->
+  <div class="fx-bar">
+    <div class="fx-left"><span class="fx-title">Master Exchange Rate <span class="help" data-help="fx">?</span></span><span class="fx-note">all costs shown in CDN · KREA compute is USD and converted at this rate</span></div>
+    <div class="fx-right">USD&nbsp;$1&nbsp;=&nbsp;<input type="number" id="g-fx" value="1.375" step="0.001" min="0">&nbsp;CDN</div>
+  </div>
+
   <!-- WALLET -->
   <div class="panel">
-    <div class="panel-title">Compute Wallet</div>
+    <div class="wallet-head">
+      <div class="panel-title" style="margin:0">Compute Wallet</div>
+      <div class="gauge-container">
+        <svg class="gauge-svg" viewBox="0 0 90 90">
+          <path d="M 20 65 A 32 32 0 1 1 70 65" fill="none" stroke="#222" stroke-width="3" stroke-dasharray="2,3"/>
+          <text x="14" y="68" class="gauge-text label-e">E</text>
+          <text x="40" y="16" class="gauge-text">1/2</text>
+          <text x="69" y="68" class="gauge-text label-f">F</text>
+          <text x="30" y="78" class="gauge-text" style="font-size:6px;fill:#444">COMPUTE</text>
+          <line x1="45" y1="45" x2="45" y2="18" class="gauge-needle" id="needle" style="transform:rotate(-120deg)"/>
+          <circle cx="45" cy="45" r="5" class="gauge-center-cap"/>
+        </svg>
+      </div>
+    </div>
     <div class="ledger-grid">
       <div class="ledger-cell"><span class="stat-label">Credits left</span><span class="ledger-value" id="w-credits">0 <span>units</span></span></div>
       <div class="ledger-cell"><span class="stat-label">Value (USD)</span><span class="ledger-value highlight" id="w-usd">$0</span></div>
@@ -177,7 +285,6 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
     <div class="credits-sync">
       <div style="display:flex;flex-direction:column;gap:4px;max-width:430px">
         <label style="font-size:11px;text-transform:uppercase;color:var(--cyan-accent);font-weight:bold">Sync wallet compute credits <span class="help" data-help="credits">?</span></label>
-        <span style="font-size:11px;color:var(--text-muted)">Defaults to 6.42M units (state as of May 15 2026). Enter current remaining credits for an accurate read.</span>
       </div>
       <input type="number" id="in-credits" value="25750000" step="50000" min="0" class="credits-input-field">
     </div>
@@ -186,7 +293,7 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
   <!-- GLOBAL PRICING -->
   <div class="panel acc" id="pricing-acc" style="border-color:rgba(57,255,20,.18)">
     <div class="acc-head" data-acc="pricing-acc">
-      <div class="acc-head-left"><span class="chevron">▸</span><span class="panel-title" style="color:var(--green-accent);margin:0">Global Model Pricing (KREA constants)</span></div>
+      <div class="acc-head-left"><span class="chevron">▸</span><span class="panel-title" style="color:var(--green-accent);margin:0">Global Model Pricing (KREA constants) <span class="help" data-help="pricing">?</span></span></div>
       <span class="acc-sum"><span class="s-min">applies to all productions</span></span>
     </div>
     <div class="acc-body">
@@ -202,13 +309,17 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
 
   <!-- PRODUCTIONS injected here -->
   <div id="prods"></div>
+  <div class="add-prod-row">
+    <button class="add-prod-btn" id="add-series">+ Add Series</button>
+    <button class="add-prod-btn film" id="add-film">+ Add Film / Development</button>
+  </div>
 
   <!-- HERO TOTALS -->
   <div class="hero">
     <div class="hero-cell a">
-      <span class="stat-label">Slate production cost (USD)</span>
+      <span class="stat-label">Slate billed total — incl. margin (CDN)</span>
       <span class="hero-val" id="h-total">$0</span>
-      <span class="hero-sub" id="h-total-sub">$0 CDN · 0 finished min</span>
+      <span class="hero-sub" id="h-total-sub">$0 compute + $0 labour + $0 margin</span>
     </div>
     <div class="hero-cell b">
       <span class="stat-label">Projected credits after slate</span>
@@ -223,20 +334,63 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
     <div class="out-grid">
       <div class="out-cell"><span class="stat-label">Active productions</span><span class="out-val cyan" id="t-active">0</span></div>
       <div class="out-cell"><span class="stat-label">Total finished minutes</span><span class="out-val cyan" id="t-mins">0</span></div>
-      <div class="out-cell"><span class="stat-label">Total season cost USD</span><span class="out-val orange" id="t-usd">$0</span></div>
-      <div class="out-cell"><span class="stat-label">Total credits burned</span><span class="out-val gold" id="t-burn">0</span></div>
+      <div class="out-cell"><span class="stat-label">Total credits burned <span class="help" data-help="burn">?</span></span><span class="out-val gold" id="t-burn">0</span></div>
+      <div class="out-cell"><span class="stat-label">Compute cost CDN</span><span class="out-val orange" id="t-compute">C$0</span></div>
+      <div class="out-cell"><span class="stat-label">Labour cost CDN <span class="help" data-help="labtot">?</span></span><span class="out-val purple" id="t-labour">C$0</span></div>
+      <div class="out-cell"><span class="stat-label">All-in cost CDN <span class="help" data-help="allin">?</span></span><span class="out-val cyan" id="t-usd">C$0</span></div>
+      <div class="out-cell"><span class="stat-label">Cream margin CDN <span class="help" data-help="margin">?</span></span><span class="out-val orange" id="t-margin">C$0</span></div>
+      <div class="out-cell" style="border-color:rgba(57,255,20,.3)"><span class="stat-label"><span id="t-grand-lbl">Actual cost (total)</span> <span class="help" data-help="actualcost">?</span></span><span class="out-val green" id="t-grand">$0</span></div>
+      <div class="out-cell" style="border-color:rgba(0,212,255,.3)"><span class="stat-label">Total bid price CDN <span class="help" data-help="bid">?</span></span><span class="out-val cyan" id="t-bid">C$0</span></div>
+      <div class="out-cell"><span class="stat-label">Slate profit CDN (bid − cost)</span><span class="out-val green" id="t-profit">C$0</span></div>
     </div>
     <div id="deficit-box">
-      <div class="deficit-title"><span class="deficit-dot"></span>KREA compute credit replenishment ledger</div>
+      <div class="deficit-title"><span class="deficit-dot"></span>KREA compute credit replenishment ledger <span class="help" data-help="deficit">?</span></div>
       <div class="deficit-grid">
-        <div class="ledger-cell"><span class="stat-label">Deficit (USD)</span><span class="ledger-value" id="d-usd" style="font-size:14px">$0</span></div>
-        <div class="ledger-cell"><span class="stat-label">Deficit (CDN)</span><span class="ledger-value" id="d-cdn" style="font-size:14px">$0</span></div>
+        <div class="ledger-cell"><span class="stat-label">Compute deficit (USD)</span><span class="ledger-value" id="d-usd" style="font-size:14px">$0</span></div>
+        <div class="ledger-cell"><span class="stat-label">Compute deficit (CDN)</span><span class="ledger-value" id="d-cdn" style="font-size:14px">$0</span></div>
         <div class="ledger-cell" style="border:1px solid rgba(255,49,49,.3)"><span class="stat-label" style="color:var(--red-accent)">Credits to order</span><span class="ledger-value" id="d-credits" style="font-size:15px;color:var(--red-accent);font-weight:900">0</span></div>
       </div>
     </div>
   </div>
 
-  <footer>CONFIDENTIAL — PROPERTY OF CREAM PRODUCTIONS © 2026 · Render costs from KREA compute pricing @ $0.0018/unit · FX 1.375 USD→CDN</footer>
+  <!-- COMPANY OVERHEAD -->
+  <div class="panel" style="border-color:rgba(212,0,255,.25)">
+    <div class="panel-title" style="color:var(--purple-accent)">Company Overhead — DarkHalf Vertical <span class="help" data-help="overhead">?</span></div>
+    <div class="mini-grid">
+      <div class="mini-cell"><label>Slate length (months) <span class="help" data-help="proration">?</span></label><input type="number" id="o-months" value="6" step="0.5" min="0"></div>
+      <div class="mini-cell"><label>Andrew · VP DarkHalf (C$/yr) <span class="help" data-help="proration">?</span></label><input type="number" id="o-andrew" value="140000" step="1000" min="0"></div>
+      <div class="mini-cell"><label>Francine · Head of Prod, DH share (C$/yr)</label><input type="number" id="o-francine" value="30000" step="1000" min="0"></div>
+      <div class="mini-cell"><label>Legal + rent + opex (C$/mo)</label><input type="number" id="o-opex" value="2000" step="100" min="0"></div>
+    </div>
+    <div class="out-grid" style="margin-top:14px">
+      <div class="out-cell"><span class="stat-label">Total overhead · this slate</span><span class="out-val purple" id="o-total">C$0</span></div>
+      <div class="out-cell"><span class="stat-label">Margin collected (covers overhead)</span><span class="out-val orange" id="o-margin">C$0</span></div>
+      <div class="out-cell" id="o-cov-cell" style="border:1px solid rgba(57,255,20,.3)"><span class="stat-label" id="o-cov-lbl">Coverage</span><span class="out-val green" id="o-cov">C$0</span></div>
+    </div>
+  </div>
+
+  <!-- NET RESULT -->
+  <div class="net-box" id="net-box">
+    <div class="net-left">
+      <span class="stat-label">Net result — profit, overhead coverage &amp; credit top-up (CDN) <span class="help" data-help="net">?</span></span>
+      <span class="net-formula" id="f-net-sub">C$0 profit − C$0 credit top-up</span>
+    </div>
+    <div class="net-val" id="f-net">C$0</div>
+  </div>
+
+  <!-- AVG BID PER MINUTE -->
+  <div class="net-box" id="bidmin-box" style="border-color:rgba(0,212,255,.4);box-shadow:0 0 24px rgba(0,212,255,.06)">
+    <div class="net-left">
+      <span class="stat-label">Average bid per finished minute <span class="help" data-help="bidmin">?</span></span>
+      <span class="net-formula" id="bidmin-sub">total bid ÷ finished minutes</span>
+    </div>
+    <div class="bidmin-vals">
+      <div class="bidmin-cell"><span class="stat-label">CDN</span><span class="net-val" id="bidmin-cdn" style="color:var(--cyan-accent)">C$0</span></div>
+      <div class="bidmin-cell"><span class="stat-label">USD</span><span class="net-val" id="bidmin-usd" style="color:var(--cyan-accent)">$0</span></div>
+    </div>
+  </div>
+
+  <footer>CONFIDENTIAL — PROPERTY OF CREAM PRODUCTIONS © 2026 · All figures CDN · KREA compute priced @ $0.0018 USD/unit, converted at the master exchange rate · Labour = weekly rate × weeks (cash, not credits)</footer>
 </div>
 
 <div class="popup-modal" id="help-modal">
@@ -250,30 +404,51 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
 <script>
 (function(){
   const $=id=>document.getElementById(id);
-  const UNIT=0.0018, FX=1.37504, PURCHASED_UNITS=30000000, N=7;
+  const UNIT=0.0018, FXdefault=1.37504, PURCHASED_UNITS=30000000;
   const usd=(n,d=0)=>'$'+n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+  const cdn=(n,d=0)=>'C$'+n.toLocaleString('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
   const num=n=>Math.round(n).toLocaleString('en-US');
+  const getFX=()=>(+$('g-fx').value||FXdefault);
 
   // saved slate defaults
   const prodDefaults=[
-    {name:'CTD',          mins:15, draft:3, edit:4, eps:8, deliv:30, seed:50, k3:25, k26:25, oneoff:false, open:true},
-    {name:'Production 2', mins:0,  draft:3, edit:3, eps:8, deliv:0,  seed:30, k3:30, k26:40, oneoff:false, open:false},
-    {name:'Production 3', mins:0,  draft:3, edit:3, eps:8, deliv:0,  seed:30, k3:30, k26:40, oneoff:false, open:false},
-    {name:'Production 4', mins:0,  draft:3, edit:3, eps:8, deliv:0,  seed:30, k3:30, k26:40, oneoff:false, open:false},
-    {name:'Mooflower',    mins:5,  draft:5, edit:5, eps:1, deliv:0,  seed:100, k3:0, k26:0,  oneoff:true,  open:true},
-    {name:'Mythical',     mins:2,  draft:5, edit:5, eps:1, deliv:0,  seed:100, k3:0, k26:0,  oneoff:true,  open:true},
-    {name:'Film / Dev 3', mins:0,  draft:3, edit:3, eps:1, deliv:0,  seed:30, k3:30, k26:40, oneoff:true,  open:false}
+    {name:'CTD', mins:17, draft:3, edit:4, eps:8, deliv:30, seed:63, k3:27, k26:10, oneoff:false, open:true, margin:22, bid:260000,
+      crew:[{role:2,n:'AI Artist Sacha',rate:1700,wk:35},{role:3,n:'AI Artist Will',rate:1450,wk:30},{role:4,n:'AI Artist JJ',rate:1450,wk:12},{role:6,n:'AI Artist Paul',rate:1950,wk:3},{role:0,n:'AI Artist James',rate:2025,wk:2},{role:1,n:'AI Artist Ian',rate:2025,wk:2}]},
+    {name:'Mooflower', mins:4, draft:5, edit:5, eps:1, deliv:2, seed:85, k3:15, k26:0, oneoff:true, open:true, margin:10, bid:35000,
+      crew:[{role:0,n:'AI Artist James',rate:2025,wk:7},{role:6,n:'AI Artist Paul',rate:1950,wk:3},{role:1,n:'AI Artist Ian',rate:2025,wk:1}]},
+    {name:'Mythical', mins:2, draft:5, edit:5, eps:1, deliv:50, seed:65, k3:0, k26:35, oneoff:true, open:true, margin:40, bid:15000,
+      crew:[{role:0,n:'AI Artist James',rate:2025,wk:0.5}]}
+  ];
+  // templates for the "+ Add" buttons
+  const seriesTemplate={name:'', mins:10, draft:3, edit:3, eps:8, deliv:0, seed:30, k3:30, k26:40, oneoff:false, open:true, margin:10, bid:0, bidauto:true, crew:[]};
+  const filmTemplate  ={name:'', mins:5,  draft:5, edit:5, eps:1, deliv:0, seed:60, k3:20, k26:20, oneoff:true,  open:true, margin:10, bid:0, bidauto:true, crew:[]};
+
+  // preset crew roster (fixed weekly rates) — choosing one auto-fills the rate (still editable)
+  const PRESETS=[
+    {label:'AI Artist James', rate:2025},
+    {label:'AI Artist Ian',   rate:2025},
+    {label:'AI Artist Sacha', rate:1700},
+    {label:'AI Artist Will',  rate:1450},
+    {label:'AI Artist JJ',    rate:1450},
+    {label:'AI Artist Marty', rate:1950},
+    {label:'AI Artist Paul',  rate:1950},
+    {label:'Post Coordinator',rate:1750}
   ];
 
-  function prodHTML(i){
-    const P=prodDefaults[i], mins=P.mins;
-    return `<div class="panel acc${P.open?' open':''}" id="prod-${i}">
+  // mutable production state: crews keyed by a unique production id (pid)
+  let pidSeq=0, firstLoad=true, loading=false;
+  const crews={};
+  const LS_KEY='dhi-bid-state';
+
+  function prodHTML(i,P){
+    const mins=P.mins;
+    return `<div class="panel acc${P.open?' open':''}" id="prod-${i}" data-pid="${i}" data-oneoff="${P.oneoff?1:0}">
       <div class="acc-head" data-acc="prod-${i}">
         <div class="acc-head-left">
           <span class="chevron">▸</span>
-          <input class="prod-name" id="p${i}-name" value="${P.name}" placeholder="Title this production…" onclick="event.stopPropagation()">
+          <input class="prod-name" id="p${i}-name" value="${P.name||''}" placeholder="Title this production…" onclick="event.stopPropagation()">
         </div>
-        <span class="acc-sum"><span class="s-min" id="p${i}-smin">0 min</span><span class="s-cost off" id="p${i}-scost">OFF</span></span>
+        <span class="acc-sum"><span class="s-min" id="p${i}-smin">0 min</span><span class="s-cost off" id="p${i}-scost">OFF</span><button class="del-prod" data-pid="${i}" title="Remove production">×</button></span>
       </div>
       <div class="acc-body">
         <div class="slider-row">
@@ -322,34 +497,204 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
           <div class="o"><span class="stat-label">Cost / min</span><b id="p${i}-omin">$0</b></div>
           <div class="o"><span class="stat-label">Cost / final clip</span><b id="p${i}-oclip">$0</b></div>
           <div class="o"><span class="stat-label">Cost / episode</span><b id="p${i}-oep">$0</b></div>
-          <div class="o"><span class="stat-label">Season cost</span><b id="p${i}-oseason">$0</b></div>
+          <div class="o"><span class="stat-label">Compute season</span><b id="p${i}-oseason">$0</b></div>
+        </div>
+
+        <!-- CREW & LABOUR -->
+        <div class="crew-section">
+          <div class="crew-title">Crew &amp; Labour <span class="help" data-help="crew">?</span></div>
+          <div class="crew-head-row"><span>Name / role</span><span>Weekly rate</span><span>Weeks</span><span>Labour</span><span></span></div>
+          <div class="crew-list" id="p${i}-crew"></div>
+          <button class="add-person" data-p="${i}">+ Add person</button>
+          <div class="crew-foot"><span class="cf-lbl">Labour season</span><b id="p${i}-olabour">$0</b><span class="cf-sub" id="p${i}-lheads">0 crew</span></div>
+        </div>
+
+        <!-- PER-JOB CREAM MARGIN -->
+        <div class="slider-row" style="grid-template-columns:200px 1fr 120px;margin-top:14px;border-color:rgba(255,165,0,.18)">
+          <label style="color:var(--orange-accent)">Cream margin (this job) <span class="help" data-help="margin">?</span><span class="sub-note">markup on compute + labour</span></label>
+          <input type="range" id="p${i}-margin" min="0" max="50" step="1" value="${P.margin!==undefined?P.margin:10}" style="accent-color:var(--orange-accent)">
+          <div class="pct-bubble bub-edit" id="p${i}-bmargin">10%</div>
+        </div>
+
+        <!-- SPLIT ROLL-UP -->
+        <div class="prod-split">
+          <div class="o compute"><span class="stat-label">Compute</span><b id="p${i}-scompute">$0</b></div>
+          <div class="o labour"><span class="stat-label">Labour</span><b id="p${i}-slabour">$0</b></div>
+          <div class="o"><span class="stat-label">Cream margin</span><b id="p${i}-smargin" style="color:var(--orange-accent)">$0</b></div>
+          <div class="o total"><span class="stat-label">Actual cost</span><b id="p${i}-stotal">$0</b></div>
+          <div class="o bid"><span class="stat-label">Bid price (C$) <span class="help" data-help="bid">?</span></span><input type="number" class="bid-input" id="p${i}-bid" value="${P.bid||0}" step="500" min="0"><label class="bid-auto"><input type="checkbox" id="p${i}-bidauto" ${P.bidauto?'checked':''}> auto from margin</label><span class="bid-sub" id="p${i}-bidsub">set bid</span></div>
         </div>
       </div>
     </div>`;
   }
 
-  $('prods').innerHTML=Array.from({length:N},(_,i)=>prodHTML(i)).join('');
+  // --- crew roster rendering ---
+  const esc=s=>(s||'').replace(/"/g,'&quot;');
+  function roleOptions(sel){
+    let o='';
+    PRESETS.forEach((p,k)=>{ o+=`<option value="${k}"${sel===String(k)?' selected':''}>${p.label}</option>`; });
+    o+=`<option value="custom"${sel==='custom'?' selected':''}>Custom…</option>`;
+    return o;
+  }
+  function renderCrew(i){
+    const list=$(`p${i}-crew`);
+    const rows=crews[i].map((c,j)=>{
+      const isCustom=(c.role==='custom');
+      return `
+      <div class="crew-row">
+        <div class="crew-pick">
+          <select class="crew-role" id="p${i}-c${j}-role" data-p="${i}" data-j="${j}">${roleOptions(c.role)}</select>
+          <input class="crew-name" id="p${i}-c${j}-n" data-p="${i}" data-j="${j}" data-f="n" value="${esc(c.n)}" placeholder="Custom name / role"${isCustom?'':' style="display:none"'}>
+        </div>
+        <div class="crew-money"><span class="crew-unit">C$</span><input class="crew-rate" id="p${i}-c${j}-r" type="number" min="0" step="25" data-p="${i}" data-j="${j}" data-f="rate" value="${c.rate||0}"><span class="crew-unit">/wk</span></div>
+        <div class="crew-money"><input class="crew-wk" id="p${i}-c${j}-w" type="number" min="0" step="0.5" data-p="${i}" data-j="${j}" data-f="wk" value="${c.wk||0}"><span class="crew-unit">wks</span></div>
+        <span class="crew-line" id="p${i}-cl${j}">$0</span>
+        <button class="del-person" data-p="${i}" data-j="${j}" title="Remove">×</button>
+      </div>`;
+    }).join('');
+    list.innerHTML=rows||'<div class="crew-empty">No crew yet — add people to forecast labour.</div>';
+  }
+  // sync the current DOM input values back into state (call before structural changes)
+  function syncCrewFromDOM(i){
+    crews[i].forEach((c,j)=>{
+      const role=$(`p${i}-c${j}-role`), n=$(`p${i}-c${j}-n`), r=$(`p${i}-c${j}-r`), w=$(`p${i}-c${j}-w`);
+      if(role) c.role=role.value;
+      if(n) c.n=n.value;
+      if(r) c.rate=+r.value||0;
+      if(w) c.wk=+w.value||0;
+    });
+  }
+  // --- add / remove whole productions ---
+  function addProd(template){
+    const pid=pidSeq++;
+    crews[pid]=(template.crew||[]).map(c=>({role:(c.role!==undefined?String(c.role):'custom'),n:c.n,rate:c.rate,wk:c.wk}));
+    $('prods').insertAdjacentHTML('beforeend', prodHTML(pid,template));
+    renderCrew(pid);
+    calc();
+  }
+  $('add-series').addEventListener('click',()=>addProd(seriesTemplate));
+  $('add-film').addEventListener('click',()=>addProd(filmTemplate));
 
-  // accordion toggles
-  document.querySelectorAll('.acc-head').forEach(h=>{
-    h.addEventListener('click',()=>$(h.dataset.acc).classList.toggle('open'));
+  // --- save / load full dashboard state ---
+  function serializeState(){
+    const prods=[];
+    document.querySelectorAll('#prods .acc').forEach(panel=>{
+      const i=+panel.dataset.pid; syncCrewFromDOM(i);
+      prods.push({
+        name:$(`p${i}-name`).value, mins:+$(`p${i}-mins`).value, draft:+$(`p${i}-draft`).value,
+        edit:+$(`p${i}-edit`).value, eps:+$(`p${i}-eps`).value, deliv:+$(`p${i}-deliv`).value,
+        seed:+$(`p${i}-seed`).value, k3:+$(`p${i}-k3`).value, k26:+$(`p${i}-k26`).value,
+        margin:+$(`p${i}-margin`).value, bid:+$(`p${i}-bid`).value,
+        bidauto:!!($(`p${i}-bidauto`)&&$(`p${i}-bidauto`).checked),
+        oneoff:panel.dataset.oneoff==='1', open:panel.classList.contains('open'),
+        crew:(crews[i]||[]).map(c=>({role:c.role,n:c.n,rate:c.rate,wk:c.wk}))
+      });
+    });
+    return {v:1, fx:+$('g-fx').value, credits:+$('in-credits').value,
+      frames:+$('g-frames').value, cliplen:+$('g-cliplen').value,
+      rseed:+$('g-rseed').value, rk3:+$('g-rk3').value, rk26:+$('g-rk26').value,
+      oMonths:+$('o-months').value, oAndrew:+$('o-andrew').value, oFrancine:+$('o-francine').value, oOpex:+$('o-opex').value,
+      prods};
+  }
+  function applyState(st){
+    if(!st||!st.prods) return;
+    loading=true;
+    const set=(id,v)=>{ if(v!==undefined&&$(id)) $(id).value=v; };
+    set('g-fx',st.fx); set('in-credits',st.credits); set('g-frames',st.frames); set('g-cliplen',st.cliplen);
+    set('g-rseed',st.rseed); set('g-rk3',st.rk3); set('g-rk26',st.rk26);
+    set('o-months',st.oMonths); set('o-andrew',st.oAndrew); set('o-francine',st.oFrancine); set('o-opex',st.oOpex);
+    $('prods').innerHTML=''; for(const k in crews) delete crews[k]; pidSeq=0;
+    st.prods.forEach(P=>addProd(P));
+    baseFromRenderFields();
+    loading=false; calc();
+  }
+  function saveLocal(){ if(loading) return; try{ localStorage.setItem(LS_KEY, JSON.stringify(serializeState())); }catch(e){} }
+  function loadLocal(){ try{ const r=localStorage.getItem(LS_KEY); return r?JSON.parse(r):null; }catch(e){ return null; } }
+
+  $('save-btn').addEventListener('click',()=>{
+    const blob=new Blob([JSON.stringify(serializeState(),null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob), a=document.createElement('a');
+    const stamp=new Date().toISOString().slice(0,10);
+    a.href=url; a.download='darkhalf-bid-scenario-'+stamp+'.json'; a.click(); URL.revokeObjectURL(url);
+  });
+  $('load-btn').addEventListener('click',()=>$('load-file').click());
+  $('load-file').addEventListener('change',e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const rd=new FileReader();
+    rd.onload=()=>{ try{ applyState(JSON.parse(rd.result)); saveLocal(); }catch(err){ alert('Could not read that scenario file — is it a valid saved scenario?'); } };
+    rd.readAsText(f); e.target.value='';
+  });
+  $('reset-btn').addEventListener('click',()=>{
+    if(!confirm('Reset to the built-in default slate? This clears your saved session on this device.')) return;
+    try{ localStorage.removeItem(LS_KEY); }catch(e){}
+    loading=true;
+    $('g-fx').value=1.375; $('in-credits').value=25750000;
+    $('g-frames').value=1.00; $('g-cliplen').value=5; $('g-rseed').value=4.55; $('g-rk3').value=1.49; $('g-rk26').value=0.47;
+    $('o-months').value=6; $('o-andrew').value=140000; $('o-francine').value=30000; $('o-opex').value=2000;
+    $('prods').innerHTML=''; for(const k in crews) delete crews[k]; pidSeq=0;
+    prodDefaults.forEach(P=>addProd(P));
+    baseFromRenderFields(); loading=false; calc();
+  });
+
+  // accordion toggles (delegated so dynamically-added panels work)
+  document.addEventListener('click',e=>{
+    if(e.target.closest('.prod-name')||e.target.closest('.del-prod')||e.target.classList.contains('help')||e.target.closest('.crew-role')||e.target.closest('input')) return;
+    const head=e.target.closest('.acc-head');
+    if(head){ const t=$(head.dataset.acc); if(t) t.classList.toggle('open'); }
+  });
+
+  // add / remove crew + remove production (delegated)
+  document.addEventListener('click',e=>{
+    const delp=e.target.closest('.del-prod');
+    if(delp){ const pid=delp.dataset.pid; const node=$('prod-'+pid); if(node) node.remove(); delete crews[pid]; calc(); return; }
+    const add=e.target.closest('.add-person');
+    if(add){ const i=+add.dataset.p; syncCrewFromDOM(i); crews[i].push({n:'',rate:0,wk:0}); renderCrew(i); calc(); return; }
+    const del=e.target.closest('.del-person');
+    if(del){ const i=+del.dataset.p, j=+del.dataset.j; syncCrewFromDOM(i); crews[i].splice(j,1); renderCrew(i); calc(); return; }
+  });
+
+  // preset dropdown selection -> auto-fill fixed rate (rate stays editable)
+  document.addEventListener('change',e=>{
+    if(e.target.id&&/-bidauto$/.test(e.target.id)){ calc(); return; }
+    const sel=e.target.closest('.crew-role');
+    if(!sel) return;
+    const i=+sel.dataset.p, j=+sel.dataset.j;
+    syncCrewFromDOM(i);
+    const v=sel.value;
+    if(v==='custom'){ crews[i][j].role='custom'; }
+    else{ const k=+v; crews[i][j].role=String(k); crews[i][j].rate=PRESETS[k].rate; crews[i][j].n=PRESETS[k].label; }
+    renderCrew(i); calc();
   });
 
   // help popups
   const HELP={
-    credits:["Wallet Compute Credits","Your remaining KREA compute units. Everything is priced in these units. They convert to <b>USD at $0.0018/unit</b> and to CDN at <b>FX 1.375</b>. This figure drives the gas gauge and the deficit ledger at the bottom."],
+    bidmin:["Average Bid per Finished Minute","Your blended rate card: <b>total bid price ÷ total finished minutes</b>, across every active job. It's a quick benchmark for what you're charging per minute of delivered content, shown in both <b>CDN</b> (your billing currency) and <b>USD</b> (converted at the master exchange rate).<br><br>Because it's an average across the whole slate, a few high-margin jobs can mask cheap ones — use it as a sanity check against what the market pays per minute, not as a per-job price. Finished minutes = each job's minutes × remaining (undelivered) episodes."],
+    proration:["Annual Salaries, Pro-Rated","Enter salaries as their <b>annual (yearly) rate</b> — Andrew at C$140k/yr, Francine's DH share at C$20k/yr. The dashboard automatically <b>pro-rates them to the slate length</b> set here.<br><br>So for a <b>6-month</b> slate, Andrew counts as 140,000 × (6 ÷ 12) = <b>C$70,000</b>, Francine as C$15,000, and opex as C$2k × 6 = C$12,000 → <b>C$97,000 total</b>. Change the months and everything re-prorates instantly (12 months → Andrew's full C$140k).<br><br>Keep the salary boxes as the yearly figure; the months field does the dividing for you. Opex is entered per-month and simply multiplied by the months."],
+    overhead:["Company Overhead — DarkHalf Vertical","Your <b>real fixed overhead</b> for the slate period — the costs the Cream margin is meant to cover.<br><br><b>Andrew</b> is VP of DarkHalf — his full salary (C$140k/yr) sits in this vertical.<br><br><b>Francine</b> is Head of Production at Cream and works across <b>multiple Cream productions</b>, not just DarkHalf. She splits her time between Cream's other shows and this vertical, and only the DarkHalf portion of her salary lands here — that slice is <b>C$30k/yr</b>, not her whole pay. Adjust this figure up or down if she spends more or less time on DarkHalf.<br><br>Both salaries are entered annually and pro-rated by the slate length. <b>Legal + rent + opex</b> is a monthly figure × months. Defaults: Andrew C$140k/yr, Francine C$30k/yr (DH share), opex C$2k/mo, over 6 months ≈ <b>C$97k</b>.<br><br><b>Coverage</b> compares the margin you're actually collecting against this real overhead: <b>green surplus</b> = your margins more than cover the company and the extra is true profit cushion; <b>red short</b> = your margins aren't covering overhead, so real profit is lower than the Slate profit figure suggests — raise per-job margins until it turns green. Overhead is a fixed dollar cost; a flat % margin won't track it as the slate grows, so check this whenever jobs change."],
+    net:["Net Result (CDN)","The true bottom line, reconciled to your <b>real</b> overhead.<br><br><b>Net = Slate profit ± Overhead coverage − Compute credit top-up.</b><br><br><b>Slate profit</b> (bid − actual cost) is what's left after compute, labour and the <i>nominal</i> Cream margin. But the margin you charged may not match the company's real fixed overhead (Andrew, Francine, legal, office) — so the <b>Overhead coverage</b> term corrects it: if margins fall <b>short</b> of real overhead it pulls the net down; if they run a <b>surplus</b> it lifts it. Finally the <b>credit top-up</b> (cash to refill KREA units) is subtracted.<br><br>Net it out and this equals <b>total bids − compute − labour − real overhead − credit top-up</b>: genuine money in your pocket after everything is actually paid. Green = ahead, red = underwater. Raise bids or per-job margins to turn it green."],
+    fx:["Master Exchange Rate","The whole dashboard reports in <b>CDN</b>. Your labour rates and bid prices are entered directly in CDN, but <b>KREA compute is billed in USD</b> ($0.0018/unit) — this box sets the <b>USD→CDN rate</b> used to convert the compute side into CDN so every total is in one currency. Update it to today's rate for an accurate read. It only affects the money figures; the credit-burn and units-to-order numbers stay in KREA's USD-priced units."],
+    actualcost:["Actual Cost (total)","The slate's <b>true all-in cost to deliver every active job</b> — the sum of each production's compute + labour + Cream margin. The <b>+X% margin</b> shown is the blended average markup across all jobs (it shifts as you set different per-job margins). This is what the work actually costs the company to make, <b>before</b> any bid/quote — compare it against Total bid price to see slate profit. Note: margin and labour are cash, so this figure is larger than the credit-burn number; only the compute slice draws down KREA credits."],
+    pricing:["Global Model Pricing (KREA constants)","These are the <b>master cost constants</b> that every production's compute math is built on: the per-clip frame cost, clip length, and the live KREA render price for each video model (Seedance2, Kling 3, Kling 2.6). Change one value here and it instantly re-prices <b>every job on the slate</b>. <b>⚠️ Don't fuck with this unless you know exactly what you're inputting.</b> These are the actual KREA platform rates — if they're wrong, every bid, cost, and credit-burn number below is wrong too. Leave it alone unless KREA's pricing has genuinely changed."],
+    credits:["Wallet Compute Credits","Your remaining KREA compute units. Everything compute is priced in these units. They convert to <b>USD at $0.0018/unit</b> and to CDN at the <b>master exchange rate</b> set at the top. This figure drives the gas gauge and the deficit ledger. <b>Labour does not touch credits</b> — it's cash."],
     frames:["Frame Cost per Clip","Every clip needs a NanoBanana <b>start frame and end frame</b> at $0.50 each = <b>$1.00 per clip</b>. This is charged on every rough-draft clip regardless of which video model renders it. It is the same across all productions."],
     cliplen:["Clip Length","Length of each AI clip in seconds. Two roles: it converts finished runtime into a clip count (<b>clips per episode = minutes × 60 ÷ clip length</b>), and it <b>scales the render cost proportionally</b> — the per-model prices are quoted at 5 seconds, so a 6-second clip costs 6/5× the render. Frame cost does not scale (still just 2 images)."],
     render:["Per-Model Render Cost (live)","KREA's render cost for one clip on this model. The field shows the <b>live price at the current clip length</b> (the @Ns tag) and <b>rises automatically when you change Clip Length</b> — anchored to a 5-second base (Seedance2 $4.55, Kling 3 $1.49, Kling 2.6 $0.47). Typing a value here sets the price for the current length; the base re-anchors so scaling stays consistent."],
-    mins:["Minutes of AI per Episode","How many minutes of finished AI content appear in each episode (0–25). This sets clips per episode. <b>Set to 0 to turn a production OFF</b> — it then contributes $0 to the slate totals."],
+    mins:["Minutes of AI per Episode","How many minutes of finished AI content appear in each episode (0–25). This sets clips per episode. <b>Set to 0 to turn a production's compute OFF</b> — it then contributes $0 compute (labour still counts if crew is staffed)."],
     draft:["Draft Ratio (rough-draft stage)","The first 6:1-style funnel. How many videos you generate to get one good enough to <b>deliver to the story editors</b>. 3:1 means you make 3 rough clips for every 1 you hand off. Higher = more waste, more cost."],
     edit:["Edit Ratio (final-selects stage)","The second funnel. Of the clips you deliver, how many the editors burn through to <b>lock one into the show</b>. 3:1 means you deliver 3 for every 1 that airs. The <b>combined multiplier (draft × edit)</b> is shown as e.g. 9× — that's total rough clips made per finished clip."],
     mix:["Model Mix","Sets the share of clips rendered on each model. The three sliders <b>auto-normalize to 100%</b>, so any combination works. The blend determines your average render cost per clip — lean on Kling 2.6 to cut cost, Seedance2 for premium."],
     seed:["Seedance 2","Premium model, highest render cost (≈ $4.55/clip). The label shows raw render → finished cost after the make-to-use ratios are applied."],
     k3:["Kling 3","Mid-tier model (≈ $1.49/clip). The label shows raw render → finished cost after ratios."],
     k26:["Kling 2.6","Cheapest model (≈ $0.47/clip). The label shows raw render → finished cost after ratios."],
-    eps:["Number of Episodes","Total episodes in this production. Multiplies the per-episode cost into the season total. Set to 0 (or 0 minutes) to turn the production off."],
-    deliv:["% Already Delivered","How much of this production is already finished and handed off. Only the <b>remaining</b> episodes still burn compute, so the season cost = per-episode cost × episodes × (1 − %delivered). CTD is 30% delivered, so it only counts 70% of its 8 episodes."]
+    eps:["Number of Episodes","Total episodes in this production. Multiplies the per-episode compute cost into the season total. Set to 0 (or 0 minutes) to turn the production's compute off."],
+    deliv:["% Already Delivered","How much of this production is already finished and handed off.<br><br><b>This only affects compute — not labour.</b> Only the <b>remaining</b> episodes still burn compute, so compute season = per-episode cost × episodes × (1 − %delivered). CTD at 30% delivered counts just 70% of its 8 episodes.<br><br><b>Labour is NOT scaled by this slider.</b> Crew cost is whatever you type in (weekly rate × weeks), full stop. So enter each person's weeks as the <b>work that's actually left</b> — if half the show is done, put in the weeks for the remaining half. The slider discounts the compute automatically; you control the labour by hand."],
+    crew:["Crew & Labour","Add each person on this production by name/role with their <b>weekly rate</b> and the <b>number of weeks</b> they work. Labour for that person = rate × weeks; the production's labour season is the sum. This is real cash spend and is <b>added on top of compute</b> — it does NOT draw down KREA credits, so it never moves the gas gauge or the credits-to-order figure. Enter weeks as the work remaining if part of the show is already delivered."],
+    burn:["Credits Burned","Total KREA compute units consumed by the slate's remaining episodes. This is <b>compute only</b> — labour is cash and never burns credits. Drives the gauge and the deficit ledger."],
+    allin:["All-in Cost USD","The slate's <b>hard cost before any Cream margin</b> — compute + labour added across every active job. This is the raw cost of making the work (renders + crew, including fringes). Add the Cream margin on top of this to get the Actual cost (total); compare that against Total bid to see profit. Only the compute slice of this number burns KREA credits — the labour slice is cash."],
+    labtot:["Labour Cost","Sum of every production's crew labour (weekly rate × weeks across all named people). <b>This includes fringes.</b> Pure cash cost — paid in dollars, not KREA credits."],
+    deficit:["Replenishment Ledger","If projected credits go negative, this shows the <b>compute shortfall</b> only and how many KREA units to buy to cover the slate. Labour deficits are not shown here because labour isn't paid in credits."],
+    margin:["Cream Parent Company Margin","Every job has two real costs: <b>compute</b> (what KREA charges to render the clips) and <b>labour</b> (your crew's pay). Add them up and that's what the job actually costs to make.<br><br>The <b>margin</b> is the extra you add on top before you bill it — Cream's cut. The slider is just \"how much extra,\" as a percent. <b>Billed total = (compute + labour) × (1 + margin%)</b>, default 10%.<br><br><b>Example:</b> a job costs $100,000. At 10% you add $10,000 → bill $110,000. Slide to 25% and you add $25,000 → $125,000.<br><br>Each show has its own slider, so you can charge different rates — a premium client at 25%, a passion project at 5%. That margin money is also what keeps the parent company running (Andrew & Francine, legal, accounting, office), not just pure profit.<br><br>Margin is cash, not KREA credits — it never touches the gas gauge or credit burn. The slate grand total is just the sum of every job's billed total."],
+    bid:["Bid Price","What you charge the client for this job — and the only real lever on the bottom-line Net.<br><br><b>Two modes (the \"auto from margin\" checkbox):</b><br>• <b>Auto ON</b> — the bid is calculated for you as <b>cost + margin</b> (compute + labour + the Cream margin %). Now the margin slider becomes a live pricing lever: slide it up and the bid (and the Net) rise with it. The field locks to show the computed quote.<br>• <b>Auto OFF</b> — you type a fixed, negotiated bid. The widget shows green/red for how it compares to actual cost. With a fixed bid, the margin slider only re-labels money internally and won't move the Net (your three current jobs are set this way to preserve their agreed bids).<br><br>Tip: to make CTD's margin slider actually change profit, tick its \"auto from margin\" box. Bid is a quote, not spend — it never touches KREA credits."]
   };
   const helpModal=$('help-modal');
   function openHelp(key){
@@ -363,14 +708,15 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
   $('help-close').addEventListener('click',()=>helpModal.classList.remove('show'));
   helpModal.addEventListener('click',e=>{ if(e.target===helpModal) helpModal.classList.remove('show'); });
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') helpModal.classList.remove('show'); });
-  // presets
-  document.querySelectorAll('.preset-btn').forEach(b=>b.addEventListener('click',()=>{
+  // presets (delegated so dynamically-added productions work)
+  document.addEventListener('click',e=>{
+    const b=e.target.closest('.preset-btn');
+    if(!b) return;
     const i=b.dataset.p;
     $(`p${i}-seed`).value=b.dataset.s; $(`p${i}-k3`).value=b.dataset.k3; $(`p${i}-k26`).value=b.dataset.k26; calc();
-  }));
+  });
 
   // --- render price <-> clip length wiring ---
-  // render fields display the LIVE price at the current clip length; a hidden 5-sec base is kept.
   const BASE_SEC=5;
   const baseR={seed:4.55,k3:1.49,k26:0.47};
   const clipSec=()=>(+$('g-cliplen').value||BASE_SEC);
@@ -392,16 +738,23 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
   ['g-rseed','g-rk3','g-rk26'].forEach(id=>$(id).addEventListener('input',baseFromRenderFields));
   renderFieldsFromBase();
 
-  let firstLoad=true;
+  // initial load: restore your last session if present, otherwise the built-in defaults
+  const saved=loadLocal();
+  if(saved&&saved.prods&&saved.prods.length){ applyState(saved); }
+  else { prodDefaults.forEach(P=>addProd(P)); }
 
   function calc(){
     const credits=+$('in-credits').value||0;
+    const FX=getFX();                                   // master USD→CDN rate
     const frames=+$('g-frames').value||0, cliplen=+$('g-cliplen').value||1;
     const rSeed=+$('g-rseed').value||0, rK3=+$('g-rk3').value||0, rK26=+$('g-rk26').value||0;
 
-    let totalSeason=0, totalMins=0, active=0;
+    // NOTE: compute is computed in USD (KREA bills USD), then converted to CDN for all money totals.
+    // labour & bid are entered in CDN. credit burn stays in USD-priced units.
+    let totalComputeUSD=0, totalComputeCDN=0, totalLabour=0, totalMargin=0, totalBid=0, totalMins=0, active=0;
 
-    for(let i=0;i<N;i++){
+    document.querySelectorAll('#prods .acc').forEach(panel=>{
+      const i=+panel.dataset.pid;
       const mins=+$(`p${i}-mins`).value, draft=+$(`p${i}-draft`).value, edit=+$(`p${i}-edit`).value;
       const eps=+$(`p${i}-eps`).value||0;
       const deliv=Math.min(100,Math.max(0,+$(`p${i}-deliv`).value||0));
@@ -418,55 +771,149 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
       $(`p${i}-pk3`).textContent=Math.round(pk3*100)+'%';
       $(`p${i}-pk26`).textContent=Math.round(pk26*100)+'%';
       const fin=r=>(frames+r)*totalRatio;
-      $(`p${i}-cseed`).textContent=usd(rSeed,2)+'→'+usd(fin(rSeed),2);
-      $(`p${i}-ck3`).textContent=usd(rK3,2)+'→'+usd(fin(rK3),2);
-      $(`p${i}-ck26`).textContent=usd(rK26,2)+'→'+usd(fin(rK26),2);
+      $(`p${i}-cseed`).textContent=usd(rSeed,2)+'→'+cdn(fin(rSeed)*FX,2);
+      $(`p${i}-ck3`).textContent=usd(rK3,2)+'→'+cdn(fin(rK3)*FX,2);
+      $(`p${i}-ck26`).textContent=usd(rK26,2)+'→'+cdn(fin(rK26)*FX,2);
 
       const blend=ps*rSeed+pk3*rK3+pk26*rK26;
-      const finalClip=(frames+blend)*totalRatio;
+      const finalClip=(frames+blend)*totalRatio;                 // USD per finished clip
       const clipsPerEp=cliplen?(mins*60)/cliplen:0;
-      const costPerEp=finalClip*clipsPerEp;
-      // GHOST FIX: 0 minutes or 0 episodes => fully zero
+      const costPerEp=finalClip*clipsPerEp;                      // USD
       const isOff=(mins<=0||eps<=0);
-      const season=isOff?0:costPerEp*epsRem;   // only remaining (undelivered) episodes burn compute
-      const costPerMin=cliplen?finalClip*(60/cliplen):0;
+      const computeUSD=isOff?0:costPerEp*epsRem;                 // USD (only remaining episodes)
+      const computeCDN=computeUSD*FX;                            // CDN
+      const costPerMin=cliplen?finalClip*(60/cliplen):0;         // USD
       const prodMins=isOff?0:mins*epsRem;
 
-      $(`p${i}-omin`).textContent=isOff?'$0':usd(costPerMin,0);
-      $(`p${i}-oclip`).textContent=isOff?'$0':usd(finalClip,2);
-      $(`p${i}-oep`).textContent=isOff?'$0':usd(costPerEp,0);
-      $(`p${i}-oseason`).textContent=usd(season,0);
+      // --- labour (entered in CDN) ---
+      let labour=0, heads=0;
+      (crews[i]||[]).forEach((c,j)=>{
+        const r=+($(`p${i}-c${j}-r`)?.value)||0;
+        const w=+($(`p${i}-c${j}-w`)?.value)||0;
+        const line=r*w;
+        const el=$(`p${i}-cl${j}`); if(el) el.textContent=cdn(line,0);
+        if(r>0&&w>0) heads++;
+        labour+=line;
+      });
+      // --- per-job Cream margin (CDN) ---
+      const marginPctJob=Math.max(0,+$(`p${i}-margin`).value||0);
+      $(`p${i}-bmargin`).textContent=marginPctJob+'%';
+      const marginJob=(computeCDN+labour)*marginPctJob/100;
+      const billed=computeCDN+labour+marginJob;                 // CDN actual cost
 
+      // compute outputs (CDN)
+      $(`p${i}-omin`).textContent=isOff?'C$0':cdn(costPerMin*FX,0);
+      $(`p${i}-oclip`).textContent=isOff?'C$0':cdn(finalClip*FX,2);
+      $(`p${i}-oep`).textContent=isOff?'C$0':cdn(costPerEp*FX,0);
+      $(`p${i}-oseason`).textContent=cdn(computeCDN,0);
+
+      // labour + split outputs (CDN)
+      $(`p${i}-olabour`).textContent=cdn(labour,0);
+      $(`p${i}-lheads`).textContent=heads+(heads===1?' person':' crew');
+      $(`p${i}-scompute`).textContent=cdn(computeCDN,0);
+      $(`p${i}-slabour`).textContent=cdn(labour,0);
+      $(`p${i}-smargin`).textContent=cdn(marginJob,0);
+      $(`p${i}-stotal`).textContent=cdn(billed,0);
+
+      // bid price vs actual cost (CDN) — auto-price from margin, or manual
+      const bidEl=$(`p${i}-bid`), bidsub=$(`p${i}-bidsub`);
+      const auto=$(`p${i}-bidauto`) && $(`p${i}-bidauto`).checked;
+      let bid;
+      if(auto){
+        bid=Math.round(billed);              // bid = cost + margin
+        bidEl.value=bid; bidEl.readOnly=true; bidEl.classList.add('locked');
+        bidsub.textContent='auto · cost + '+marginPctJob+'% margin';
+        bidsub.style.color='var(--cyan-accent)';
+      } else {
+        bidEl.readOnly=false; bidEl.classList.remove('locked');
+        bid=+bidEl.value||0;
+        if(bid>0){
+          const profit=bid-billed;
+          bidsub.textContent=(profit>=0?'+':'−')+cdn(Math.abs(profit),0)+' vs cost';
+          bidsub.style.color=profit>=0?'var(--green-accent)':'var(--red-accent)';
+        } else { bidsub.textContent='set bid'; bidsub.style.color='var(--text-muted)'; }
+      }
+      totalBid+=bid;
+
+      // accordion summary
       const scost=$(`p${i}-scost`), smin=$(`p${i}-smin`);
-      if(isOff){ scost.textContent='OFF'; scost.classList.add('off'); smin.textContent='0 min'; }
-      else{ scost.textContent=usd(season,0); scost.classList.remove('off');
-        smin.textContent = deliv>0 ? Math.round(mins*epsRem)+' min left · '+deliv+'% done' : (mins*eps)+' min · '+eps+' eps';
-        active++; }
+      const fullyOff=(isOff&&labour<=0);
+      if(fullyOff){ scost.textContent='OFF'; scost.classList.add('off'); smin.textContent='0 min'; }
+      else{
+        scost.textContent=cdn(billed,0); scost.classList.remove('off');
+        const minTxt = isOff ? 'dev / labour only'
+          : (deliv>0 ? Math.round(mins*epsRem)+' min left · '+deliv+'% done' : (mins*eps)+' min · '+eps+' eps');
+        smin.textContent=minTxt;
+        active++;
+      }
 
-      totalSeason+=season; totalMins+=prodMins;
-    }
+      totalComputeUSD+=computeUSD; totalComputeCDN+=computeCDN; totalLabour+=labour; totalMargin+=marginJob; totalMins+=prodMins;
+    });
+
+    const totalAllIn=totalComputeCDN+totalLabour;   // CDN
+    const marginAmt=totalMargin;                     // CDN, sum of per-job margins
+    const grandTotal=totalAllIn+marginAmt;           // CDN
 
     // wallet
     const usdLeft=credits*UNIT, cdnLeft=usdLeft*FX;
     $('w-credits').innerHTML=num(credits)+' <span>units</span>';
     $('w-usd').textContent=usd(usdLeft,0);
-    $('w-cdn').textContent=usd(cdnLeft,0);
+    $('w-cdn').textContent=cdn(cdnLeft,0);
     $('w-unit').textContent='$'+UNIT.toFixed(5);
 
-    // totals
-    const burn=totalSeason/UNIT;
+    // totals — credit burn is COMPUTE ONLY, in USD-priced units
+    const burn=totalComputeUSD/UNIT;
     const after=credits-burn;
-    const afterUSD=after*UNIT;
+    const afterUSD=after*UNIT, afterCDN=afterUSD*FX;
+    const deficitCDN=after<0?Math.abs(afterUSD)*FX:0;   // cash needed to top up KREA credits
 
     $('t-active').textContent=active;
     $('t-mins').textContent=num(totalMins)+' min';
-    $('t-usd').textContent=usd(totalSeason,0);
     $('t-burn').textContent=num(burn);
+    $('t-compute').textContent=cdn(totalComputeCDN,0);
+    $('t-labour').textContent=cdn(totalLabour,0);
+    $('t-usd').textContent=cdn(totalAllIn,0);
+    $('t-margin').textContent=cdn(marginAmt,0);
+    const effMargin=totalAllIn>0?Math.round(marginAmt/totalAllIn*100):0;
+    $('t-grand-lbl').textContent='Actual cost (total · +'+effMargin+'% margin)';
+    $('t-grand').textContent=cdn(grandTotal,0);
+    $('t-bid').textContent=cdn(totalBid,0);
+    const slateProfit=totalBid-grandTotal;
+    $('t-profit').textContent=(slateProfit>=0?'':'−')+cdn(Math.abs(slateProfit),0);
+    $('t-profit').style.color=slateProfit>=0?'var(--green-accent)':'var(--red-accent)';
 
-    $('h-total').textContent=usd(totalSeason,0);
-    $('h-total-sub').textContent=usd(totalSeason*FX,0)+' CDN · '+num(totalMins)+' finished min';
+    // COMPANY OVERHEAD coverage check (margin is the overhead bucket)
+    const ovMonths=+$('o-months').value||0;
+    const overhead=(+$('o-andrew').value||0)*ovMonths/12 + (+$('o-francine').value||0)*ovMonths/12 + (+$('o-opex').value||0)*ovMonths;
+    const coverage=marginAmt-overhead;
+    $('o-total').textContent=cdn(overhead,0);
+    $('o-margin').textContent=cdn(marginAmt,0);
+    $('o-cov-lbl').textContent=coverage>=0?'Surplus over overhead':'Short of overhead';
+    $('o-cov').textContent=(coverage>=0?'+':'−')+cdn(Math.abs(coverage),0);
+    $('o-cov').style.color=coverage>=0?'var(--green-accent)':'var(--red-accent)';
+    $('o-cov-cell').style.borderColor=coverage>=0?'rgba(57,255,20,.3)':'rgba(255,49,49,.3)';
+
+    // NET RESULT = slate profit + overhead coverage (margin − real overhead) − credit top-up.
+    // coverage<0 (short of overhead) pulls the net down; coverage>0 (surplus) lifts it.
+    const finalNet=slateProfit+coverage-deficitCDN;
+    $('f-net').textContent=(finalNet>=0?'':'−')+cdn(Math.abs(finalNet),0);
+    $('f-net').style.color=finalNet>=0?'var(--green-accent)':'var(--red-accent)';
+    $('net-box').style.borderColor=finalNet>=0?'rgba(57,255,20,.4)':'rgba(255,49,49,.4)';
+    $('f-net-sub').textContent=(slateProfit>=0?'':'−')+cdn(Math.abs(slateProfit),0)+' profit '
+      +(coverage>=0?'+ ':'− ')+cdn(Math.abs(coverage),0)+' overhead '+(coverage>=0?'surplus':'shortfall')
+      +' − '+cdn(deficitCDN,0)+' credit top-up';
+
+    // AVERAGE BID PER FINISHED MINUTE
+    const bidPerMinCDN=totalMins>0?totalBid/totalMins:0;
+    const bidPerMinUSD=FX>0?bidPerMinCDN/FX:0;
+    $('bidmin-cdn').textContent=cdn(bidPerMinCDN,0);
+    $('bidmin-usd').textContent=usd(bidPerMinUSD,0);
+    $('bidmin-sub').textContent=cdn(totalBid,0)+' total bid ÷ '+num(totalMins)+' finished min';
+
+    $('h-total').textContent=cdn(grandTotal,0);
+    $('h-total-sub').textContent=cdn(totalComputeCDN,0)+' compute + '+cdn(totalLabour,0)+' labour + '+cdn(marginAmt,0)+' margin · '+num(totalMins)+' min';
     $('h-after').textContent=num(after);
-    $('h-after-sub').textContent='units · '+(after>=0?usd(afterUSD,0)+' USD left':usd(Math.abs(afterUSD),0)+' USD short');
+    $('h-after-sub').textContent='units · '+(after>=0?cdn(afterCDN,0)+' CDN left':cdn(Math.abs(afterCDN),0)+' CDN short');
 
     const defBox=$('deficit-box');
     if(after>=0){
@@ -476,7 +923,7 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
       $('h-after').style.color='var(--red-accent)';
       const defUSD=Math.abs(afterUSD);
       $('d-usd').textContent=usd(defUSD,0);
-      $('d-cdn').textContent=usd(defUSD*FX,0);
+      $('d-cdn').textContent=cdn(defUSD*FX,0);
       $('d-credits').textContent=num(Math.ceil(defUSD/UNIT))+' units';
       defBox.style.display='block';
     }
@@ -492,6 +939,8 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--border-color)
     } else {
       needle.style.transition="transform .3s ease-out";needle.style.transform=`rotate(${deg}deg)`;
     }
+
+    saveLocal();
   }
 
   document.addEventListener('input',calc);
